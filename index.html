@@ -3,278 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stardust Hub</title>
+    <title>Stardust Hub - Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        sky: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' }
+                        darkbg: '#0b1528',
+                        darkcard: '#1e293b',
+                        accentblue: '#2563eb',
+                        neoncyan: '#06b6d4'
                     }
                 }
             }
         }
     </script>
     <style>
-        .glow-premium { shadow-blur: 15px; box-shadow: 0 0 15px rgba(14, 165, 233, 0.7); }
+        body { background-color: #0b1528; }
+        .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.6); }
+        .glow-pink { box-shadow: 0 0 15px rgba(236, 72, 153, 0.6); }
+        .glow-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
+        .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.6); }
+        /* Premium Fonts */
+        .font-default { font-family: ui-sans-serif, system-ui; }
+        .font-stylish-1 { font-family: 'Georgia', serif; font-style: italic; }
+        .font-stylish-2 { font-family: 'Courier New', monospace; font-weight: bold; }
+        .font-stylish-3 { font-family: 'Impact', fantasy; letter-spacing: 1px; }
     </style>
 </head>
-<body class="bg-sky-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden">
+<body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-cyan-500 selection:text-white">
 
-    <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center p-6 bg-white z-50">
-        <div class="text-center max-w-sm w-full">
-            <h1 class="text-4xl font-extrabold text-sky-600 tracking-wide mb-2">Stardust Hub</h1>
-            <p class="text-slate-500 mb-8">Share articles, moments, and chat in real-time.</p>
-            
-            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center space-x-3 bg-white border border-slate-300 hover:border-sky-400 text-slate-700 font-medium py-3 px-4 rounded-xl shadow-sm transition duration-200">
-                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22-.03-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                <span>Continue with Google</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="app-layout" class="hidden flex-1 flex flex-col pb-20 max-w-md mx-auto w-full bg-slate-50 min-h-screen relative shadow-md">
+    <div id="app-layout" class="flex-1 flex flex-col pb-20 max-w-md mx-auto w-full bg-darkbg min-h-screen relative shadow-2xl border-x border-slate-800">
         
-        <section id="home-screen" class="p-4 flex-1">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-sky-600">Stardust</h2>
-                <button onclick="openPostModal()" class="bg-sky-500 hover:bg-sky-600 text-white p-2 rounded-full shadow-lg transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                </button>
-            </div>
-            
+        <header class="p-4 bg-darkcard/80 backdrop-blur-md sticky top-0 z-30 border-b border-slate-800 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">STARDUST</h1>
+            <button onclick="openModal('post-modal')" class="bg-gradient-to-r from-blue-600 to-cyan-500 hover:opacity-90 p-2.5 rounded-full shadow-lg shadow-cyan-500/20 transition">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+            </button>
+        </header>
+
+        <section id="home-screen" class="p-4 flex-1 space-y-4">
             <div id="posts-feed" class="space-y-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-10 h-10 rounded-full border-2 border-sky-400">
-                            <div>
-                                <span class="font-semibold text-slate-800 flex items-center">
-                                    Aman Kumar <span class="ml-1 text-sky-500">✔</span>
-                                </span>
-                                <span class="text-xs text-gray-400 block">5 mins ago</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-slate-700 mb-4">Stardust Hub ka naya navigation system fit ho gaya hai! Kaisa lag raha hai?</p>
-                    <div class="flex justify-between text-gray-500 border-t pt-3 px-2">
-                        <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
-                        <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></button>
-                        <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.422-2.211a2 2 0 11.83 1.778l-4.422 2.211a2 2 0 11-.83-1.778z"></path></svg></button>
-                        <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg></button>
-                    </div>
                 </div>
-            </div>
         </section>
 
         <section id="chat-screen" class="hidden p-4 flex-1 flex flex-col">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold text-sky-600">Chats</h2>
-                <div class="relative">
-                    <button onclick="toggleChatMenu()" class="text-slate-600 hover:text-sky-500 p-1">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                    </button>
-                    <div id="chat-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-sky-100 rounded-xl shadow-lg z-50">
-                        <button class="w-full text-left px-4 py-2 text-sm hover:bg-sky-50 text-slate-700">Add Friend</button>
-                        <button class="w-full text-left px-4 py-2 text-sm hover:bg-sky-50 text-slate-700">Friend Requests</button>
-                        <button class="w-full text-left px-4 py-2 text-sm hover:bg-sky-50 text-slate-700 border-t">Create Group Chat</button>
-                    </div>
-                </div>
-            </div>
-            <div class="flex-1 bg-white rounded-xl border border-sky-100 p-4 text-center text-gray-400 text-sm">
-                No conversations yet. Add friends to start real-time chat.
-            </div>
-        </section>
-
-        <section id="search-screen" class="hidden p-4 flex-1">
-            <div class="mb-4">
-                <input type="text" placeholder="Search articles or unique UID..." class="w-full px-4 py-2 rounded-xl border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white">
-            </div>
-            <div class="text-center text-gray-400 text-sm mt-10">Search result container ready.</div>
-        </section>
-
-        <section id="profile-screen" class="hidden p-4 flex-1">
-            <div onclick="openSubModal()" class="bg-gradient-to-r from-sky-400 to-blue-500 rounded-xl p-4 text-white mb-6 shadow-sm cursor-pointer relative overflow-hidden">
-                <h4 class="font-bold text-base">✨ Get Premium Subscription</h4>
-                <p class="text-xs opacity-90">Click to unlock Custom Profile Colors, Frames, Fonts & Blue Tick!</p>
-            </div>
-
-            <div id="profile-card" class="bg-white p-4 rounded-xl border border-sky-100 shadow-sm text-center relative mb-6">
-                <button onclick="openSettingsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-sky-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                <h2 class="text-xl font-bold text-cyan-400">Realtime Messages</h2>
+                <button onclick="toggleElement('chat-menu')" class="text-slate-400 hover:text-white p-1 bg-darkcard rounded-lg border border-slate-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                 </button>
-                <div id="pfp-frame" class="w-24 h-24 mx-auto rounded-full bg-sky-100 border-4 border-sky-400 mb-3 overflow-hidden">
-                    <img id="profile-pic" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-full h-full object-cover">
+                <div id="chat-menu" class="hidden absolute right-4 mt-32 w-48 bg-darkcard border border-slate-700 rounded-xl shadow-2xl z-50">
+                    <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-800 transition">✨ Add New Friend</button>
+                    <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-800 transition">📩 Incoming Requests</button>
+                    <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-800 transition border-t border-slate-700">👥 Create Group Chat</button>
                 </div>
-                <h3 id="profile-name-display" class="text-xl font-bold text-slate-800 flex justify-center items-center">
-                    Aman Kumar <span id="verified-tick" class="hidden ml-1 text-sky-500">✔</span>
-                </h3>
-                <p id="profile-uid-display" class="text-sm text-gray-400 mb-2">@uid_stardust</p>
-                <p id="profile-bio-display" class="text-sm text-slate-600 px-4">Hey there! I am using Stardust Hub.</p>
+            </div>
+            <div class="flex-1 flex flex-col items-center justify-center border border-dashed border-slate-800 rounded-2xl bg-darkcard/30 p-6 text-center text-slate-500">
+                <p class="text-sm">Realtime peer connections waiting. Add friends to activate chat grid.</p>
             </div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-sky-100 h-16 flex justify-around items-center px-2 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.03)]">
-            <button onclick="switchTab('home')" class="text-sky-500 flex flex-col items-center flex-1 py-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <section id="search-screen" class="hidden p-4 flex-1 space-y-4">
+            <div class="relative">
+                <input type="text" id="search-input" oninput="executeSearch()" placeholder="Search content, keywords, or @uid..." class="w-full px-4 py-3 rounded-xl border border-slate-700 bg-darkcard text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition">
+            </div>
+            <div id="search-results" class="space-y-4">
+                <p class="text-center text-slate-500 text-sm mt-8">Type above to trigger active database filters...</p>
+            </div>
+        </section>
+
+        <section id="profile-screen" class="hidden p-4 flex-1 space-y-4">
+            <div onclick="openModal('sub-modal')" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 rounded-2xl p-4 text-white shadow-lg shadow-blue-500/10 cursor-pointer relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 text-7xl opacity-10 group-hover:scale-110 transition duration-300">👑</div>
+                <h4 class="font-black text-base flex items-center gap-1.5">⚡ Configure Premium Suite</h4>
+                <p class="text-xs text-blue-100 mt-0.5">Live setup colors, custom fonts, stylish rings & blue tick status.</p>
+            </div>
+
+            <div id="profile-card" class="bg-darkcard p-5 rounded-2xl border border-slate-800 text-center relative transition duration-300">
+                <button onclick="openModal('edit-profile-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 bg-slate-800 rounded-lg border border-slate-700 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                </button>
+                <div id="pfp-container" class="w-24 h-24 mx-auto rounded-full p-1 border-2 border-slate-700 mb-3 transition duration-300">
+                    <img id="profile-pic" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-full h-full object-cover rounded-full">
+                </div>
+                <h3 id="profile-name-display" class="text-xl font-bold text-slate-100 flex justify-center items-center gap-1 font-default">
+                    Stardust <span id="verified-tick" class="hidden text-cyan-400 text-lg">✔</span>
+                </h3>
+                <p id="profile-uid-display" class="text-sm text-cyan-500 font-mono mt-0.5">@uid_stardust</p>
+                <p id="profile-bio-display" class="text-sm text-slate-400 px-4 mt-2">Hey there! I am using Stardust Hub.</p>
+            </div>
+
+            <div class="space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 pl-1">My Published Moments</h4>
+                <div id="profile-posts" class="space-y-4">
+                    </div>
+            </div>
+        </section>
+
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-darkcard/90 backdrop-blur-md border-t border-slate-800 h-16 flex justify-around items-center px-2 z-40 shadow-2xl">
+            <button onclick="switchTab('home')" class="text-cyan-400 flex flex-col items-center flex-1 py-2 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
             </button>
-            <button onclick="switchTab('chat')" class="text-slate-400 hover:text-sky-500 flex flex-col items-center flex-1 py-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            <button onclick="switchTab('chat')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </button>
-            <button onclick="switchTab('search')" class="text-slate-400 hover:text-sky-500 flex flex-col items-center flex-1 py-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <button onclick="switchTab('search')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </button>
-            <button onclick="switchTab('profile')" class="text-slate-400 hover:text-sky-500 flex flex-col items-center flex-1 py-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <button onclick="switchTab('profile')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             </button>
         </nav>
     </div>
 
-    <div id="post-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-xl">
+    <div id="post-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard rounded-2xl w-full max-w-sm p-5 border border-slate-800 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg text-slate-800">Create Moment</h3>
-                <button onclick="closePostModal()" class="text-gray-400 hover:text-slate-600">✕</button>
+                <h3 class="font-bold text-lg text-slate-100">Create Moment</h3>
+                <button onclick="closeModal('post-modal')" class="text-slate-400 hover:text-white text-lg">✕</button>
             </div>
-            <textarea id="post-text" placeholder="What's on your mind?" class="w-full h-32 p-3 border border-sky-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 bg-slate-50 mb-4 resize-none"></textarea>
+            <textarea id="post-text" placeholder="Write your article or experience here..." class="w-full h-32 p-3 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-darkbg text-slate-100 resize-none mb-3"></textarea>
+            
+            <div id="image-input-container" class="hidden mb-3">
+                <input type="text" id="post-image-url" placeholder="Paste image path/URL here..." class="w-full p-2 text-xs border border-slate-700 bg-darkbg rounded-lg text-slate-200">
+            </div>
+
             <div class="flex justify-between items-center">
-                <button type="button" class="text-sky-500 flex items-center space-x-1"><span class="text-xs">📷 Add Gallery Image</span></button>
-                <button onclick="mockSubmitPost()" class="bg-sky-500 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-sky-600">Post</button>
+                <button onclick="toggleElement('image-input-container')" type="button" class="text-cyan-400 hover:text-cyan-300 flex items-center gap-1 text-xs font-semibold bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                    🖼 Attach Media
+                </button>
+                <button onclick="submitNewPost()" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/10">Publish</button>
             </div>
         </div>
     </div>
 
-    <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-xl max-h-[85vh] overflow-y-auto">
+    <div id="edit-profile-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard rounded-2xl w-full max-w-sm p-5 border border-slate-800 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg text-slate-800">Settings & History</h3>
-                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-slate-600">✕</button>
+                <h3 class="font-bold text-lg text-slate-100">Edit Profile Core</h3>
+                <button onclick="closeModal('edit-profile-modal')" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Display Name</label>
-                    <input type="text" id="edit-name" value="Aman Kumar" class="w-full px-3 py-2 border border-sky-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Display Name</label>
+                    <input type="text" id="edit-name" class="w-full px-3 py-2 border border-slate-700 bg-darkbg rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Bio</label>
-                    <textarea id="edit-bio" class="w-full h-16 p-2 border border-sky-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 resize-none">Hey there! I am using Stardust Hub.</textarea>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Unique Username (UID)</label>
+                    <input type="text" id="edit-uid" class="w-full px-3 py-2 border border-slate-700 bg-darkbg rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500">
                 </div>
-                <button onclick="saveProfileSettings()" class="w-full bg-sky-500 text-white py-2 rounded-xl text-sm font-semibold hover:bg-sky-600">Save Profile</button>
-                
-                <hr class="border-sky-100 my-2">
-                <h4 class="font-bold text-sm text-slate-700">Activity Sections</h4>
-                <button class="w-full text-left p-3 bg-slate-50 hover:bg-sky-50 rounded-xl text-sm font-medium flex justify-between"><span>🗑 Deleted History (30 Days)</span><span class="text-xs text-gray-400">0 items</span></button>
-                <button class="w-full text-left p-3 bg-slate-50 hover:bg-sky-50 rounded-xl text-sm font-medium flex justify-between"><span>💖 Liked Posts</span><span class="text-xs text-gray-400">View</span></button>
-                <button class="w-full text-left p-3 bg-slate-50 hover:bg-sky-50 rounded-xl text-sm font-medium flex justify-between"><span>💬 Logged Comments</span><span class="text-xs text-gray-400">View</span></button>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Avatar Picture URL</label>
+                    <input type="text" id="edit-pfp-url" class="w-full px-3 py-2 border border-slate-700 bg-darkbg rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">Personal Bio</label>
+                    <textarea id="edit-bio" class="w-full h-16 p-2 border border-slate-700 bg-darkbg rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none"></textarea>
+                </div>
+                <button onclick="saveProfileData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-sm font-bold shadow-md transition">Save Setup Changes</button>
             </div>
         </div>
     </div>
 
-    <div id="sub-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl">
-            <div class="text-center">
-                <span class="text-4xl">👑</span>
-                <h3 class="font-extrabold text-xl text-slate-800 mt-2">Premium Stardust</h3>
-                <p class="text-xs text-slate-400 mb-4">Get access to premium customization tools</p>
+    <div id="sub-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard rounded-2xl w-full max-w-sm p-5 border border-slate-800 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-black text-lg text-amber-400 flex items-center gap-1">👑 Premium Customizer</h3>
+                <button onclick="closeModal('sub-modal')" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <ul class="text-sm text-slate-600 space-y-2 mb-6 bg-sky-50 p-3 rounded-xl">
-                <li>🌟 5-6 Glowing Profile background colors</li>
-                <li>✒ Premium Stylish Text Fonts</li>
-                <li>⭕ 5+ Beautiful PFP Profile Borders/Frames</li>
-                <li>✔ Instagram-like Blue Tick on all posts</li>
-            </ul>
-            <div class="flex space-x-2">
-                <button onclick="closeSubModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl font-medium">Cancel</button>
-                <button onclick="activateFreePremium()" class="flex-1 bg-gradient-to-r from-sky-500 to-blue-500 text-white py-2.5 rounded-xl font-bold shadow-md">Try Free Now</button>
+            
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">1. Profile Card Glow Theme</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="applyPremiumStyle('glow', 'cyan')" class="bg-slate-800 border border-cyan-500 p-2 rounded-lg text-xs text-cyan-400 font-bold">Neon Cyan</button>
+                        <button onclick="applyPremiumStyle('glow', 'pink')" class="bg-slate-800 border border-pink-500 p-2 rounded-lg text-xs text-pink-400 font-bold">Vibrant Pink</button>
+                        <button onclick="applyPremiumStyle('glow', 'purple')" class="bg-slate-800 border border-purple-500 p-2 rounded-lg text-xs text-purple-400 font-bold">Deep Purple</button>
+                        <button onclick="applyPremiumStyle('glow', 'green')" class="bg-slate-800 border border-green-500 p-2 rounded-lg text-xs text-green-400 font-bold">Glow Green</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">2. Elegant Text Typography</label>
+                    <div class="space-y-2">
+                        <button onclick="applyPremiumStyle('font', 'font-stylish-1')" class="w-full bg-slate-800 p-2 rounded-lg text-left text-xs font-stylish-1">Georgia Custom Style</button>
+                        <button onclick="applyPremiumStyle('font', 'font-stylish-2')" class="w-full bg-slate-800 p-2 rounded-lg text-left text-xs font-stylish-2">Courier Cyber Bold</button>
+                        <button onclick="applyPremiumStyle('font', 'font-stylish-3')" class="w-full bg-slate-800 p-2 rounded-lg text-left text-xs font-stylish-3">IMPACT RADICAL TEXT</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1.5 uppercase">3. Avatar Frame Rings</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="applyPremiumStyle('frame', 'border-4 border-amber-400')" class="bg-slate-800 p-2 rounded-lg text-xs border border-slate-700">Gold Regal Ring</button>
+                        <button onclick="applyPremiumStyle('frame', 'border-4 border-cyan-400 animate-pulse')" class="bg-slate-800 p-2 rounded-lg text-xs border border-slate-700">Cyber Pulse Ring</button>
+                        <button onclick="applyPremiumStyle('frame', 'border-4 border-dashed border-pink-500')" class="bg-slate-800 p-2 rounded-lg text-xs border border-slate-700">Neon Loop Ring</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <span class="block text-xs font-bold text-slate-200">Inject Verification Blue Tick</span>
+                        <span class="text-[11px] text-slate-500">Places badge on home posts & account grids.</span>
+                    </div>
+                    <button onclick="applyPremiumStyle('tick', true)" class="bg-cyan-500 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold">Activate</button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard rounded-2xl w-full max-w-sm p-5 border border-slate-800 text-center">
+            <h3 class="font-bold text-slate-200 mb-3 text-base">Direct Share Route</h3>
+            <div class="grid grid-cols-3 gap-3 my-4">
+                <div class="p-3 bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-700 text-xs">💬 Internal Chat</div>
+                <div class="p-3 bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-700 text-xs">🔗 Copy Link</div>
+                <div class="p-3 bg-slate-800 rounded-xl cursor-pointer hover:bg-slate-700 text-xs">🌐 Ecosystem</div>
+            </div>
+            <button onclick="closeModal('share-modal')" class="w-full bg-slate-800 py-2 rounded-xl text-xs font-semibold text-slate-400">Cancel</button>
         </div>
     </div>
 
     <script>
-        // Tab Switch Logic
+        // Global Local Database Memory State Simulator
+        let appPosts = [
+            {
+                id: 101,
+                authorName: "Aman Kumar",
+                authorUID: "uid_stardust",
+                authorPic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+                content: "Stardust Hub ka naya Dark Blue premium UI system ready ho gaya hai! Kaisa lag raha hai?",
+                image: "",
+                likes: 24,
+                hasLiked: false,
+                isVerified: true
+            }
+        ];
+
+        let profileState = {
+            name: "Stardust",
+            uid: "uid_stardust",
+            bio: "Hey there! I am using Stardust Hub.",
+            pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"
+        };
+
+        // Initialize App & Synchronization
+        window.onload = function() {
+            syncDataInputs();
+            renderFeeds();
+        };
+
+        function syncDataInputs() {
+            document.getElementById('edit-name').value = profileState.name;
+            document.getElementById('edit-uid').value = profileState.uid;
+            document.getElementById('edit-bio').value = profileState.bio;
+            document.getElementById('edit-pfp-url').value = profileState.pfp;
+        }
+
+        // Base Tab Switch Engine
         function switchTab(tabName) {
-            const tabs = ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'];
-            tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
+            const targets = ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'];
+            targets.forEach(el => document.getElementById(el).classList.add('hidden'));
             document.getElementById(`${tabName}-screen`).classList.remove('hidden');
             
-            // Icon color toggling match
-            const navButtons = document.querySelectorAll('nav button');
-            navButtons.forEach(btn => btn.classList.replace('text-sky-500', 'text-slate-400'));
-            event.currentTarget.classList.replace('text-slate-400', 'text-sky-500');
+            const controls = document.querySelectorAll('nav button');
+            controls.forEach(btn => btn.classList.replace('text-cyan-400', 'text-slate-500'));
+            event.currentTarget.classList.replace('text-slate-500', 'text-cyan-400');
         }
 
-        // Mock Login Flow
-        function loginWithGoogle() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-layout').classList.remove('hidden');
+        // Overlay Triggers
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function toggleElement(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+        // Save Profile & Dynamic Synchronization
+        function saveProfileData() {
+            profileState.name = document.getElementById('edit-name').value;
+            profileState.uid = document.getElementById('edit-uid').value;
+            profileState.bio = document.getElementById('edit-bio').value;
+            profileState.pfp = document.getElementById('edit-pfp-url').value;
+
+            document.getElementById('profile-name-display').firstChild.textContent = profileState.name + " ";
+            document.getElementById('profile-uid-display').textContent = "@" + profileState.uid;
+            document.getElementById('profile-bio-display').textContent = profileState.bio;
+            document.getElementById('profile-pic').src = profileState.pfp;
+
+            // Update Author meta info inside current app posts pool
+            appPosts.forEach(post => {
+                if(post.authorUID === "uid_stardust") {
+                    post.authorName = profileState.name;
+                    post.authorPic = profileState.pfp;
+                }
+            });
+
+            closeModal('edit-profile-modal');
+            renderFeeds();
         }
 
-        // Post Window Handler
-        function openPostModal() { document.getElementById('post-modal').classList.remove('hidden'); }
-        function closePostModal() { document.getElementById('post-modal').classList.add('hidden'); }
-        
-        function mockSubmitPost() {
-            const txt = document.getElementById('post-text').value;
-            if(!txt.trim()) return;
+        // Dynamic Publishing Workflow
+        function submitNewPost() {
+            const textContent = document.getElementById('post-text').value;
+            const imgPath = document.getElementById('post-image-url').value;
+            if(!textContent.trim()) return;
+
+            const isUserVerified = !document.getElementById('verified-tick').classList.contains('hidden');
+
+            const newMoment = {
+                id: Date.now(),
+                authorName: profileState.name,
+                authorUID: profileState.uid,
+                authorPic: profileState.pfp,
+                content: textContent,
+                image: imgPath.trim() ? imgPath : "",
+                likes: 0,
+                hasLiked: false,
+                isVerified: isUserVerified
+            };
+
+            appPosts.unshift(newMoment);
+            document.getElementById('post-text').value = "";
+            document.getElementById('post-image-url').value = "";
+            document.getElementById('image-input-container').classList.add('hidden');
             
-            // Feed Element dynamic create logic without dropping to login
-            const feed = document.getElementById('posts-feed');
-            const newPost = document.createElement('div');
-            newPost.className = "bg-white p-4 rounded-xl shadow-sm border border-sky-100";
-            newPost.innerHTML = `
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center space-x-3">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-10 h-10 rounded-full border-2 border-sky-400">
-                        <div>
-                            <span class="font-semibold text-slate-800 flex items-center">${document.getElementById('edit-name').value}</span>
-                            <span class="text-xs text-gray-400 block">Just now</span>
+            closeModal('post-modal');
+            renderFeeds();
+        }
+
+        // High Fidelity Feed Architect Rendering Engine
+        function renderFeeds() {
+            const mainFeed = document.getElementById('posts-feed');
+            const profileFeed = document.getElementById('profile-posts');
+
+            mainFeed.innerHTML = "";
+            profileFeed.innerHTML = "";
+
+            if(appPosts.length === 0) {
+                mainFeed.innerHTML = `<p class='text-center text-slate-600 text-sm py-10'>No timeline streams yet.</p>`;
+                profileFeed.innerHTML = `<p class='text-center text-slate-600 text-sm py-4'>No streams published.</p>`;
+                return;
+            }
+
+            appPosts.forEach(post => {
+                const elementTemplate = `
+                    <div class="bg-darkcard p-4 rounded-2xl border border-slate-800 transition duration-200 shadow-md">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <img src="${post.authorPic}" class="w-10 h-10 rounded-full border border-slate-700 object-cover">
+                                <div>
+                                    <span class="font-bold text-slate-200 flex items-center gap-1">
+                                        ${post.authorName} 
+                                        ${post.isVerified ? '<span class="text-cyan-400 text-xs">✔</span>' : ''}
+                                    </span>
+                                    <span class="text-[10px] text-slate-500 block">@${post.authorUID}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">${post.content}</p>
+                        ${post.image ? `<img src="${post.image}" class="w-full max-h-56 object-cover rounded-xl border border-slate-800 mb-3">` : ''}
+                        
+                        <div class="flex justify-between text-slate-400 border-t border-slate-800/60 pt-3 px-2 text-xs">
+                            <button onclick="handleLikeInteraction(${post.id})" class="flex items-center gap-1.5 ${post.hasLiked ? 'text-pink-500 font-bold' : 'hover:text-pink-400'} transition">
+                                <svg class="w-5 h-5" fill="${post.hasLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                <span>${post.likes}</span>
+                            </button>
+                            <button onclick="alert('Comment compilation active on live Firebase schema')" class="hover:text-cyan-400 flex items-center gap-1.5 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            </button>
+                            <button onclick="openModal('share-modal')" class="hover:text-blue-400 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.422-2.211a2 2 0 11.83 1.778l-4.422 2.211a2 2 0 11-.83-1.778z"></path></svg>
+                            </button>
                         </div>
                     </div>
-                </div>
-                <p class="text-slate-700 mb-4">${txt}</p>
-                <div class="flex justify-between text-gray-500 border-t pt-3 px-2">
-                    <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></button>
-                    <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></button>
-                    <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.422-2.211a2 2 0 11.83 1.778l-4.422 2.211a2 2 0 11-.83-1.778z"></path></svg></button>
-                    <button class="hover:text-sky-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg></button>
-                </div>`;
-            feed.prepend(newPost);
-            document.getElementById('post-text').value = '';
-            closePostModal();
+                `;
+                
+                // Append everywhere
+                mainFeed.innerHTML += elementTemplate;
+                if(post.authorUID === profileState.uid) {
+                    profileFeed.innerHTML += elementTemplate;
+                }
+            });
         }
 
-        // Chat Menu Toggle
-        function toggleChatMenu() {
-            const menu = document.getElementById('chat-menu');
-            menu.classList.toggle('hidden');
+        // Like Interaction Logic Engine
+        function handleLikeInteraction(postId) {
+            const targetObject = appPosts.find(p => p.id === postId);
+            if(targetObject) {
+                if(targetObject.hasLiked) {
+                    targetObject.likes--;
+                    targetObject.hasLiked = false;
+                } else {
+                    targetObject.likes++;
+                    targetObject.hasLiked = true;
+                }
+                renderFeeds();
+            }
         }
 
-        // Settings Modals Handler
-        function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
-        function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
-        
-        function saveProfileSettings() {
-            document.getElementById('profile-name-display').firstChild.textContent = document.getElementById('edit-name').value + " ";
-            document.getElementById('profile-bio-display').textContent = document.getElementById('edit-bio').value;
-            closeSettingsModal();
+        // Instant Native Database Filter Execution (Search)
+        function executeSearch() {
+            const term = document.getElementById('search-input').value.toLowerCase().trim();
+            const resultBox = document.getElementById('search-results');
+            
+            if(!term) {
+                resultBox.innerHTML = `<p class="text-center text-slate-500 text-sm mt-8">Type above to trigger active database filters...</p>`;
+                return;
+            }
+
+            const matched = appPosts.filter(p => p.content.toLowerCase().includes(term) || p.authorUID.toLowerCase().includes(term));
+            resultBox.innerHTML = "";
+
+            if(matched.length === 0) {
+                resultBox.innerHTML = `<p class="text-center text-slate-600 text-xs py-8">Zero entries matches keywords criteria.</p>`;
+                return;
+            }
+
+            matched.forEach(post => {
+                resultBox.innerHTML += `
+                    <div class="bg-darkcard p-4 rounded-xl border border-slate-800 shadow">
+                        <div class="text-xs text-cyan-400 font-mono mb-1">Found inside @${post.authorUID} stream:</div>
+                        <p class="text-slate-300 text-xs line-clamp-2">${post.content}</p>
+                    </div>
+                `;
+            });
         }
 
-        // Subscription Open Close
-        function openSubModal() { document.getElementById('sub-modal').classList.remove('hidden'); }
-        function closeSubModal() { document.getElementById('sub-modal').classList.add('hidden'); }
-        
-        function activateFreePremium() {
-            document.getElementById('verified-tick').classList.remove('hidden');
-            document.getElementById('profile-card').className += " glow-premium border-sky-400";
-            document.getElementById('pfp-frame').className += " border-amber-400 ring-4 ring-sky-300 animate-pulse";
-            closeSubModal();
-            alert("Premium Activated! Profile color glowing, Frames added, and Verified Blue Tick assigned!");
+        // Apply Premium Customization Styles Live Ecosystem
+        function applyPremiumStyle(type, target) {
+            const card = document.getElementById('profile-card');
+            const pfpRing = document.getElementById('pfp-container');
+            const nameText = document.getElementById('profile-name-display');
+
+            if(type === 'glow') {
+                card.className = "bg-darkcard p-5 rounded-2xl border text-center relative transition duration-300";
+                card.classList.remove('glow-cyan', 'glow-pink', 'glow-purple', 'glow-green', 'border-slate-800');
+                card.classList.add(`glow-${target}`, `border-${target}-500`);
+            }
+            if(type === 'font') {
+                nameText.className = `text-xl font-bold text-slate-100 flex justify-center items-center gap-1 ${target}`;
+            }
+            if(type === 'frame') {
+                pfpRing.className = "w-24 h-24 mx-auto rounded-full p-1 mb-3 transition duration-300 " + target;
+            }
+            if(type === 'tick') {
+                document.getElementById('verified-tick').classList.remove('hidden');
+                appPosts.forEach(post => { if(post.authorUID === profileState.uid) post.isVerified = true; });
+                renderFeeds();
+            }
         }
     </script>
 </body>
