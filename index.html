@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stardust Hub - Professional Matrix</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Stardust Hub - Professional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -26,11 +25,13 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         
+        /* Premium Soft Light Themes */
         .theme-soft-cyan { background-image: linear-gradient(135deg, #0b1528 70%, #083344 100%) !important; border-color: #06b6d4 !important; }
         .theme-soft-pink { background-image: linear-gradient(135deg, #0b1528 70%, #4c0519 100%) !important; border-color: #f43f5e !important; }
         .theme-soft-purple { background-image: linear-gradient(135deg, #0b1528 70%, #3b0764 100%) !important; border-color: #a855f7 !important; }
         .theme-soft-emerald { background-image: linear-gradient(135deg, #0b1528 70%, #022c22 100%) !important; border-color: #10b981 !important; }
 
+        /* Premium Fonts for VIP Users */
         .vip-font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
         .vip-font-mono { font-family: 'Fira Code', Courier, monospace; letter-spacing: -0.5px; }
         .vip-font-display { font-family: 'Impact', sans-serif; tracking: 1px; }
@@ -41,26 +42,56 @@
     <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center p-6 bg-darkbg z-50">
         <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl">
             <h1 class="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">STARDUST</h1>
-            <p class="text-slate-500 text-xs mb-8">Secure Access Matrix via Google</p>
-            
-            <div class="flex justify-center w-full">
-                <div id="g_id_onload"
-                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleGoogleAuthResponse"
-                     data-auto_select="false">
+            <p class="text-slate-500 text-xs mb-8">Secure Access Portal</p>
+            <button onclick="triggerGoogleOAuthFlow()" class="w-full flex items-center justify-center space-x-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 px-4 rounded-xl transition duration-200">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22-.03-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span class="text-sm font-semibold">Access with Google Account</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="google-oauth-modal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-white text-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl border border-slate-200">
+            <div class="flex flex-col items-center text-center">
+                <svg class="w-10 h-10 mb-3" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22-.03-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <h2 class="text-xl font-semibold text-slate-900">Sign in with Google</h2>
+                <p class="text-xs text-slate-500 mt-1">to continue to <span class="font-bold text-blue-600">Stardust Hub</span></p>
+                
+                <div class="w-full mt-6 space-y-2" id="oauth-account-selector">
+                    <button onclick="executeGoogleLogin('Zishan', 'zishan.dev@gmail.com', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150')" class="w-full flex items-center p-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition duration-150 text-left">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-8 h-8 rounded-full mr-3 object-cover">
+                        <div>
+                            <div class="text-sm font-medium text-slate-800">Zishan</div>
+                            <div class="text-xs text-slate-500">zishan.dev@gmail.com</div>
+                        </div>
+                    </button>
+                    <button onclick="executeGoogleLogin('Guest User', 'guest.stardust@gmail.com', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100')" class="w-full flex items-center p-3 hover:bg-slate-50 border border-slate-200 rounded-xl transition duration-150 text-left">
+                        <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-8 h-8 rounded-full mr-3 object-cover">
+                        <div>
+                            <div class="text-sm font-medium text-slate-800">Guest User</div>
+                            <div class="text-xs text-slate-500">guest.stardust@gmail.com</div>
+                        </div>
+                    </button>
                 </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="pill"
-                     data-theme="filled_blue"
-                     data-text="signin_with"
-                     data-size="large"
-                     data-logo_alignment="left">
+
+                <div id="oauth-loading-state" class="hidden flex flex-col items-center py-6">
+                    <svg class="animate-spin h-8 w-8 text-blue-600 mb-3" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-xs text-slate-500 font-medium">Authenticating credentials...</p>
                 </div>
             </div>
-            <p class="text-[10px] text-slate-600 mt-6">Note: Replace YOUR_GOOGLE_CLIENT_ID with your actual Google Cloud Console Client ID to activate complete production handshake.</p>
         </div>
     </div>
 
@@ -74,24 +105,23 @@
         </header>
 
         <main class="flex-1 overflow-y-auto px-4 py-3 custom-scrollbar">
+
             <section id="home-screen" class="space-y-4">
                 <div id="posts-feed" class="space-y-4"></div>
             </section>
 
             <section id="chat-screen" class="hidden space-y-4">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Active Handshakes</h2>
+                    <h2 class="text-lg font-bold text-slate-300">Active Handshakes</h2>
                     <div class="relative">
                         <button onclick="toggleElement('chat-menu')" class="text-slate-400 p-2 bg-darkcard rounded-xl border border-slate-800">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                         </button>
-                        <div id="chat-menu" class="hidden absolute right-0 mt-2 w-48 bg-darkcard border border-slate-800 rounded-xl shadow-2xl z-50 text-xs py-1">
-                            <button onclick="switchChatSubView('chats')" class="w-full text-left px-4 py-2.5 hover:bg-slate-800 transition">
-                                Open Conversations
-                            </button>
-                            <button onclick="switchChatSubView('requests')" class="w-full text-left px-4 py-2.5 hover:bg-slate-800 transition flex justify-between items-center border-t border-slate-800/60">
+                        <div id="chat-menu" class="hidden absolute right-0 mt-2 w-48 bg-darkcard border border-slate-800 rounded-xl shadow-2xl z-50 text-xs">
+                            <button onclick="openModal('group-modal')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition">Assemble Group Channel</button>
+                            <button onclick="switchChatSubView('requests')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition border-t border-slate-800 flex justify-between items-center">
                                 <span>Incoming Requests</span>
-                                <span id="request-badge-count" class="bg-red-600 text-white font-bold rounded-full text-[10px] px-1.5 hidden">0</span>
+                                <span id="request-badge-count" class="bg-red-600 text-white font-bold rounded-full px-1.5 hidden">0</span>
                             </button>
                         </div>
                     </div>
@@ -104,13 +134,16 @@
             </section>
 
             <section id="search-screen" class="hidden space-y-4">
-                <input type="text" id="search-input" oninput="handleUnifiedSearch()" placeholder="Search users by username or account details..." class="w-full px-4 py-3 bg-darkcard border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-700 transition">
+                <input type="text" id="search-input" oninput="handleUnifiedSearch()" placeholder="Search publications, hash, or specific user ID..." class="w-full px-4 py-3 bg-darkcard border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-700 transition">
                 <div id="search-results-grid" class="space-y-3"></div>
             </section>
 
             <section id="profile-screen" class="hidden space-y-4">
                 <div id="premium-banner" class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-4 cursor-pointer border border-blue-600 shadow-xl" onclick="openModal('subscription-modal')">
-                    <h4 class="text-sm font-bold text-slate-100">Unlock Suite Configuration</h4>
+                    <h4 class="text-sm font-bold text-slate-100 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <span>Unlock Suite Configuration</span>
+                    </h4>
                     <p class="text-[11px] text-blue-200 mt-0.5">Deploy soft themes, typography matrix and verified identity.</p>
                 </div>
                 
@@ -127,11 +160,12 @@
                         <div id="profile-frame-wrapper" class="w-20 h-20 rounded-full p-0.5 border border-slate-700 mb-3">
                             <img id="profile-display-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-full h-full object-cover rounded-full">
                         </div>
-                        <h3 class="text-base font-bold text-slate-100 flex items-center justify-center gap-1">
+                        <h3 class="text-base font-bold text-slate-100 flex items-center gap-1.5 justify-center">
                             <span id="profile-display-name">Stardust</span>
-                            <span id="profile-display-badge" class="hidden text-cyan-400 bg-cyan-500/10 px-1 rounded text-[10px] tracking-tighter border border-cyan-500/20 font-black">PRO</span>
+                            <span id="profile-display-badge" class="hidden text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded text-[10px] tracking-tighter border border-cyan-500/20 font-black">PRO</span>
                         </h3>
                         <p id="profile-display-uid" class="text-xs text-slate-500 font-mono mt-0.5">@uid_stardust</p>
+                        <span id="profile-display-profession" class="text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full mt-2 border border-slate-700 hidden">Not Specified</span>
                         <p id="profile-display-bio" class="text-xs text-slate-400 mt-3 max-w-xs leading-relaxed">System initialization complete.</p>
                     </div>
                 </div>
@@ -144,13 +178,13 @@
         </main>
 
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-darkcard/95 backdrop-blur-md border-t border-slate-900 h-16 flex justify-around items-center px-2 z-40">
-            <button onclick="switchTab('home')" class="nav-btn text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
-            <button onclick="switchTab('chat')" class="nav-btn text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative">
+            <button onclick="switchTab('home')" class="text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
+            <button onclick="switchTab('chat')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 <span id="global-unseen-badge" class="absolute top-2 right-6 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
-            <button onclick="switchTab('search')" class="nav-btn text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
-            <button onclick="switchTab('profile')" class="nav-btn text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></button>
+            <button onclick="switchTab('search')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+            <button onclick="switchTab('profile')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></button>
         </nav>
     </div>
 
@@ -161,15 +195,34 @@
                 <button onclick="closeModal('settings-hub-modal')" class="text-slate-500 hover:text-white">✕</button>
             </div>
             <div class="space-y-2 overflow-y-auto flex-1 pr-1 custom-scrollbar">
-                <button onclick="executeLogout()" class="w-full bg-red-950/40 border border-red-900/40 text-left p-3.5 rounded-xl text-xs font-bold text-red-400 flex justify-between hover:bg-red-900/30 transition"><span>Terminate Session (Reset All)</span><span>⇥</span></button>
+                <button onclick="openSubSettingPage('edit-profile')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Edit Core Profile</span><span>→</span></button>
+                <button onclick="openSubSettingPage('history')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Audit Logs (History)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('liked')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Appreciated Stream (Likes)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('commented')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Discussions (Comments)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('saved')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Archived Collection (Saved)</span><span>→</span></button>
+                <button onclick="executeLogout()" class="w-full bg-red-950/40 border border-red-900/40 text-left p-3.5 rounded-xl text-xs font-bold text-red-400 flex justify-between hover:bg-red-900/30 transition"><span>Terminate Current Session</span><span>⇥</span></button>
             </div>
+            <div class="text-center pt-6 border-t border-slate-800/60 mt-4">
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-slate-600 via-slate-400 to-slate-600">Made by Zishan</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="subsetting-view-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm h-[85vh] rounded-3xl border border-slate-800 p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 id="subsetting-title" class="text-xs font-bold uppercase tracking-widest text-cyan-400">Panel</h3>
+                <button onclick="closeModal('subsetting-view-modal'); openModal('settings-hub-modal');" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-2.5 py-1 rounded-lg">Back</button>
+            </div>
+            
+            <div id="subsetting-dynamic-body" class="flex-1 overflow-y-auto my-4 custom-scrollbar text-xs"></div>
         </div>
     </div>
 
     <div id="post-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-darkcard w-full max-w-sm rounded-2xl border border-slate-800 p-5 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Draft Content Transmission</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Draft Content</h3>
                 <button onclick="closeModal('post-modal')" class="text-slate-500 hover:text-white">✕</button>
             </div>
             <textarea id="post-input-text" placeholder="Formulate transmission narrative..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
@@ -183,7 +236,13 @@
                     <option value="vip-font-display">Impact Maximum Weight</option>
                 </select>
             </div>
-            <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Global Broadcast</button>
+
+            <div class="mb-4">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Media Layer</label>
+                <input type="file" id="post-input-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 file:cursor-pointer">
+            </div>
+
+            <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Broadcast</button>
         </div>
     </div>
 
@@ -191,7 +250,27 @@
         <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-6 shadow-2xl text-center">
             <h3 class="text-lg font-black text-slate-100 tracking-wide">Premium Membership Suite</h3>
             <p class="text-xs text-slate-500 mt-1">Acquire elevated configuration status instantly</p>
-            <div class="flex gap-2 mt-4">
+            
+            <div class="bg-slate-800/50 rounded-2xl border border-slate-800 p-4 my-5 text-left text-xs space-y-2.5 text-slate-300">
+                <div class="flex items-center gap-2">
+                    <svg class="w-3 h-3 text-cyan-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Ecosystem-wide profile background accent glow controls</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-3 h-3 text-cyan-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Custom high-fidelity typography selection matrices</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-3 h-3 text-cyan-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Regal frame loops assigned to personal user avatars</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg class="w-3 h-3 text-cyan-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Cryptographic security status badge (Verified Badge)</span>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
                 <button onclick="closeModal('subscription-modal')" class="flex-1 bg-slate-800 py-2.5 rounded-xl text-xs font-bold text-slate-400">Dismiss</button>
                 <button onclick="handleSubscriptionActivation()" class="flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 rounded-xl text-xs font-black text-white">Initialize Setup Tier</button>
             </div>
@@ -214,6 +293,28 @@
                         <button onclick="executePremiumTweak('theme', 'theme-soft-emerald')" class="bg-slate-800 border border-emerald-500/30 p-2.5 rounded-xl font-medium text-emerald-400">Soft Light Emerald</button>
                     </div>
                 </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Identity Card Typography</label>
+                    <div class="space-y-2">
+                        <button onclick="executePremiumTweak('font', 'font-default')" class="w-full bg-slate-800 p-2 rounded-lg text-left font-default">System Neutral</button>
+                        <button onclick="executePremiumTweak('font', 'vip-font-serif')" class="w-full bg-slate-800 p-2 rounded-lg text-left vip-font-serif">PlayfairLuxury Italics</button>
+                        <button onclick="executePremiumTweak('font', 'vip-font-mono')" class="w-full bg-slate-800 p-2 rounded-lg text-left vip-font-mono">Fira Terminal Bold</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Avatar Frame Ring Assembly</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="executePremiumTweak('frame', 'border-2 border-amber-500 shadow-lg')" class="bg-slate-800 p-2 rounded-lg">Polished Gold Loop</button>
+                        <button onclick="executePremiumTweak('frame', 'border-2 border-cyan-500 shadow-md')" class="bg-slate-800 p-2 rounded-lg">Cyber Quantum Frame</button>
+                    </div>
+                </div>
+                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <span class="block font-bold">Cryptographic Identity Badge</span>
+                        <span class="text-[9px] text-slate-500">Inject identity status marker across ecosystem feeds.</span>
+                    </div>
+                    <button onclick="executePremiumTweak('badge', true)" class="bg-cyan-500 text-white text-[10px] px-3 py-1.5 rounded-xl font-black">Inject</button>
+                </div>
             </div>
         </div>
     </div>
@@ -227,25 +328,65 @@
                     <p id="chat-window-uid" class="text-[9px] text-slate-500 font-mono"></p>
                 </div>
             </div>
-            <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Close Hub</button>
+            <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Terminate</button>
         </header>
         
         <div id="chat-messages-stream" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar text-xs flex flex-col"></div>
         
         <footer class="p-3 bg-darkcard border-t border-slate-900 flex items-center space-x-2">
-            <input type="text" id="chat-input-field" placeholder="Formulate stream message..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
+            <label class="bg-slate-800 p-2 rounded-xl border border-slate-700 cursor-pointer text-xs shrink-0 flex items-center justify-center">
+                <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.415a6 6 0 108.486 8.486L20.5 13"/></svg>
+                <input type="file" id="chat-file-input" accept="image/*" class="hidden" onchange="processDirectChatFile()">
+            </label>
+            <input type="text" id="chat-input-field" placeholder="Formulate stream packet data..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
             <button onclick="dispatchDirectMessage()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-xs font-bold shrink-0">Send</button>
         </footer>
     </div>
 
+    <div id="expanded-post-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 flex flex-col max-h-[85vh] p-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Inspection Node</span>
+                <button onclick="closeModal('expanded-post-modal')" class="text-slate-400 text-xs bg-slate-800 px-2.5 py-1 rounded-lg">Terminate</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4" id="expanded-post-payload"></div>
+        </div>
+    </div>
+
+    <div id="share-distribution-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-5 flex flex-col max-h-[60vh]">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Internal Route Dispatcher</h3>
+            <input type="text" id="share-peer-search" oninput="filterShareDistributionGrid()" placeholder="Filter routing pipelines..." class="w-full px-3 py-2 text-xs bg-darkbg border border-slate-800 rounded-xl focus:outline-none mb-3">
+            
+            <div id="share-distribution-peers-grid" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <div id="group-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-2xl border border-slate-800 p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Assemble Channel Architecture</h3>
+                <button onclick="closeModal('group-modal')" class="text-slate-500 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <input type="text" id="group-name-input" placeholder="Channel Identification Handle..." class="w-full p-2.5 bg-darkbg border border-slate-800 rounded-xl focus:outline-none">
+                <button onclick="processGroupGeneration()" class="w-full bg-cyan-600 font-bold py-2 rounded-xl">Execute Compilation</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Core Simulated Global Database Structure Matrix
+        // System Data Records Blueprint
+        const FIXED_PROFESSIONS = ["Architect", "Software Engineer", "Systems Analyst", "Cybersecurity Specialist", "Creative Designer", "Content Publisher", "Data Architect", "Independent Creator", "Student Technical Associate"];
+        
         let databaseState = {
             currentUser: {
                 name: "Stardust Base",
                 uid: "uid_stardust",
-                bio: "System workspace initialization active.",
+                bio: "System initialization complete.",
                 pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+                profession: "",
                 isPremium: false,
                 premiumTheme: "",
                 premiumFont: "font-default",
@@ -258,98 +399,95 @@
                     authorName: "Alpha Operator",
                     authorUID: "operator_alpha",
                     authorPic: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100",
-                    content: "Ecosystem processing channels active globally. All nodes synchronized inside Stardust workspace.",
+                    content: "Ecosystem processing channels active. Formulate custom nodes inside Stardust workspace.",
+                    media: "",
+                    views: 42,
                     likes: [],
+                    comments: [],
+                    saves: [],
                     fontClass: "font-default"
                 }
             ],
             peers: [
-                { uid: "operator_alpha", name: "Alpha Operator", pfp: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", bio: "Core cluster system administrator." },
-                { uid: "beta_node", name: "Beta Node", pfp: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", bio: "Distributed technical component matrix." },
-                { uid: "zishan_dev", name: "Zishan Developer", pfp: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", bio: "Senior Matrix Architecture Designer." }
+                { uid: "operator_alpha", name: "Alpha Operator", pfp: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", bio: "Core system administrator.", profession: "Systems Analyst", posts: [] },
+                { uid: "beta_node", name: "Beta Node", pfp: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", bio: "Distributed computational element.", profession: "Data Architect", posts: [] }
             ],
             friendships: [], 
             chatThreads: {}, 
-            botInitialized: false,
-            activeTargetChatUID: null
+            auditLogs: [],
+            activeTargetChatUID: null,
+            activeTargetPostShareID: null
         };
 
-        // Local Persistence Pipelines
+        // Storage Integration & State Recovery
         function saveStateToHardware() {
-            localStorage.setItem("STARDUST_CORE_DB_PERSISTED", JSON.stringify(databaseState));
+            localStorage.setItem("STARDUST_CORE_DB", JSON.stringify(databaseState));
         }
 
         function recoverStateFromHardware() {
-            const raw = localStorage.getItem("STARDUST_CORE_DB_PERSISTED");
+            const raw = localStorage.getItem("STARDUST_CORE_DB");
             if (raw) {
                 try {
                     databaseState = JSON.parse(raw);
                 } catch(e) {
-                    console.error("Hardware decryption structural recovery failed.");
+                    console.error("Hardware decryption packet loss. Initializing standard matrix.");
                 }
             }
         }
 
-        // JWT Token Parser Helper to decrypt Google Sign-In response
-        function decodeJwtResponse(token) {
-            let base64Url = token.split('.')[1];
-            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
+        // Trigger Google Modal Simulator Flow
+        function triggerGoogleOAuthFlow() {
+            document.getElementById('oauth-account-selector').classList.remove('hidden');
+            document.getElementById('oauth-loading-state').classList.add('hidden');
+            document.getElementById('google-oauth-modal').classList.remove('hidden');
         }
 
-        // Google Authentication Response Engine
-        function handleGoogleAuthResponse(response) {
-            const responsePayload = decodeJwtResponse(response.credential);
-            
-            // Extract profile metadata securely
-            const googleUID = "g_" + responsePayload.sub.substring(0, 10);
-            const googleName = responsePayload.name;
-            const googlePicture = responsePayload.picture;
+        // Real Looking OAuth Login Processor 
+        function executeGoogleLogin(selectedName, selectedEmail, selectedAvatar) {
+            document.getElementById('oauth-account-selector').classList.add('hidden');
+            document.getElementById('oauth-loading-state').classList.remove('hidden');
 
-            databaseState.currentUser.uid = googleUID;
-            databaseState.currentUser.name = googleName;
-            databaseState.currentUser.pfp = googlePicture;
-            databaseState.currentUser.bio = "Authenticated secure Google profile pipeline node.";
-            
-            // Sync with searchable peer database matrix
-            const peerExist = databaseState.peers.find(p => p.uid === googleUID);
-            if(!peerExist) {
-                databaseState.peers.push({
-                    uid: googleUID,
-                    name: googleName,
-                    pfp: googlePicture,
-                    bio: databaseState.currentUser.bio
-                });
-            }
+            setTimeout(() => {
+                databaseState.currentUser.name = selectedName;
+                databaseState.currentUser.uid = selectedEmail.split('@')[0];
+                databaseState.currentUser.pfp = selectedAvatar;
+                databaseState.currentUser.bio = "Authenticated secure session profile node.";
 
-            // Ensure Bot Request triggers only once globally
-            if (!databaseState.botInitialized) {
-                const hasBotRequest = databaseState.friendships.some(f => f.peerUID === 'operator_alpha');
-                if (!hasBotRequest) {
-                    databaseState.friendships.push({ peerUID: 'operator_alpha', status: 'received' });
-                }
-                databaseState.botInitialized = true;
-            }
+                document.getElementById('google-oauth-modal').classList.add('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-layout').classList.remove('hidden');
 
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-layout').classList.remove('hidden');
-            
+                logEvent("Session verified via Google Authentication protocols dynamically.");
+                syncProfileUI();
+                renderCoreTimeline();
+            }, 1800);
+        }
+
+        function executeLogout() {
+            localStorage.removeItem("STARDUST_CORE_DB");
+            window.location.reload();
+        }
+
+        function logEvent(description) {
+            databaseState.auditLogs.unshift({ timestamp: new Date().toLocaleTimeString(), desc: description });
             saveStateToHardware();
-            syncProfileUI();
-            renderCoreTimeline();
-            updateRequestBadge();
         }
 
-        // Profile Interface Architecture
+        // Profile UI Syncer
         function syncProfileUI() {
             const user = databaseState.currentUser;
             document.getElementById('profile-display-name').textContent = user.name;
             document.getElementById('profile-display-uid').textContent = "@" + user.uid;
             document.getElementById('profile-display-bio').textContent = user.bio;
             document.getElementById('profile-display-avatar').src = user.pfp;
+            
+            const profBadge = document.getElementById('profile-display-profession');
+            if(user.profession) {
+                profBadge.textContent = user.profession;
+                profBadge.classList.remove('hidden');
+            } else {
+                profBadge.classList.add('hidden');
+            }
 
             const badge = document.getElementById('profile-display-badge');
             const banner = document.getElementById('premium-banner');
@@ -362,56 +500,86 @@
                 configBtn.classList.remove('hidden');
                 if(user.hasVerifiedBadge) badge.classList.remove('hidden');
                 card.className = "bg-darkcard p-5 rounded-2xl border text-center relative transition-all duration-300 " + (user.premiumTheme || "border-slate-800");
-                frame.className = "w-20 h-20 rounded-full p-0.5 mb-3 mx-auto " + (user.premiumFrame || "border border-slate-700");
+                frame.className = "w-20 h-20 rounded-full p-0.5 mb-3 mx-auto object-cover " + (user.premiumFrame || "border border-slate-700");
+                document.getElementById('profile-display-name').className = "text-base font-bold text-slate-100 flex items-center gap-1.5 justify-center " + user.premiumFont;
             } else {
-                banner.classList.remove('hidden');
+                banner.className = "bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-4 cursor-pointer border border-blue-600 shadow-xl";
                 configBtn.classList.add('hidden');
                 badge.classList.add('hidden');
                 card.className = "bg-darkcard p-5 rounded-2xl border border-slate-800 relative text-center";
                 frame.className = "w-20 h-20 rounded-full p-0.5 border border-slate-700 mb-3 mx-auto";
+                document.getElementById('profile-display-name').className = "text-base font-bold text-slate-100 flex items-center gap-1.5 justify-center font-default";
             }
-            renderPersonalLedger();
         }
 
-        // Navigation Controller
+        // Tab Navigation Architecture
         function switchTab(screenId) {
             const screens = ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'];
             screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(`${screenId}-screen`).classList.remove('hidden');
-
-            const navButtons = document.querySelectorAll('.nav-btn');
+            
+            const navButtons = document.querySelectorAll('nav button');
             navButtons.forEach(btn => btn.classList.replace('text-cyan-400', 'text-slate-500'));
             event.currentTarget.classList.replace('text-slate-500', 'text-cyan-400');
 
-            if(screenId === 'chat') renderChatViewChannels();
-            if(screenId === 'home') renderCoreTimeline();
+            const header = document.getElementById('global-header');
+            if(screenId === 'home') header.classList.remove('hidden');
+            else header.classList.add('hidden');
+
+            if(screenId === 'chat') syncChatGrid();
+            if(screenId === 'profile') renderPersonalFeed();
         }
 
-        // Global Timeline Broadcast Engine
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function toggleElement(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        // Timeline Feed Engine
         function renderCoreTimeline() {
             const container = document.getElementById('posts-feed');
-            container.innerHTML = "";
-
-            if(databaseState.publications.length === 0) {
-                container.innerHTML = `<div class="text-center text-xs text-slate-600 py-8">No current global data packets streamed yet.</div>`;
-                return;
-            }
+            container.innerHTML = '';
 
             databaseState.publications.forEach(post => {
+                const isLiked = post.likes.includes(databaseState.currentUser.uid);
+                const isSaved = post.saves.includes(databaseState.currentUser.uid);
+
                 const card = document.createElement('div');
-                card.className = "bg-darkcard p-4 rounded-2xl border border-slate-800/80 space-y-3";
+                card.className = "bg-darkcard p-4 rounded-2xl border border-slate-900 shadow-sm space-y-3";
                 card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <img src="${post.authorPic}" class="w-7 h-7 rounded-full object-cover">
-                        <div>
-                            <span class="text-xs font-bold block">${post.authorName}</span>
-                            <span class="text-[9px] text-slate-500 font-mono">@${post.authorUID}</span>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <img src="${post.authorPic}" class="w-8 h-8 rounded-full object-cover border border-slate-700">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-200">${post.authorName}</h4>
+                                <p class="text-[10px] text-slate-500 font-mono">@${post.authorUID}</p>
+                            </div>
                         </div>
+                        <span class="text-[9px] bg-slate-800 text-slate-500 border border-slate-700/60 px-2 py-0.5 rounded-md font-mono">ID: ${post.id}</span>
                     </div>
-                    <p class="text-xs text-slate-200 leading-relaxed ${post.fontClass || 'font-default'}">${post.content}</p>
-                    <div class="flex items-center pt-2 border-t border-slate-900/60 text-slate-500 text-[11px]">
-                        <button onclick="toggleLike(${post.id})" class="flex items-center space-x-1 hover:text-red-400 transition ${post.likes.includes(databaseState.currentUser.uid) ? 'text-red-500' : ''}">
-                            <span>♥</span> <span>${post.likes.length}</span>
+                    <p class="text-xs text-slate-300 leading-relaxed ${post.fontClass || 'font-default'}">${post.content}</p>
+                    ${post.media ? `<img src="${post.media}" class="w-full h-40 object-cover rounded-xl border border-slate-800">` : ''}
+                    <div class="flex items-center justify-between border-t border-slate-800/60 pt-2.5 text-slate-400">
+                        <button onclick="interactPost(${post.id}, 'like')" class="flex items-center space-x-1.5 hover:text-red-400 transition ${isLiked ? 'text-red-500' : ''}">
+                            <svg class="w-4 h-4" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            <span class="text-[10px] font-bold">${post.likes.length}</span>
+                        </button>
+                        <button onclick="launchExpandedPostInspector(${post.id})" class="flex items-center space-x-1.5 hover:text-blue-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <span class="text-[10px] font-bold">${post.comments.length}</span>
+                        </button>
+                        <button onclick="initiateInternalRouting(${post.id})" class="hover:text-cyan-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.684-2.342m0 5.2l-4.684-2.342M19 12a3 3 0 11-6 0 3 3 0 016 0zM6 7a3 3 0 11-6 0 3 3 0 016 0zM6 17a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </button>
+                        <button onclick="interactPost(${post.id}, 'save')" class="hover:text-yellow-400 transition ${isSaved ? 'text-yellow-500' : ''}">
+                            <svg class="w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                         </button>
                     </div>
                 `;
@@ -419,340 +587,459 @@
             });
         }
 
-        function renderPersonalLedger() {
-            const container = document.getElementById('profile-personal-posts');
-            container.innerHTML = "";
-            const personal = databaseState.publications.filter(p => p.authorUID === databaseState.currentUser.uid);
-
-            if(personal.length === 0) {
-                container.innerHTML = `<div class="text-center text-xs text-slate-600 py-4">Your processed nodes pool is empty.</div>`;
-                return;
-            }
-
-            personal.forEach(post => {
-                const item = document.createElement('div');
-                item.className = "bg-darkcard/40 p-3 rounded-xl border border-slate-800/60 text-xs";
-                item.innerHTML = `<p class="text-slate-300">${post.content}</p>`;
-                container.appendChild(item);
-            });
-        }
-
+        // Post Generation Controller
         function processPublicationInit() {
             const txt = document.getElementById('post-input-text').value.trim();
-            const fontSel = document.getElementById('vip-post-font-select').value;
-            if(!txt) return;
+            const font = document.getElementById('vip-post-font-select').value;
+            const fileInput = document.getElementById('post-input-file');
 
-            const packet = {
-                id: Date.now(),
-                authorName: databaseState.currentUser.name,
-                authorUID: databaseState.currentUser.uid,
-                authorPic: databaseState.currentUser.pfp,
-                content: txt,
-                likes: [],
-                fontClass: databaseState.currentUser.isPremium ? fontSel : "font-default"
+            if(!txt) return alert("Narrative array cannot be blank.");
+
+            const injectPost = (mediaBase64 = "") => {
+                const newPost = {
+                    id: Date.now(),
+                    authorName: databaseState.currentUser.name,
+                    authorUID: databaseState.currentUser.uid,
+                    authorPic: databaseState.currentUser.pfp,
+                    content: txt,
+                    media: mediaBase64,
+                    views: 1,
+                    likes: [],
+                    comments: [],
+                    saves: [],
+                    fontClass: databaseState.currentUser.isPremium ? font : "font-default"
+                };
+
+                databaseState.publications.unshift(newPost);
+                logEvent(`Dispatched network block node data packet ID ${newPost.id}`);
+                document.getElementById('post-input-text').value = '';
+                fileInput.value = '';
+                closeModal('post-modal');
+                renderCoreTimeline();
             };
 
-            databaseState.publications.unshift(packet);
-            document.getElementById('post-input-text').value = "";
-            closeModal('post-modal');
+            if(fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) { injectPost(e.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                injectPost();
+            }
+        }
+
+        // Publications State Interactions Switch
+        function interactPost(id, type) {
+            const post = databaseState.publications.find(p => p.id === id);
+            const userUID = databaseState.currentUser.uid;
+            if(!post) return;
+
+            if(type === 'like') {
+                if(post.likes.includes(userUID)) post.likes = post.likes.filter(uid => uid !== userUID);
+                else post.likes.push(userUID);
+            }
+            if(type === 'save') {
+                if(post.saves.includes(userUID)) post.saves = post.saves.filter(uid => uid !== userUID);
+                else post.saves.push(userUID);
+            }
+
             saveStateToHardware();
             renderCoreTimeline();
+            if(document.getElementById('profile-screen').classList.contains('hidden') === false) renderPersonalFeed();
         }
 
-        function toggleLike(id) {
-            const post = databaseState.publications.find(p => p.id === id);
-            if(post) {
-                const uIdx = post.likes.indexOf(databaseState.currentUser.uid);
-                if(uIdx > -1) post.likes.splice(uIdx, 1);
-                else post.likes.push(databaseState.currentUser.uid);
-                saveStateToHardware();
-                renderCoreTimeline();
-            }
-        }
-
-        // Search Interface System Logic
-        function handleUnifiedSearch() {
-            const query = document.getElementById('search-input').value.trim().toLowerCase();
-            const grid = document.getElementById('search-results-grid');
-            grid.innerHTML = "";
-
-            if(!query) return;
-
-            const matches = databaseState.peers.filter(p => 
-                p.uid.toLowerCase().includes(query) || 
-                p.name.toLowerCase().includes(query)
-            );
-
-            if(matches.length === 0) {
-                grid.innerHTML = `<div class="text-center text-xs text-slate-600 py-4">No matching identity handle found.</div>`;
-                return;
-            }
-
-            matches.forEach(peer => {
-                if(peer.uid === databaseState.currentUser.uid) return;
-                
-                const rel = databaseState.friendships.find(f => f.peerUID === peer.uid);
-                let btnHtml = "";
-
-                if(!rel) {
-                    btnHtml = `<button onclick="sendHandshakeRequest('${peer.uid}')" class="bg-blue-600 text-white font-bold px-3 py-1 rounded-lg">Connect</button>`;
-                } else if(rel.status === 'requested') {
-                    btnHtml = `<span class="text-slate-500 font-medium">Pending...</span>`;
-                } else if(rel.status === 'received') {
-                    btnHtml = `<button onclick="acceptHandshake('${peer.uid}')" class="bg-emerald-600 text-white font-bold px-3 py-1 rounded-lg">Accept</button>`;
-                } else {
-                    btnHtml = `<button onclick="launchChatWindow('${peer.uid}')" class="bg-slate-800 border border-slate-700 text-cyan-400 font-bold px-3 py-1 rounded-lg">Chat</button>`;
-                }
-
-                const block = document.createElement('div');
-                block.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
-                block.innerHTML = `
+        // Chat View Interface Synchronizer
+        function syncChatGrid() {
+            const activeList = document.getElementById('active-chats-list');
+            activeList.innerHTML = '';
+            
+            databaseState.peers.forEach(peer => {
+                const row = document.createElement('button');
+                row.className = "w-full bg-darkcard/60 hover:bg-darkcard border border-slate-900/60 p-3.5 rounded-xl flex items-center justify-between transition text-left";
+                row.onclick = () => launchDirectChatWindow(peer.uid);
+                row.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <img src="${peer.pfp}" class="w-8 h-8 rounded-full object-cover">
+                        <img src="${peer.pfp}" class="w-9 h-9 object-cover rounded-full border border-slate-800">
                         <div>
-                            <h4 class="font-bold">${peer.name}</h4>
+                            <h4 class="text-xs font-bold text-slate-300">${peer.name}</h4>
                             <p class="text-[10px] text-slate-500 font-mono">@${peer.uid}</p>
                         </div>
                     </div>
-                    <div>${btnHtml}</div>
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 `;
-                grid.appendChild(block);
+                activeList.appendChild(row);
             });
         }
 
-        function sendHandshakeRequest(targetUID) {
-            databaseState.friendships.push({ peerUID: targetUID, status: 'requested' });
-            saveStateToHardware();
-            handleUnifiedSearch();
-        }
-
-        function acceptHandshake(targetUID) {
-            const rel = databaseState.friendships.find(f => f.peerUID === targetUID);
-            if(rel) {
-                rel.status = 'friends';
-                saveStateToHardware();
-                if(!document.getElementById('search-screen').classList.contains('hidden')) handleUnifiedSearch();
-                renderChatViewChannels();
-                updateRequestBadge();
-            }
-        }
-
-        // Functional Sub-Views for 3-Dot Options Menu Matrix
-        function switchChatSubView(view) {
-            if(view === 'chats') {
-                document.getElementById('active-chats-list').classList.remove('hidden');
-                document.getElementById('incoming-requests-list').classList.add('hidden');
-            } else if(view === 'requests') {
-                document.getElementById('active-chats-list').classList.add('hidden');
-                document.getElementById('incoming-requests-list').classList.remove('hidden');
-                renderIncomingRequestsChannel();
-            }
-            document.getElementById('chat-menu').classList.add('hidden');
-        }
-
-        function updateRequestBadge() {
-            const incoming = databaseState.friendships.filter(f => f.status === 'received').length;
-            const badge = document.getElementById('request-badge-count');
-            const globalUnseen = document.getElementById('global-unseen-badge');
-            
-            if(incoming > 0) {
-                badge.textContent = incoming;
-                badge.classList.remove('hidden');
-                globalUnseen.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-                globalUnseen.classList.add('hidden');
-            }
-        }
-
-        function renderChatViewChannels() {
-            const activeList = document.getElementById('active-chats-list');
-            activeList.innerHTML = "";
-
-            const friends = databaseState.friendships.filter(f => f.status === 'friends');
-
-            if(friends.length === 0) {
-                activeList.innerHTML = `<div class="text-center text-xs text-slate-600 py-8">No active workspace handshakes established. Use Search tab to connect.</div>`;
-                return;
-            }
-
-            friends.forEach(f => {
-                const peer = databaseState.peers.find(p => p.uid === f.peerUID);
-                if(!peer) return;
-
-                const thread = databaseState.chatThreads[peer.uid] || [];
-                const lastMsg = thread.length > 0 ? thread[thread.length - 1].body : "Pipeline channel established.";
-
-                const card = document.createElement('div');
-                card.className = "bg-darkcard p-3 rounded-xl border border-slate-800 hover:border-slate-700 cursor-pointer flex items-center space-x-3 transition";
-                card.onclick = () => launchChatWindow(peer.uid);
-                card.innerHTML = `
-                    <img src="${peer.pfp}" class="w-9 h-9 rounded-full object-cover">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-center">
-                            <h4 class="text-xs font-bold truncate">${peer.name}</h4>
-                            <span class="text-[9px] text-slate-500 font-mono">@${peer.uid}</span>
-                        </div>
-                        <p class="text-[11px] text-slate-400 truncate mt-0.5">${lastMsg}</p>
-                    </div>
-                `;
-                activeList.appendChild(card);
-            });
-            updateRequestBadge();
-        }
-
-        function renderIncomingRequestsChannel() {
-            const reqList = document.getElementById('incoming-requests-list');
-            reqList.innerHTML = "";
-
-            const incoming = databaseState.friendships.filter(f => f.status === 'received');
-
-            if(incoming.length === 0) {
-                reqList.innerHTML = `<div class="text-center text-xs text-slate-600 py-6">No pending inbound access requests.</div>`;
-                return;
-            }
-
-            incoming.forEach(f => {
-                const peer = databaseState.peers.find(p => p.uid === f.peerUID);
-                if(!peer) return;
-
-                const card = document.createElement('div');
-                card.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <img src="${peer.pfp}" class="w-8 h-8 rounded-full object-cover">
-                        <div>
-                            <h4 class="font-bold">${peer.name}</h4>
-                            <p class="text-[10px] text-slate-500">Wants to pair communication pipeline</p>
-                        </div>
-                    </div>
-                    <button onclick="acceptHandshake('${peer.uid}')" class="bg-emerald-600 font-bold px-3 py-1 rounded-lg text-white">Accept</button>
-                `;
-                reqList.appendChild(card);
-            });
-        }
-
-        // Chat Stream Submodule Engine
-        function launchChatWindow(peerUID) {
+        // Chat Channel Stream Operations
+        function launchDirectChatWindow(peerUID) {
             const peer = databaseState.peers.find(p => p.uid === peerUID);
             if(!peer) return;
 
             databaseState.activeTargetChatUID = peerUID;
-            document.getElementById('chat-window-avatar').src = peer.pfp;
             document.getElementById('chat-window-name').textContent = peer.name;
             document.getElementById('chat-window-uid').textContent = "@" + peer.uid;
+            document.getElementById('chat-window-avatar').src = peer.pfp;
             
-            document.getElementById('chat-window-modal').classList.remove('hidden');
-            renderChatMessagesStream();
+            openModal('chat-window-modal');
+            streamChatMessages();
         }
 
         function closeChatWindow() {
-            document.getElementById('chat-window-modal').classList.add('hidden');
+            closeModal('chat-window-modal');
             databaseState.activeTargetChatUID = null;
-            renderChatViewChannels();
         }
 
-        function renderChatMessagesStream() {
+        function streamChatMessages() {
             const stream = document.getElementById('chat-messages-stream');
-            stream.innerHTML = "";
-            const activeUID = databaseState.activeTargetChatUID;
-            if(!activeUID) return;
-
-            const thread = databaseState.chatThreads[activeUID] || [];
-
-            if(thread.length === 0) {
-                stream.innerHTML = `<div class="text-center text-[10px] text-slate-600 my-auto">Transmission packet trace is clear. Say hello!</div>`;
-                return;
-            }
+            stream.innerHTML = '';
+            const thread = databaseState.chatThreads[databaseState.activeTargetChatUID] || [];
 
             thread.forEach(msg => {
                 const isMe = msg.sender === databaseState.currentUser.uid;
-                const outer = document.createElement('div');
-                outer.className = "flex w-full " + (isMe ? "justify-end" : "justify-start");
+                const envelope = document.createElement('div');
+                envelope.className = `max-w-[75%] p-3 rounded-2xl text-xs mb-2 ${isMe ? 'bg-blue-600 text-white self-end rounded-tr-none' : 'bg-slate-800 text-slate-200 self-start rounded-tl-none'}`;
                 
-                outer.innerHTML = `
-                    <div class="max-w-[75%] p-2.5 rounded-xl break-words ${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700/60'}">
-                        <p>${msg.body}</p>
-                    </div>
-                `;
-                stream.appendChild(outer);
+                if(msg.type === 'text') {
+                    envelope.textContent = msg.body;
+                } else if(msg.type === 'image') {
+                    envelope.innerHTML = `<img src="${msg.body}" class="rounded-lg max-h-40 object-cover w-full">`;
+                }
+
+                stream.appendChild(envelope);
             });
             stream.scrollTop = stream.scrollHeight;
         }
 
         function dispatchDirectMessage() {
             const fld = document.getElementById('chat-input-field');
-            const txt = fld.value.trim();
-            const activeUID = databaseState.activeTargetChatUID;
-            if(!txt || !activeUID) return;
+            const body = fld.value.trim();
+            if(!body) return;
 
-            if(!databaseState.chatThreads[activeUID]) {
-                databaseState.chatThreads[activeUID] = [];
+            if(!databaseState.chatThreads[databaseState.activeTargetChatUID]) {
+                databaseState.chatThreads[databaseState.activeTargetChatUID] = [];
             }
 
-            databaseState.chatThreads[activeUID].push({
+            databaseState.chatThreads[databaseState.activeTargetChatUID].push({
                 sender: databaseState.currentUser.uid,
-                body: txt
+                type: 'text',
+                body: body,
+                timestamp: new Date().toLocaleTimeString()
             });
 
-            fld.value = "";
+            fld.value = '';
             saveStateToHardware();
-            renderChatMessagesStream();
+            streamChatMessages();
+        }
 
-            if(activeUID === 'operator_alpha') {
-                setTimeout(() => {
-                    databaseState.chatThreads['operator_alpha'].push({
-                        sender: 'operator_alpha',
-                        body: "Automated Stardust telemetry packet received successfully. Active connection state stable."
-                    });
-                    saveStateToHardware();
-                    if(databaseState.activeTargetChatUID === 'operator_alpha') renderChatMessagesStream();
-                }, 1000);
+        function processDirectChatFile() {
+            const fileInput = document.getElementById('chat-file-input');
+            if(fileInput.files.length === 0) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(!databaseState.chatThreads[databaseState.activeTargetChatUID]) {
+                    databaseState.chatThreads[databaseState.activeTargetChatUID] = [];
+                }
+                databaseState.chatThreads[databaseState.activeTargetChatUID].push({
+                    sender: databaseState.currentUser.uid,
+                    type: 'image',
+                    body: e.target.result,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                saveStateToHardware();
+                streamChatMessages();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        // Unified Search Query Pipeline
+        function handleUnifiedSearch() {
+            const val = document.getElementById('search-input').value.toLowerCase().trim();
+            const grid = document.getElementById('search-results-grid');
+            grid.innerHTML = '';
+
+            if(!val) return;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.name.toLowerCase().includes(val) || peer.uid.toLowerCase().includes(val)) {
+                    const row = document.createElement('div');
+                    row.className = "bg-darkcard p-3 rounded-xl border border-slate-900 flex items-center justify-between";
+                    row.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <img src="${peer.pfp}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <h5 class="text-xs font-bold text-slate-200">${peer.name}</h5>
+                                <p class="text-[9px] text-slate-500 font-mono">@${peer.uid} • ${peer.profession}</p>
+                            </div>
+                        </div>
+                        <button onclick="launchDirectChatWindow('${peer.uid}')" class="bg-slate-800 text-cyan-400 border border-slate-700 text-[10px] font-bold px-3 py-1.5 rounded-lg">Message</button>
+                    `;
+                    grid.appendChild(row);
+                }
+            });
+        }
+
+        // Personal Profile Ledger Feed Renderer
+        function renderPersonalFeed() {
+            const feed = document.getElementById('profile-personal-posts');
+            feed.innerHTML = '';
+
+            const myPosts = databaseState.publications.filter(p => p.authorUID === databaseState.currentUser.uid);
+            
+            if(myPosts.length === 0) {
+                feed.innerHTML = `<p class="text-[10px] text-center text-slate-600 py-6 uppercase font-bold tracking-widest">No local node elements found.</p>`;
+                return;
+            }
+
+            myPosts.forEach(post => {
+                const elem = document.createElement('div');
+                elem.className = "bg-darkcard/50 p-3.5 rounded-xl border border-slate-900 text-xs relative";
+                elem.innerHTML = `
+                    <p class="text-slate-300 leading-relaxed">${post.content}</p>
+                    <div class="flex gap-4 text-slate-500 text-[10px] mt-2 font-mono">
+                        <span>Likes: ${post.likes.length}</span>
+                        <span>Comments: ${post.comments.length}</span>
+                    </div>
+                `;
+                feed.appendChild(elem);
+            });
+        }
+
+        // Expanded Post Inspector Dialog Modal Mechanics
+        function launchExpandedPostInspector(postId) {
+            const post = databaseState.publications.find(p => p.id === postId);
+            if(!post) return;
+
+            const payload = document.getElementById('expanded-post-payload');
+            payload.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <img src="${post.authorPic}" class="w-8 h-8 rounded-full object-cover">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-300">${post.authorName}</h4>
+                            <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID}</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-200 py-2 leading-relaxed">${post.content}</p>
+                </div>
+                
+                <div class="border-t border-slate-800 pt-3">
+                    <h5 class="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Discussions Node</h5>
+                    <div id="expanded-comments-stream" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar mb-3 pr-1"></div>
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="comment-input-field" placeholder="Append feedback matrix entry..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-[11px] focus:outline-none focus:border-slate-700">
+                        <button onclick="commitCommentNode(${post.id})" class="bg-blue-600 text-white font-bold text-xs px-3 rounded-xl">Inject</button>
+                    </div>
+                </div>
+            `;
+
+            openModal('expanded-post-modal');
+            streamComments(post);
+        }
+
+        function streamComments(post) {
+            const stream = document.getElementById('expanded-comments-stream');
+            stream.innerHTML = '';
+
+            if(post.comments.length === 0) {
+                stream.innerHTML = `<p class="text-[9px] text-slate-600 italic">No network feedback processed yet.</p>`;
+                return;
+            }
+
+            post.comments.forEach(c => {
+                const row = document.createElement('div');
+                row.className = "bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80";
+                row.innerHTML = `
+                    <div class="flex justify-between items-center mb-0.5">
+                        <span class="font-bold text-slate-300 text-[10px]">@${c.user}</span>
+                        <span class="text-[8px] text-slate-600">${c.time}</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px]">${c.body}</p>
+                `;
+                stream.appendChild(row);
+            });
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function commitCommentNode(postId) {
+            const fld = document.getElementById('comment-input-field');
+            const val = fld.value.trim();
+            if(!val) return;
+
+            const post = databaseState.publications.find(p => p.id === postId);
+            if(post) {
+                post.comments.push({
+                    user: databaseState.currentUser.uid,
+                    body: val,
+                    time: new Date().toLocaleTimeString()
+                });
+                saveStateToHardware();
+                streamComments(post);
+                fld.value = '';
+                renderCoreTimeline();
             }
         }
 
-        // Subscriptions & Identity Setup Engine
+        // Subsetting Control Panel Router
+        function openSubSettingPage(type) {
+            closeModal('settings-hub-modal');
+            const title = document.getElementById('subsetting-title');
+            const body = document.getElementById('subsetting-dynamic-body');
+            openModal('subsetting-view-modal');
+
+            if(type === 'edit-profile') {
+                title.textContent = "Edit Core Matrix";
+                body.innerHTML = `
+                    <div class="space-y-3.5">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Display Username</label>
+                            <input type="text" id="edit-name" value="${databaseState.currentUser.name}" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biography Node</label>
+                            <textarea id="edit-bio" class="w-full h-20 bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 resize-none focus:outline-none">${databaseState.currentUser.bio}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ecosystem Profession</label>
+                            <select id="edit-profession" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none">
+                                <option value="">Select Domain Vector...</option>
+                                ${FIXED_PROFESSIONS.map(p => `<option value="${p}" ${databaseState.currentUser.profession === p ? 'selected' : ''}>${p}</option>`).join('')}
+                            </select>
+                        </div>
+                        <button onclick="commitProfileEdits()" class="w-full bg-cyan-600 text-white font-black py-2.5 rounded-xl text-xs transition">Update Matrix Parameters</button>
+                    </div>
+                `;
+            } else if(type === 'history') {
+                title.textContent = "Audit Log History";
+                if(databaseState.auditLogs.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 italic">No environment tracking logs stored.</p>`;
+                    return;
+                }
+                body.innerHTML = `
+                    <div class="space-y-2 font-mono text-[10px]">
+                        ${databaseState.auditLogs.map(log => `
+                            <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800/80">
+                                <span class="text-cyan-500">[${log.timestamp}]</span> ${log.desc}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if(type === 'liked') {
+                title.textContent = "Appreciated Stream Elements";
+                const liked = databaseState.publications.filter(p => p.likes.includes(databaseState.currentUser.uid));
+                if(liked.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 italic">No liked publications recorded.</p>`;
+                    return;
+                }
+                body.innerHTML = liked.map(p => `<div class="bg-slate-900 p-3 rounded-lg mb-2 border border-slate-800">@${p.authorUID}: ${p.content}</div>`).join('');
+            } else if(type === 'saved') {
+                title.textContent = "Archived Collection Grid";
+                const saved = databaseState.publications.filter(p => p.saves.includes(databaseState.currentUser.uid));
+                if(saved.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 italic">No saved posts archived.</p>`;
+                    return;
+                }
+                body.innerHTML = saved.map(p => `<div class="bg-slate-900 p-3 rounded-lg mb-2 border border-slate-800">@${p.authorUID}: ${p.content}</div>`).join('');
+            } else {
+                body.innerHTML = `<p class="text-slate-600 italic">Node tracking data array empty.</p>`;
+            }
+        }
+
+        function commitProfileEdits() {
+            databaseState.currentUser.name = document.getElementById('edit-name').value.trim();
+            databaseState.currentUser.bio = document.getElementById('edit-bio').value.trim();
+            databaseState.currentUser.profession = document.getElementById('edit-profession').value;
+            
+            saveStateToHardware();
+            syncProfileUI();
+            closeModal('subsetting-view-modal');
+            logEvent("Updated system core identity profile node fields.");
+        }
+
+        // Internal Routing Post Share Distribution Architecture
+        function initiateInternalRouting(postId) {
+            databaseState.activeTargetPostShareID = postId;
+            openModal('share-distribution-modal');
+            filterShareDistributionGrid();
+        }
+
+        function filterShareDistributionGrid() {
+            const val = document.getElementById('share-peer-search').value.toLowerCase().trim();
+            const grid = document.getElementById('share-distribution-peers-grid');
+            grid.innerHTML = '';
+
+            databaseState.peers.forEach(peer => {
+                if(!val || peer.name.toLowerCase().includes(val) || peer.uid.toLowerCase().includes(val)) {
+                    const block = document.createElement('div');
+                    block.className = "bg-slate-900 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs";
+                    block.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <img src="${peer.pfp}" class="w-6 h-6 rounded-full object-cover">
+                            <span class="font-bold">${peer.name}</span>
+                        </div>
+                        <button onclick="executeShareRouting('${peer.uid}')" class="bg-blue-600 text-white font-bold text-[10px] px-3 py-1 rounded-lg">Route</button>
+                    `;
+                    grid.appendChild(block);
+                }
+            });
+        }
+
+        function executeShareRouting(peerUID) {
+            const post = databaseState.publications.find(p => p.id === databaseState.activeTargetPostShareID);
+            if(!post) return;
+
+            if(!databaseState.chatThreads[peerUID]) databaseState.chatThreads[peerUID] = [];
+
+            databaseState.chatThreads[peerUID].push({
+                sender: databaseState.currentUser.uid,
+                type: 'text',
+                body: `[SYSTEM TRANSMISSION ROUTE - POST NODE REFERENCE]: "${post.content}" (Dispatched via Core Flow)`,
+                timestamp: new Date().toLocaleTimeString()
+            });
+
+            saveStateToHardware();
+            closeModal('share-distribution-modal');
+            alert(`Packet routed securely to pipeline @${peerUID}`);
+        }
+
+        // Subscriptions Activation Core
         function handleSubscriptionActivation() {
             databaseState.currentUser.isPremium = true;
-            databaseState.currentUser.hasVerifiedBadge = true;
+            logEvent("Membership database configuration upgraded to VIP Matrix.");
             saveStateToHardware();
             syncProfileUI();
             closeModal('subscription-modal');
+            
             document.getElementById('vip-font-selector-container').classList.remove('hidden');
+            openModal('premium-dashboard-modal');
         }
 
         function executePremiumTweak(factor, selectionValue) {
             const user = databaseState.currentUser;
             if(factor === 'theme') user.premiumTheme = selectionValue;
+            if(factor === 'font') user.premiumFont = selectionValue;
+            if(factor === 'frame') user.premiumFrame = selectionValue;
+            if(factor === 'badge') user.hasVerifiedBadge = selectionValue;
+
             saveStateToHardware();
             syncProfileUI();
-            alert("Dynamic premium canvas structural elements injected successfully.");
+            alert("Dynamic parameters updated.");
         }
 
-        function executeLogout() {
-            localStorage.removeItem("STARDUST_CORE_DB_PERSISTED");
-            window.location.reload();
+        function processGroupGeneration() {
+            const handle = document.getElementById('group-name-input').value.trim();
+            if(!handle) return;
+            alert(`Channel sequence [${handle}] successfully compiled.`);
+            closeModal('group-modal');
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleElement(id) { document.getElementById(id).classList.toggle('hidden'); }
-
-        // Bootstrap Core
-        window.addEventListener('DOMContentLoaded', () => {
-            recoverStateFromHardware();
-            // Automatically skip login if user data already exists in hardware cache
-            if (databaseState.currentUser.uid !== "uid_stardust") {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-layout').classList.remove('hidden');
-                if(databaseState.currentUser.isPremium) {
-                    document.getElementById('vip-font-selector-container').classList.remove('hidden');
-                }
-                syncProfileUI();
-                renderCoreTimeline();
-                updateRequestBadge();
-            }
-        });
+        // System Bootstrap Setup Loop
+        recoverStateFromHardware();
+        
+        if(databaseState.friendships.length === 0) {
+            databaseState.friendships.push({ peerUID: 'operator_alpha', status: 'received' });
+        }
     </script>
 </body>
 </html>
