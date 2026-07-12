@@ -38,6 +38,7 @@
         <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl">
             <h1 class="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">STARDUST</h1>
             <p class="text-slate-500 text-xs mb-8">Secure Access Portal Matrix</p>
+            <div id="auth-status-loading" class="text-xs text-cyan-400 mb-4 font-mono hidden">Synchronizing Secure Session Data...</div>
             <button onclick="handleInitialAuth()" class="w-full flex items-center justify-center space-x-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 px-4 rounded-xl transition duration-200">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -287,7 +288,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         const firebaseConfig = {
@@ -305,6 +306,9 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
         const provider = new GoogleAuthProvider();
+        
+        // Android/Mobile WebViews constraints optimization setting configs
+        provider.setCustomParameters({ prompt: 'select_account' });
 
         const FIXED_PROFESSIONS = ["Architect", "Software Engineer", "Systems Analyst", "Cybersecurity Specialist", "Creative Designer"];
         
@@ -336,7 +340,6 @@
             onValue(ref(db, 'publications'), (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
-                    // Filter out any corrupt or undefined post packet models completely
                     databaseState.publications = Object.values(data).filter(p => p && p.id && p.authorUID).reverse();
                 } else {
                     databaseState.publications = [];
@@ -353,7 +356,6 @@
             onValue(ref(db, 'chats/' + databaseState.currentUser.uid), (snapshot) => {
                 databaseState.chatThreads = snapshot.val() || {};
                 if (databaseState.activeTargetChatUID) {
-                    // Clear unseen flags immediately upon data arrival if chat context is focused
                     executeSeenAcknowledgement(databaseState.activeTargetChatUID);
                     renderChatMessagesStreamPacket();
                 }
@@ -385,8 +387,18 @@
             });
         }
 
+        // Modified execution channel mapping WebView Redirect Engine
         window.handleInitialAuth = function() {
-            signInWithPopup(auth, provider).then((result) => {
+            document.getElementById('auth-status-loading').classList.remove('hidden');
+            signInWithRedirect(auth, provider).catch((error) => {
+                alert("Redirect Trigger Interrupted: " + error.message);
+                document.getElementById('auth-status-loading').classList.add('hidden');
+            });
+        }
+
+        // Intercepting background redirect loops upon execution stack refresh
+        getRedirectResult(auth).then((result) => {
+            if (result && result.user) {
                 const user = result.user;
                 onValue(ref(db, 'users'), (snapshot) => {
                     const data = snapshot.val();
@@ -405,8 +417,10 @@
                     listenToGlobalSyncChannels(user.uid);
                     saveStateToHardware();
                 }, { onlyOnce: true });
-            });
-        }
+            }
+        }).catch((error) => {
+            console.error("Redirect Resolution Error Handled Matrix: ", error);
+        });
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -602,7 +616,6 @@
             const currentPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
             if(!currentPost) return;
 
-            // Media attachment array parameters mapped properly to pass full image content along with text narration
             const msgPacket = {
                 sender: databaseState.currentUser.uid,
                 body: `[Shared Article Payload]: "${currentPost.content.substring(0, 60)}..."`,
@@ -664,7 +677,6 @@
             articlesGrid.innerHTML = "";
             if(!query) return;
 
-            // 1. Deep Identity Mapping
             databaseState.peers.filter(p => p.name.toLowerCase().includes(query) || p.uid.includes(query)).forEach(peer => {
                 const row = document.createElement('div');
                 row.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs cursor-pointer hover:border-slate-700 transition";
@@ -673,7 +685,6 @@
                 profilesGrid.appendChild(row);
             });
 
-            // 2. Comprehensive Deep Article Payload Indexing Lookup
             databaseState.publications.filter(p => p.content.toLowerCase().includes(query)).forEach(post => {
                 const row = document.createElement('div');
                 row.className = "bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2 text-xs";
@@ -740,13 +751,11 @@
                 const peer = databaseState.peers.find(p => p.uid === uid) || { uid: uid, name: "Node Entity", pfp: "" };
                 const thread = databaseState.chatThreads[peer.uid] ? Object.values(databaseState.chatThreads[peer.uid]) : [];
                 
-                // Unseen messages indicator logic arrays tracking computations
                 const unseenMessages = thread.filter(m => m.sender === peer.uid && !m.seen);
                 const unseenCount = unseenMessages.length;
                 const lastMsg = thread.length > 0 ? thread[thread.length - 1].body : "Pipeline active. Channel clear.";
 
                 const card = document.createElement('div');
-                // Unseen highlighted status styling assignments dynamically
                 card.className = `p-3.5 rounded-xl border transition flex items-center space-x-3 cursor-pointer ${unseenCount > 0 ? 'bg-slate-800/90 border-cyan-500/60 shadow-md ring-1 ring-cyan-500/20' : 'bg-darkcard border-slate-800/60'}`;
                 
                 let badgeMarkup = unseenCount > 0 ? `<span class="bg-cyan-500 text-darkbg font-black text-[10px] rounded-full px-2 py-0.5 animate-pulse">${unseenCount} New</span>` : "";
@@ -779,7 +788,6 @@
                 openFullScreenAccountNode(peer.uid);
             };
 
-            // Process immediately as marked clear seen logs upon pipeline instantiation
             executeSeenAcknowledgement(peerUID);
             document.getElementById('chat-window-modal').classList.remove('hidden');
             renderChatMessagesStreamPacket();
