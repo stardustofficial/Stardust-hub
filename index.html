@@ -28,22 +28,33 @@
         .theme-soft-pink { background-image: linear-gradient(135deg, #0b1528 70%, #4c0519 100%) !important; border-color: #f43f5e !important; }
         .theme-soft-purple { background-image: linear-gradient(135deg, #0b1528 70%, #3b0764 100%) !important; border-color: #a855f7 !important; }
         .theme-soft-emerald { background-image: linear-gradient(135deg, #0b1528 70%, #022c22 100%) !important; border-color: #10b981 !important; }
-        .vip-font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
-        .vip-font-mono { font-family: 'Fira Code', Courier, monospace; letter-spacing: -0.5px; }
+        .grecaptcha-badge { visibility: hidden !important; } /* Hides old clunky reCAPTCHA badge for high-end professional look */
+        
+        /* Spinner Loader Animation */
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border-left-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
 
     <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center p-6 bg-darkbg z-50">
-        <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl">
+        <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl relative">
             <h1 class="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">STARDUST</h1>
             <p class="text-slate-500 text-xs mb-6">Secure Phone Authentication Matrix</p>
             
             <div id="phone-input-container" class="space-y-4">
                 <input type="tel" id="login-phone-number" placeholder="+91 9876543210" class="w-full px-4 py-3 bg-darkbg border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-700 transition text-center tracking-wider">
-                <div id="recaptcha-container" class="flex justify-center my-2"></div>
-                <button onclick="handlePhoneAuthInit()" class="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-blue-600/20">
-                    <span>Send Verification Code</span>
+                <div id="recaptcha-container"></div>
+                <button id="send-otp-btn" onclick="handlePhoneAuthInit()" class="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-blue-600/20">
+                    <span id="btn-text-phone">Send Verification Code</span>
+                    <div id="btn-spinner-phone" class="spinner hidden"></div>
                 </button>
             </div>
 
@@ -53,6 +64,8 @@
                     <span>Verify & Establish Session</span>
                 </button>
             </div>
+
+            <p class="text-[9px] text-slate-600 mt-6 absolute bottom-3 left-0 right-0 text-center px-4">Protected by enterprise biometric layer reCAPTCHA routing.</p>
         </div>
     </div>
 
@@ -218,9 +231,9 @@
             </div>
             <div class="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar pr-1">
                 <button onclick="openSubSettingPage('edit-profile')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Edit Profile Parameters</span><span>→</span></button>
-                <button onclick="openSubSettingPage('liked-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Liked Publications</span><span>❤️</span></button>
-                <button onclick="openSubSettingPage('commented-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Commented Matrix Logs</span><span>💬</span></button>
-                <button onclick="openSubSettingPage('saved-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Saved Core Channels</span><span>🔖</span></button>
+                <button onclick="openSubSettingPage('liked-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Liked Publications</span><span>→</span></button>
+                <button onclick="openSubSettingPage('commented-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Commented Matrix Logs</span><span>→</span></button>
+                <button onclick="openSubSettingPage('saved-posts')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Saved Core Channels</span><span>→</span></button>
                 <button onclick="executeLogout()" class="w-full bg-red-950/40 border border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-400 flex justify-between hover:bg-red-900/30 transition"><span>Terminate Ecosystem Connection</span><span>⇥</span></button>
             </div>
         </div>
@@ -354,7 +367,12 @@
             const phoneInput = document.getElementById('login-phone-number').value.trim();
             if(!phoneInput) { alert("Please input structured mobile matrix digits."); return; }
             
+            // Trigger Loading Spin Animation
+            document.getElementById('btn-text-phone').classList.add('hidden');
+            document.getElementById('btn-spinner-phone').classList.remove('hidden');
+
             if(!window.applicationRecaptchaVerifier) {
+                // Invisible reCAPTCHA assigned to button container securely
                 window.applicationRecaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
                     'size': 'invisible', 'callback': (response) => {}
                 }, auth);
@@ -365,7 +383,11 @@
                     window.applicationConfirmationResult = confirmationResult;
                     document.getElementById('phone-input-container').classList.add('hidden');
                     document.getElementById('otp-input-container').classList.remove('hidden');
-                }).catch((error) => { alert("Transmission Failure: " + error.message); });
+                }).catch((error) => { 
+                    alert("Transmission Failure: " + error.message); 
+                    document.getElementById('btn-text-phone').classList.remove('hidden');
+                    document.getElementById('btn-spinner-phone').classList.add('hidden');
+                });
         }
 
         window.handleOTPVerification = function() {
@@ -390,11 +412,12 @@
                         databaseState.currentUser.name = "Node_" + assignedUID;
                     }
 
-                    set(ref(db, 'users/' + assignedUID), databaseState.currentUser);
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('app-layout').classList.remove('hidden');
-                    listenToGlobalSyncChannels(user.uid);
-                    saveStateToHardware();
+                    set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('app-layout').classList.remove('hidden');
+                        listenToGlobalSyncChannels(user.uid);
+                        saveStateToHardware();
+                    });
                 }, { onlyOnce: true });
             }).catch((error) => { alert("Verification Pipeline Invalid: " + error.message); });
         }
@@ -405,11 +428,17 @@
                 if (data) {
                     databaseState.peers = Object.values(data);
                     const mySelfNode = databaseState.peers.find(p => p.realFirebaseUID === firebaseUserUID);
-                    if(mySelfNode) { databaseState.currentUser = { ...databaseState.currentUser, ...mySelfNode }; syncProfileUI(); }
+                    if(mySelfNode) { 
+                        databaseState.currentUser = { ...databaseState.currentUser, ...mySelfNode }; 
+                        syncProfileUI(); 
+                    }
                     renderIncomingHandshakeRequests();
                     renderDirectChatEngineList();
                     renderFriendsProfileGrid();
                 }
+                // Permanently verify screen redirection lock state
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-layout').classList.remove('hidden');
             });
 
             onValue(ref(db, 'publications'), (snapshot) => {
@@ -438,11 +467,10 @@
             });
         }
 
+        // Auto-Login Listener strictly handles hardware re-route bypass on session updates
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 recoverStateFromHardware();
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-layout').classList.remove('hidden');
                 listenToGlobalSyncChannels(user.uid);
             } else {
                 document.getElementById('login-screen').classList.remove('hidden');
@@ -630,7 +658,10 @@
                     authorPic: databaseState.currentUser.pfp, content: input.value, media: mediaBase64 || ""
                 };
                 set(ref(db, 'publications/' + postKey), newPost).then(() => {
-                    input.value = ""; fileInput.value = ""; closeModal('post-modal');
+                    input.value = ""; 
+                    fileInput.value = ""; 
+                    closeModal('post-modal');
+                    switchTab('home'); // Perfectly routes user back to feed view immediately on publish commit
                 });
             };
 
@@ -900,7 +931,6 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = `flex flex-col max-w-[75%] ${isMe ? 'self-end items-end' : 'self-start items-start'} mb-1`;
                 
-                // Implemented Long Press Event Listeners instead of regular click logic
                 wrapper.addEventListener('mousedown', () => startMessageLongPressCapture(msgKey, msg.body));
                 wrapper.addEventListener('touchstart', (e) => { startMessageLongPressCapture(msgKey, msg.body); });
                 wrapper.addEventListener('mouseup', clearMessageLongPressTimer);
@@ -926,7 +956,7 @@
             clearMessageLongPressTimer();
             databaseState.longPressTimer = setTimeout(() => {
                 triggerMessageContextPanelOverlay(msgKey, text);
-            }, 750); // Fire on 750ms duration hold
+            }, 750);
         }
 
         function clearMessageLongPressTimer() {
