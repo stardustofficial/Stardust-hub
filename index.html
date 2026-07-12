@@ -5,33 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Stardust Hub - Professional</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        // Firebase Configuration Matrix
-        // TODO: Replace with your actual Firebase project config credentials
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const provider = new GoogleAuthProvider();
-
-        window.authModule = { auth, signInWithPopup, provider, signOut, db, ref, set, get, child, update, onValue, push };
-    </script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -52,11 +25,13 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         
+        /* Premium Soft Light Themes */
         .theme-soft-cyan { background-image: linear-gradient(135deg, #0b1528 70%, #083344 100%) !important; border-color: #06b6d4 !important; }
         .theme-soft-pink { background-image: linear-gradient(135deg, #0b1528 70%, #4c0519 100%) !important; border-color: #f43f5e !important; }
         .theme-soft-purple { background-image: linear-gradient(135deg, #0b1528 70%, #3b0764 100%) !important; border-color: #a855f7 !important; }
         .theme-soft-emerald { background-image: linear-gradient(135deg, #0b1528 70%, #022c22 100%) !important; border-color: #10b981 !important; }
 
+        /* Premium Fonts for VIP Users */
         .vip-font-serif { font-family: 'Playfair Display', Georgia, serif; font-style: italic; }
         .vip-font-mono { font-family: 'Fira Code', Courier, monospace; letter-spacing: -0.5px; }
         .vip-font-display { font-family: 'Impact', sans-serif; tracking: 1px; }
@@ -67,15 +42,15 @@
     <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center p-6 bg-darkbg z-50">
         <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl">
             <h1 class="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">STARDUST</h1>
-            <p class="text-slate-500 text-xs mb-8">Secure Identity Verification Portal</p>
-            <button onclick="handleGoogleOAuthLogin()" class="w-full flex items-center justify-center space-x-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 px-4 rounded-xl transition duration-200">
+            <p class="text-slate-500 text-xs mb-8">Secure Access Portal</p>
+            <button onclick="handleInitialAuth()" class="w-full flex items-center justify-center space-x-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-3 px-4 rounded-xl transition duration-200">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22-.03-.63z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                <span class="text-sm font-semibold">Access with Google OAuth</span>
+                <span class="text-sm font-semibold">Access with Google Account</span>
             </button>
         </div>
     </div>
@@ -90,21 +65,22 @@
         </header>
 
         <main class="flex-1 overflow-y-auto px-4 py-3 custom-scrollbar">
+
             <section id="home-screen" class="space-y-4">
                 <div id="posts-feed" class="space-y-4"></div>
             </section>
 
             <section id="chat-screen" class="hidden space-y-4">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-bold text-slate-300">Active Signals</h2>
+                    <h2 class="text-lg font-bold text-slate-300">Active Handshakes</h2>
                     <div class="relative">
                         <button onclick="toggleElement('chat-menu')" class="text-slate-400 p-2 bg-darkcard rounded-xl border border-slate-800">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                         </button>
                         <div id="chat-menu" class="hidden absolute right-0 mt-2 w-48 bg-darkcard border border-slate-800 rounded-xl shadow-2xl z-50 text-xs">
-                            <button onclick="switchChatSubView('active')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition">All Chats</button>
+                            <button onclick="openModal('group-modal')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition">Assemble Group Channel</button>
                             <button onclick="switchChatSubView('requests')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition border-t border-slate-800 flex justify-between items-center">
-                                <span>Pending Connections</span>
+                                <span>Incoming Requests</span>
                                 <span id="request-badge-count" class="bg-red-600 text-white font-bold rounded-full px-1.5 hidden">0</span>
                             </button>
                         </div>
@@ -118,11 +94,20 @@
             </section>
 
             <section id="search-screen" class="hidden space-y-4">
-                <input type="text" id="search-input" oninput="handleUnifiedSearch()" placeholder="Search target profile handles or UID matrix exactly..." class="w-full px-4 py-3 bg-darkcard border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-700 transition">
+                <input type="text" id="search-input" oninput="handleUnifiedSearch()" placeholder="Search publications, hash, or specific user ID..." class="w-full px-4 py-3 bg-darkcard border border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-700 transition">
                 <div id="search-results-grid" class="space-y-3"></div>
             </section>
 
             <section id="profile-screen" class="hidden space-y-4">
+                <div id="premium-banner" class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-4 cursor-pointer border border-blue-600 shadow-xl" onclick="openModal('subscription-modal')">
+                    <h4 class="text-sm font-bold text-slate-100">Unlock Suite Configuration</h4>
+                    <p class="text-[11px] text-blue-200 mt-0.5">Deploy soft themes, typography matrix and verified identity.</p>
+                </div>
+                
+                <div id="premium-configured-button" class="hidden bg-slate-800/80 border border-slate-700 rounded-2xl p-3 text-center text-xs font-bold text-cyan-400 cursor-pointer" onclick="openModal('premium-dashboard-modal')">
+                    Modify Active Premium Matrix
+                </div>
+
                 <div id="profile-card" class="bg-darkcard p-5 rounded-2xl border border-slate-800 relative transition-all duration-300">
                     <button onclick="openModal('settings-hub-modal')" class="absolute top-4 right-4 p-2 bg-slate-800 rounded-xl border border-slate-700 text-slate-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
@@ -130,19 +115,15 @@
                     
                     <div class="flex flex-col items-center text-center">
                         <div id="profile-frame-wrapper" class="w-20 h-20 rounded-full p-0.5 border border-slate-700 mb-3">
-                            <img id="profile-display-avatar" src="" class="w-full h-full object-cover rounded-full">
+                            <img id="profile-display-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-full h-full object-cover rounded-full">
                         </div>
                         <h3 class="text-base font-bold text-slate-100 flex items-center gap-1">
-                            <span id="profile-display-name">Loading...</span>
+                            <span id="profile-display-name">Stardust</span>
+                            <span id="profile-display-badge" class="hidden text-cyan-400 bg-cyan-500/10 px-1 rounded text-[10px] tracking-tighter border border-cyan-500/20 font-black">PRO</span>
                         </h3>
-                        
-                        <div class="flex items-center space-x-2 mt-1 bg-slate-900/50 px-3 py-1.5 rounded-xl border border-slate-800">
-                            <span class="text-xs text-slate-400 font-mono">UID:</span>
-                            <input type="text" id="profile-uid-input" class="bg-transparent font-mono text-xs text-cyan-400 focus:outline-none w-28 text-center" value="">
-                            <button onclick="updatePersonalUID()" class="text-[10px] text-slate-400 hover:text-white bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Save</button>
-                        </div>
-
-                        <p id="profile-display-bio" class="text-xs text-slate-400 mt-3 max-w-xs leading-relaxed">Account configured.</p>
+                        <p id="profile-display-uid" class="text-xs text-slate-500 font-mono mt-0.5">@uid_stardust</p>
+                        <span id="profile-display-profession" class="text-[10px] font-semibold uppercase tracking-wider bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full mt-2 border border-slate-700 hidden">Not Specified</span>
+                        <p id="profile-display-bio" class="text-xs text-slate-400 mt-3 max-w-xs leading-relaxed">System initialization complete.</p>
                     </div>
                 </div>
 
@@ -164,21 +145,6 @@
         </nav>
     </div>
 
-    <div id="inspector-profile-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-6 flex flex-col relative shadow-2xl">
-            <button onclick="closeModal('inspector-profile-modal')" class="absolute top-4 right-4 text-slate-500 hover:text-white text-sm">✕</button>
-            <div class="flex flex-col items-center text-center mt-2">
-                <img id="inspector-avatar" src="" class="w-20 h-20 rounded-full border border-slate-700 object-cover mb-3">
-                <h3 id="inspector-name" class="text-base font-bold text-slate-100">User Handle</h3>
-                <p id="inspector-uid" class="text-xs text-slate-500 font-mono mt-0.5">@uid</p>
-                <p id="inspector-bio" class="text-xs text-slate-400 mt-3 leading-relaxed">No description uploaded.</p>
-                
-                <div id="inspector-action-container" class="mt-6 w-full">
-                    </div>
-            </div>
-        </div>
-    </div>
-
     <div id="settings-hub-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 shadow-2xl p-6 flex flex-col max-h-[80vh]">
             <div class="flex justify-between items-center mb-5">
@@ -186,8 +152,27 @@
                 <button onclick="closeModal('settings-hub-modal')" class="text-slate-500 hover:text-white">✕</button>
             </div>
             <div class="space-y-2 overflow-y-auto flex-1 pr-1 custom-scrollbar">
-                <button onclick="executeLogout()" class="w-full bg-red-950/40 border border-red-900/40 text-left p-3.5 rounded-xl text-xs font-bold text-red-400 flex justify-between hover:bg-red-900/30 transition"><span>Terminate Active Session</span><span>⇥</span></button>
+                <button onclick="openSubSettingPage('edit-profile')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Edit Core Profile</span><span>→</span></button>
+                <button onclick="openSubSettingPage('history')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Audit Logs (History)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('liked')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Appreciated Stream (Likes)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('commented')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Discussions (Comments)</span><span>→</span></button>
+                <button onclick="openSubSettingPage('saved')" class="w-full bg-slate-800/60 border border-slate-800 text-left p-3.5 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-800 transition"><span>Archived Collection (Saved)</span><span>→</span></button>
+                <button onclick="executeLogout()" class="w-full bg-red-950/40 border border-red-900/40 text-left p-3.5 rounded-xl text-xs font-bold text-red-400 flex justify-between hover:bg-red-900/30 transition"><span>Terminate Current Session</span><span>⇥</span></button>
             </div>
+            <div class="text-center pt-6 border-t border-slate-800/60 mt-4">
+                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-slate-600 via-slate-400 to-slate-600">Made by Zishan</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="subsetting-view-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm h-[85vh] rounded-3xl border border-slate-800 p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 id="subsetting-title" class="text-xs font-bold uppercase tracking-widest text-cyan-400">Panel</h3>
+                <button onclick="closeModal('subsetting-view-modal'); openModal('settings-hub-modal');" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-2.5 py-1 rounded-lg">Back</button>
+            </div>
+            
+            <div id="subsetting-dynamic-body" class="flex-1 overflow-y-auto my-4 custom-scrollbar text-xs"></div>
         </div>
     </div>
 
@@ -197,8 +182,85 @@
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Draft Content</h3>
                 <button onclick="closeModal('post-modal')" class="text-slate-500 hover:text-white">✕</button>
             </div>
-            <textarea id="post-input-text" placeholder="Formulate broadcast transmission payload to all nodes..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
-            <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Broadcast Network-wide</button>
+            <textarea id="post-input-text" placeholder="Formulate transmission narrative..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
+            
+            <div id="vip-font-selector-container" class="hidden mb-3 p-2 bg-slate-800/40 border border-slate-800 rounded-xl">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">VIP Typography Matrix</label>
+                <select id="vip-post-font-select" class="w-full bg-darkbg border border-slate-700 rounded-lg p-1.5 text-[11px] focus:outline-none">
+                    <option value="font-default">System Clean Standard</option>
+                    <option value="vip-font-serif">Playfair Luxury Serif</option>
+                    <option value="vip-font-mono">Fira Execution Monospace</option>
+                    <option value="vip-font-display">Impact Maximum Weight</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase mb-1">Media Layer</label>
+                <input type="file" id="post-input-file" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-300 hover:file:bg-slate-700 file:cursor-pointer">
+            </div>
+
+            <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Broadcast</button>
+        </div>
+    </div>
+
+    <div id="subscription-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-6 shadow-2xl text-center">
+            <h3 class="text-lg font-black text-slate-100 tracking-wide">Premium Membership Suite</h3>
+            <p class="text-xs text-slate-500 mt-1">Acquire elevated configuration status instantly</p>
+            
+            <div class="bg-slate-800/50 rounded-2xl border border-slate-800 p-4 my-5 text-left text-xs space-y-2.5 text-slate-300">
+                <div class="flex items-center gap-2"><span>✦</span> <span>Ecosystem-wide profile background accent glow controls</span></div>
+                <div class="flex items-center gap-2"><span>✦</span> <span>Custom high-fidelity typography selection matrices</span></div>
+                <div class="flex items-center gap-2"><span>✦</span> <span>Regal frame loops assigned to personal user avatars</span></div>
+                <div class="flex items-center gap-2"><span>✦</span> <span>Cryptographic security status badge (Verified Badge)</span></div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeModal('subscription-modal')" class="flex-1 bg-slate-800 py-2.5 rounded-xl text-xs font-bold text-slate-400">Dismiss</button>
+                <button onclick="handleSubscriptionActivation()" class="flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 rounded-xl text-xs font-black text-white">Initialize Setup Tier</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="premium-dashboard-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-5 shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-500">Premium Matrix Customizer</h3>
+                <button onclick="closeModal('premium-dashboard-modal')" class="text-slate-500 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Profile Interface Accent Canvas</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="executePremiumTweak('theme', 'theme-soft-cyan')" class="bg-slate-800 border border-cyan-500/30 p-2.5 rounded-xl font-medium text-cyan-400">Soft Light Cyan</button>
+                        <button onclick="executePremiumTweak('theme', 'theme-soft-pink')" class="bg-slate-800 border border-pink-500/30 p-2.5 rounded-xl font-medium text-pink-400">Soft Light Pink</button>
+                        <button onclick="executePremiumTweak('theme', 'theme-soft-purple')" class="bg-slate-800 border border-purple-500/30 p-2.5 rounded-xl font-medium text-purple-400">Soft Light Purple</button>
+                        <button onclick="executePremiumTweak('theme', 'theme-soft-emerald')" class="bg-slate-800 border border-emerald-500/30 p-2.5 rounded-xl font-medium text-emerald-400">Soft Light Emerald</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Identity Card Typography</label>
+                    <div class="space-y-2">
+                        <button onclick="executePremiumTweak('font', 'font-default')" class="w-full bg-slate-800 p-2 rounded-lg text-left font-default">System Neutral</button>
+                        <button onclick="executePremiumTweak('font', 'vip-font-serif')" class="w-full bg-slate-800 p-2 rounded-lg text-left vip-font-serif">PlayfairLuxury Italics</button>
+                        <button onclick="executePremiumTweak('font', 'vip-font-mono')" class="w-full bg-slate-800 p-2 rounded-lg text-left vip-font-mono">Fira Terminal Bold</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Avatar Frame Ring Assembly</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="executePremiumTweak('frame', 'border-2 border-amber-500 shadow-lg')" class="bg-slate-800 p-2 rounded-lg">Polished Gold Loop</button>
+                        <button onclick="executePremiumTweak('frame', 'border-2 border-cyan-500 shadow-md')" class="bg-slate-800 p-2 rounded-lg">Cyber Quantum Frame</button>
+                    </div>
+                </div>
+                <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <span class="block font-bold">Cryptographic Identity Badge</span>
+                        <span class="text-[9px] text-slate-500">Inject identity status marker across ecosystem feeds.</span>
+                    </div>
+                    <button onclick="executePremiumTweak('badge', true)" class="bg-cyan-500 text-white text-[10px] px-3 py-1.5 rounded-xl font-black">Inject</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -207,342 +269,1105 @@
             <div class="flex items-center space-x-3">
                 <img id="chat-window-avatar" src="" class="w-8 h-8 rounded-full border border-slate-700 object-cover">
                 <div>
-                    <h3 id="chat-window-name" class="text-xs font-bold">User Matrix</h3>
+                    <h3 id="chat-window-name" class="text-xs font-bold">User</h3>
                     <p id="chat-window-uid" class="text-[9px] text-slate-500 font-mono"></p>
                 </div>
             </div>
-            <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Close Stream</button>
+            <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Terminate</button>
         </header>
         
         <div id="chat-messages-stream" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar text-xs flex flex-col"></div>
         
         <footer class="p-3 bg-darkcard border-t border-slate-900 flex items-center space-x-2">
-            <input type="text" id="chat-input-field" placeholder="Enter clean message stream packet..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
+            <label class="bg-slate-800 p-2 rounded-xl border border-slate-700 cursor-pointer text-xs shrink-0">
+                📎 <input type="file" id="chat-file-input" accept="image/*" class="hidden" onchange="processDirectChatFile()">
+            </label>
+            <input type="text" id="chat-input-field" placeholder="Formulate stream packet data..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
             <button onclick="dispatchDirectMessage()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-xs font-bold shrink-0">Send</button>
         </footer>
     </div>
 
-    <script>
-        let localUserSession = null;
-        let registeredUsers = {};
-        let activeTargetChatUID = null;
+    <div id="expanded-post-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 flex flex-col max-h-[85vh] p-5">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
+                <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Inspection Node</span>
+                <button onclick="closeModal('expanded-post-modal')" class="text-slate-400 text-xs bg-slate-800 px-2.5 py-1 rounded-lg">Terminate</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scrollbar space-y-4" id="expanded-post-payload"></div>
+        </div>
+    </div>
 
-        // Auto-bootstrap login setup checks for continuous persistence
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (!window.authModule) {
-                    console.error("Firebase runtime failed to initialize properly.");
-                    return;
+    <div id="share-distribution-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-3xl border border-slate-800 p-5 flex flex-col max-h-[60vh]">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Internal Route Dispatcher</h3>
+            <input type="text" id="share-peer-search" oninput="filterShareDistributionGrid()" placeholder="Filter routing pipelines..." class="w-full px-3 py-2 text-xs bg-darkbg border border-slate-800 rounded-xl focus:outline-none mb-3">
+            
+            <div id="share-distribution-peers-grid" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <div id="group-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-darkcard w-full max-w-sm rounded-2xl border border-slate-800 p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Assemble Channel Architecture</h3>
+                <button onclick="closeModal('group-modal')" class="text-slate-500 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <input type="text" id="group-name-input" placeholder="Channel Identification Handle..." class="w-full p-2.5 bg-darkbg border border-slate-800 rounded-xl focus:outline-none">
+                <button onclick="processGroupGeneration()" class="w-full bg-cyan-600 font-bold py-2 rounded-xl">Execute Compilation</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        // Global Injection point for Firebase App Configurations
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5ufTBjot8i-PJCBkJtUpc50jJcYmzMBQ",
+            authDomain: "stardust-hub.firebaseapp.com",
+            databaseURL: "https://stardust-hub-default-rtdb.firebaseio.com",
+            projectId: "stardust-hub",
+            storageBucket: "stardust-hub.firebasestorage.app",
+            messagingSenderId: "672339143681",
+            appId: "1:672339143681:web:42d7e7f3fd923890aba400",
+            measurementId: "G-DZM4TXN2N2"
+        };
+
+        // Bootstrapping App Elements
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const provider = new GoogleAuthProvider();
+
+        // System Data Records Blueprint
+        const FIXED_PROFESSIONS = ["Architect", "Software Engineer", "Systems Analyst", "Cybersecurity Specialist", "Creative Designer", "Content Publisher", "Data Architect", "Independent Creator", "Student Technical Associate"];
+        
+        let databaseState = {
+            currentUser: {
+                name: "Stardust Base",
+                uid: "uid_stardust",
+                bio: "System initialization complete.",
+                pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+                profession: "",
+                isPremium: false,
+                premiumTheme: "",
+                premiumFont: "font-default",
+                premiumFrame: "",
+                hasVerifiedBadge: false
+            },
+            publications: [
+                {
+                    id: 9001,
+                    authorName: "Alpha Operator",
+                    authorUID: "operator_alpha",
+                    authorPic: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100",
+                    content: "Ecosystem processing channels active. Formulate custom nodes inside Stardust workspace.",
+                    media: "",
+                    views: 42,
+                    likes: [],
+                    comments: [],
+                    saves: [],
+                    fontClass: "font-default"
                 }
-                
-                // Realtime active listener tracking state session persistence
-                window.authModule.onAuthStateChanged(window.authModule.auth, (user) => {
-                    if (user) {
-                        localUserSession = user;
-                        initializeDatabaseSync(user);
-                    } else {
-                        document.getElementById('login-screen').classList.remove('hidden');
-                        document.getElementById('app-layout').classList.add('hidden');
+            ],
+            peers: [
+                { uid: "operator_alpha", name: "Alpha Operator", pfp: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100", bio: "Core system administrator.", profession: "Systems Analyst", posts: [] },
+                { uid: "beta_node", name: "Beta Node", pfp: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", bio: "Distributed computational element.", profession: "Data Architect", posts: [] }
+            ],
+            friendships: [], 
+            chatThreads: {}, 
+            auditLogs: [],
+            activeTargetChatUID: null,
+            activeTargetPostShareID: null
+        };
+
+        // Storage Integration & State Recovery
+        window.saveStateToHardware = function() {
+            localStorage.setItem("STARDUST_CORE_DB", JSON.stringify(databaseState));
+            if (auth.currentUser) {
+                set(ref(db, 'users/' + auth.currentUser.uid + '/state'), databaseState);
+            }
+        }
+
+        window.recoverStateFromHardware = function() {
+            const raw = localStorage.getItem("STARDUST_CORE_DB");
+            if (raw) {
+                try {
+                    databaseState = JSON.parse(raw);
+                } catch(e) {
+                    console.error("Hardware decryption packet loss. Initializing standard matrix.");
+                }
+            }
+        }
+
+        // Firebase-linked Realtime Sync Listeners
+        function listenToGlobalSyncChannels() {
+            onValue(ref(db, 'publications'), (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    databaseState.publications = Object.values(data);
+                    renderCoreTimeline();
+                }
+            });
+
+            onValue(ref(db, 'users'), (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    databaseState.peers = Object.values(data).map(u => ({
+                        uid: u.uid,
+                        name: u.name,
+                        pfp: u.pfp || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+                        bio: u.bio || "No bio declared.",
+                        profession: u.profession || "",
+                        isPremium: u.isPremium || false
+                    }));
+                }
+            });
+
+            if (auth.currentUser) {
+                onValue(ref(db, 'chats/' + auth.currentUser.uid), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        databaseState.chatThreads = data;
+                        renderDirectChatEngineList();
+                        if (databaseState.activeTargetChatUID) {
+                            renderChatMessagesStreamPacket();
+                        }
                     }
                 });
-            }, 1000);
+            }
+        }
+
+        // Auth Operations - Refactored for real Google Sign-In
+        window.handleInitialAuth = function() {
+            logEvent("Redirecting auth channels to Firebase matrix...");
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    databaseState.currentUser.name = user.displayName || "Stardust User";
+                    databaseState.currentUser.uid = user.uid;
+                    databaseState.currentUser.pfp = user.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150";
+                    
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('app-layout').classList.remove('hidden');
+                    
+                    // Registering User profile instance into Firebase Realtime database node
+                    set(ref(db, 'users/' + user.uid), {
+                        uid: user.uid,
+                        name: databaseState.currentUser.name,
+                        pfp: databaseState.currentUser.pfp,
+                        bio: databaseState.currentUser.bio,
+                        profession: databaseState.currentUser.profession,
+                        isPremium: databaseState.currentUser.isPremium
+                    });
+
+                    logEvent("Session verified via Google Authentication protocols.");
+                    listenToGlobalSyncChannels();
+                    syncProfileUI();
+                    renderCoreTimeline();
+                    saveStateToHardware();
+                })
+                .catch((error) => {
+                    console.error("Auth Failure Matrix triggered:", error);
+                    alert("Authentication Pipeline Failure: " + error.message);
+                });
+        }
+
+        // Monitor Auth state persistence tokens on hard refresh
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                databaseState.currentUser.name = user.displayName || "Stardust User";
+                databaseState.currentUser.uid = user.uid;
+                databaseState.currentUser.pfp = user.photoURL || databaseState.currentUser.pfp;
+                
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-layout').classList.remove('hidden');
+                
+                listenToGlobalSyncChannels();
+                syncProfileUI();
+                renderCoreTimeline();
+            }
         });
 
-        // Google OAuth Trigger Method
-        function handleGoogleOAuthLogin() {
-            if(!window.authModule) return alert("Firebase setup running...");
-            window.authModule.signInWithPopup(window.authModule.auth, window.authModule.provider)
-            .then((result) => {
-                // Persistent Authentication Setup Complete
-            }).catch((error) => {
-                console.error("Authentication handshake abort:", error);
-                alert("Authentication Interrupted.");
+        window.executeLogout = function() {
+            signOut(auth).then(() => {
+                localStorage.removeItem("STARDUST_CORE_DB");
+                window.location.reload();
             });
         }
 
-        // Live Realtime Synchronization Core Pipeline
-        function initializeDatabaseSync(user) {
-            const { db, ref, onValue, set, get, child } = window.authModule;
+        window.logEvent = function(description) {
+            databaseState.auditLogs.unshift({
+                timestamp: new Date().toLocaleTimeString(),
+                desc: description
+            });
+            if (auth.currentUser) {
+                push(ref(db, 'auditLogs/' + auth.currentUser.uid), {
+                    timestamp: new Date().toLocaleTimeString(),
+                    desc: description
+                });
+            }
+        }
+
+        // Modal Controls Core Logic Engine
+        window.openModal = function(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.remove('hidden');
+                logEvent(`Modal architecture viewport allocated: ${id}`);
+            }
+        }
+
+        window.closeModal = function(id) {
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('hidden');
+            }
+        }
+
+        window.toggleElement = function(id) {
+            const target = document.getElementById(id);
+            if(target) target.classList.toggle('hidden');
+        }
+
+        // View Management Matrices Navigation System
+        window.switchTab = function(targetKey) {
+            const tabs = ['home', 'chat', 'search', 'profile'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`${t}-screen`);
+                if(el) el.classList.add('hidden');
+            });
             
-            // Sync all ecosystem registration indices
-            const usersRef = ref(db, 'users');
-            onValue(usersRef, (snapshot) => {
-                registeredUsers = snapshot.val() || {};
-                
-                // If local node doesn't exist, execute initial cloud bootstrap map
-                if (!registeredUsers[user.uid]) {
-                    // Generate unique default alpha numeric identifier hash
-                    const calculatedUID = "str_" + Math.random().toString(36).substring(2, 7);
-                    const freshProfile = {
-                        uid: calculatedUID,
-                        name: user.displayName || "Anonymous Node",
-                        pfp: user.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-                        bio: "Connected via Google Engine Module.",
-                        firebaseUID: user.uid
-                    };
-                    set(ref(db, 'users/' + user.uid), freshProfile);
-                } else {
-                    document.getElementById('profile-uid-input').value = registeredUsers[user.uid].uid;
-                    syncProfileUI();
-                }
+            const activeScreen = document.getElementById(`${targetKey}-screen`);
+            if(activeScreen) activeScreen.classList.remove('hidden');
+
+            const navButtons = document.querySelectorAll('nav button');
+            navButtons.forEach((btn, idx) => {
+                btn.className = "text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative";
+                if(tabs[idx] === targetKey) btn.className = "text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative";
             });
 
-            // Sync global publications broadcast feed
-            const postsRef = ref(db, 'posts');
-            onValue(postsRef, (snapshot) => {
-                const postsData = snapshot.val() || {};
-                const list = Object.values(postsData).reverse();
-                renderTimelineUI(list);
-            });
-
-            // Live synchronization pipelines for operational UI loops
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-layout').classList.remove('hidden');
+            logEvent(`Navigation targeted pipeline allocation: ${targetKey.toUpperCase()}`);
         }
 
-        // Action command handler to reset custom UIDs securely
-        function updatePersonalUID() {
-            if(!localUserSession) return;
-            const chosenUID = document.getElementById('profile-uid-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
-            if(chosenUID.length < 3) return alert("UID handle length too short.");
-
-            const { db, ref, update } = window.authModule;
-            update(ref(db, 'users/' + localUserSession.uid), { uid: chosenUID })
-            .then(() => alert("Ecosystem Identity Routing Handle Updated."))
-            .catch(() => alert("Handshake failure updating matrix."));
+        window.switchChatSubView = function(viewType) {
+            const activeList = document.getElementById('active-chats-list');
+            const incomingList = document.getElementById('incoming-requests-list');
+            
+            if(viewType === 'active') {
+                activeList.classList.remove('hidden');
+                incomingList.classList.add('hidden');
+            } else {
+                activeList.classList.add('hidden');
+                incomingList.classList.remove('hidden');
+                renderIncomingHandshakeRequests();
+            }
+            document.getElementById('chat-menu').classList.add('hidden');
         }
 
-        // Global network-wide real notification feed compilation
-        function processPublicationInit() {
-            const txt = document.getElementById('post-input-text').value.trim();
-            if(!txt) return alert("Cannot broadcast blank streams.");
+        // Profile Interface Synchronizers
+        window.syncProfileUI = function() {
+            const user = databaseState.currentUser;
+            document.getElementById('profile-display-name').innerText = user.name;
+            document.getElementById('profile-display-uid').innerText = `@${user.uid}`;
+            document.getElementById('profile-display-bio').innerText = user.bio;
+            document.getElementById('profile-display-avatar').src = user.pfp;
 
-            const { db, ref, push } = window.authModule;
-            const userProfile = registeredUsers[localUserSession.uid];
+            const card = document.getElementById('profile-card');
+            card.className = "bg-darkcard p-5 rounded-2xl border border-slate-800 relative transition-all duration-300";
+            if(user.premiumTheme) card.classList.add(user.premiumTheme);
 
-            const newPost = {
-                id: Date.now(),
-                authorName: userProfile.name,
-                authorUID: userProfile.uid,
-                authorPic: userProfile.pfp,
-                content: txt,
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-            };
+            const frame = document.getElementById('profile-frame-wrapper');
+            frame.className = "w-20 h-20 rounded-full p-0.5 border border-slate-700 mb-3";
+            if(user.premiumFrame) frame.className = `w-20 h-20 rounded-full p-0.5 mb-3 ${user.premiumFrame}`;
 
-            push(ref(db, 'posts'), newPost).then(() => {
-                document.getElementById('post-input-text').value = "";
-                closeModal('post-modal');
-            });
+            const nameText = document.getElementById('profile-display-name');
+            nameText.className = "text-base font-bold text-slate-100 flex items-center gap-1";
+            if(user.premiumFont) nameText.classList.add(user.premiumFont);
+
+            const badge = document.getElementById('profile-display-badge');
+            if(user.hasVerifiedBadge) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            const badgeBtn = document.getElementById('premium-banner');
+            const premiumConfigBtn = document.getElementById('premium-configured-button');
+            if(user.isPremium) {
+                badgeBtn.classList.add('hidden');
+                premiumConfigBtn.classList.remove('hidden');
+            } else {
+                badgeBtn.classList.remove('hidden');
+                premiumConfigBtn.classList.add('hidden');
+            }
+
+            const profBadge = document.getElementById('profile-display-profession');
+            if(user.profession) {
+                profBadge.innerText = user.profession;
+                profBadge.classList.remove('hidden');
+            } else {
+                profBadge.classList.add('hidden');
+            }
+            renderPersonalLedgerFeed();
         }
 
-        // Live rendering mechanics tracking individual structural feeds
-        function renderTimelineUI(posts) {
+        // Timeline Feed Compiler Modules
+        window.renderCoreTimeline = function() {
             const feed = document.getElementById('posts-feed');
-            const personalFeed = document.getElementById('profile-personal-posts');
+            if(!feed) return;
             feed.innerHTML = "";
-            if(personalFeed) personalFeed.innerHTML = "";
 
-            const activeUID = registeredUsers[localUserSession.uid]?.uid;
+            if(databaseState.publications.length === 0) {
+                feed.innerHTML = `<div class="text-center p-8 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500">Ecosystem workspace empty. Compile node packet.</div>`;
+                return;
+            }
 
-            posts.forEach(p => {
-                const el = `
-                    <div class="bg-darkcard p-4 rounded-2xl border border-slate-900 shadow-md">
-                        <div class="flex items-center space-x-3 mb-2 cursor-pointer" onclick="lookupExternalProfile('${p.authorUID}')">
-                            <img src="${p.authorPic}" class="w-8 h-8 rounded-full object-cover border border-slate-800">
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-200">${p.authorName}</h4>
-                                <p class="text-[10px] text-slate-500 font-mono">@${p.authorUID} • ${p.timestamp || ''}</p>
-                            </div>
+            databaseState.publications.forEach(post => {
+                const isLiked = post.likes.includes(databaseState.currentUser.uid);
+                const isSaved = post.saves.includes(databaseState.currentUser.uid);
+                
+                const card = document.createElement('div');
+                card.className = "bg-darkcard p-4 rounded-2xl border border-slate-800/80 hover:border-slate-700/60 transition duration-200 relative";
+                
+                let mediaMarkup = "";
+                if(post.media) mediaMarkup = `<div class="mt-3 rounded-xl overflow-hidden border border-slate-800 max-h-48 bg-slate-900 flex justify-center items-center"><img src="${post.media}" class="w-full h-full object-cover"></div>`;
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3 mb-2.5">
+                        <img src="${post.authorPic}" class="w-7 h-7 rounded-full object-cover border border-slate-700">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-200 flex items-center gap-1">
+                                <span>${post.authorName}</span>
+                            </h4>
+                            <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID}</p>
                         </div>
-                        <p class="text-xs text-slate-300 leading-relaxed">${p.content}</p>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed break-words ${post.fontClass || 'font-default'}">${post.content}</p>
+                    ${mediaMarkup}
+                    <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-800/60 text-[11px] text-slate-500">
+                        <button onclick="executeActionTrigger('like', ${post.id})" class="flex items-center space-x-1 hover:text-red-400 transition ${isLiked ? 'text-red-500 font-bold' : ''}">
+                            <span>${isLiked ? '❤️' : '🤍'}</span> <span>${post.likes.length}</span>
+                        </button>
+                        <button onclick="inspectPostNodePayload(${post.id})" class="flex items-center space-x-1 hover:text-blue-400 transition">
+                            <span>💬</span> <span>${post.comments.length}</span>
+                        </button>
+                        <button onclick="openShareDistributionModal(${post.id})" class="flex items-center space-x-1 hover:text-cyan-400 transition">
+                            <span>🚀</span>
+                        </button>
+                        <button onclick="executeActionTrigger('save', ${post.id})" class="flex items-center space-x-1 hover:text-amber-400 transition ${isSaved ? 'text-amber-500' : ''}">
+                            <span>${isSaved ? '🔖' : '📥'}</span>
+                        </button>
                     </div>
                 `;
-                feed.innerHTML += el;
-
-                if(personalFeed && p.authorUID === activeUID) {
-                    personalFeed.innerHTML += el;
-                }
+                feed.appendChild(card);
             });
         }
 
-        // Unified cross-identity lookup engines inside search matrices
-        function handleUnifiedSearch() {
-            const query = document.getElementById('search-input').value.trim().toLowerCase();
+        window.renderPersonalLedgerFeed = function() {
+            const feed = document.getElementById('profile-personal-posts');
+            if(!feed) return;
+            feed.innerHTML = "";
+
+            const personal = databaseState.publications.filter(p => p.authorUID === databaseState.currentUser.uid);
+            if(personal.length === 0) {
+                feed.innerHTML = `<p class="text-[11px] text-slate-600 pl-1 text-center py-4">No internal operations broadcasted.</p>`;
+                return;
+            }
+
+            personal.forEach(post => {
+                const card = document.createElement('div');
+                card.className = "bg-darkcard/40 p-3 rounded-xl border border-slate-900 text-xs";
+                card.innerHTML = `
+                    <p class="text-slate-400 leading-relaxed ${post.fontClass}">${post.content}</p>
+                    <div class="text-[9px] text-slate-600 mt-2 flex justify-between">
+                        <span>Metrics: ${post.likes.length} Appreciations</span>
+                        <button onclick="executeActionTrigger('delete', ${post.id})" class="text-red-900 hover:text-red-400 font-bold transition">Delete Node</button>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+        }
+
+        // Action Handlers Broadcast Channels
+        window.processPublicationInit = function() {
+            const input = document.getElementById('post-input-text');
+            const fileEl = document.getElementById('post-input-file');
+            const fontSelect = document.getElementById('vip-post-font-select');
+            
+            if(!input.value.trim() && !fileEl.files[0]) return;
+
+            const initNodePost = (mediaUrl = "") => {
+                const newPost = {
+                    id: Date.now(),
+                    authorName: databaseState.currentUser.name,
+                    authorUID: databaseState.currentUser.uid,
+                    authorPic: databaseState.currentUser.pfp,
+                    content: input.value,
+                    media: mediaUrl,
+                    views: 0,
+                    likes: [],
+                    comments: [],
+                    saves: [],
+                    fontClass: fontSelect ? fontSelect.value : 'font-default'
+                };
+
+                // Saving inside standard schema matrix state & Firebase
+                push(ref(db, 'publications'), newPost);
+                databaseState.publications.unshift(newPost);
+                
+                input.value = "";
+                if(fileEl) fileEl.value = "";
+                closeModal('post-modal');
+                logEvent("Data stream publication packet broadcasted successfully.");
+                renderCoreTimeline();
+                syncProfileUI();
+                saveStateToHardware();
+            };
+
+            if(fileEl && fileEl.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    initNodePost(e.target.result);
+                }
+                reader.readAsDataURL(fileEl.files[0]);
+            } else {
+                initNodePost();
+            }
+        }
+
+        window.executeActionTrigger = function(actionType, postID) {
+            const post = databaseState.publications.find(p => p.id === postID);
+            if(!post) return;
+
+            const myUID = databaseState.currentUser.uid;
+
+            if(actionType === 'like') {
+                if(post.likes.includes(myUID)) {
+                    post.likes = post.likes.filter(id => id !== myUID);
+                } else {
+                    post.likes.push(myUID);
+                    logEvent(`Broadcast structural node validation: ID ${postID}`);
+                }
+            } else if(actionType === 'save') {
+                if(post.saves.includes(myUID)) {
+                    post.saves = post.saves.filter(id => id !== myUID);
+                } else {
+                    post.saves.push(myUID);
+                    logEvent(`Internal registry entry archive allocated: Node ${postID}`);
+                }
+            } else if(actionType === 'delete') {
+                databaseState.publications = databaseState.publications.filter(p => p.id !== postID);
+                logEvent(`Purged explicit data node instance: ID ${postID}`);
+            }
+
+            // Realtime instance mutation patch syncing into Realtime base
+            if (auth.currentUser) {
+                const pubRef = ref(db, 'publications');
+                onValue(pubRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const key = Object.keys(data).find(k => data[k].id === postID);
+                        if (key) {
+                            if (actionType === 'delete') {
+                                set(ref(db, 'publications/' + key), null);
+                            } else {
+                                update(ref(db, 'publications/' + key), post);
+                            }
+                        }
+                    }
+                }, { onlyOnce: true });
+            }
+
+            renderCoreTimeline();
+            syncProfileUI();
+            saveStateToHardware();
+        }
+
+        // Unified Network Discovery Engine
+        window.handleUnifiedSearch = function() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
             const grid = document.getElementById('search-results-grid');
             grid.innerHTML = "";
 
             if(!query) return;
 
-            Object.values(registeredUsers).forEach(u => {
-                if(u.uid.toLowerCase().includes(query) || u.name.toLowerCase().includes(query)) {
-                    grid.innerHTML += `
-                        <div class="bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div class="flex items-center space-x-3 cursor-pointer" onclick="lookupExternalProfile('${u.uid}')">
-                                <img src="${u.pfp}" class="w-8 h-8 rounded-full object-cover">
-                                <div>
-                                    <h4 class="text-xs font-bold">${u.name}</h4>
-                                    <p class="text-[10px] font-mono text-slate-500">@${u.uid}</p>
-                                </div>
-                            </div>
-                            <button onclick="lookupExternalProfile('${u.uid}')" class="bg-blue-600 px-3 py-1 rounded-lg text-[11px] font-bold">Inspect Node</button>
-                        </div>
-                    `;
+            // Search Peer Directories node logic execution
+            const filteredPeers = databaseState.peers.filter(p => p.name.toLowerCase().includes(query) || p.uid.toLowerCase().includes(query) || (p.profession && p.profession.toLowerCase().includes(query)));
+            
+            filteredPeers.forEach(peer => {
+                if(peer.uid === databaseState.currentUser.uid) return;
+                
+                const isFriendNode = databaseState.friendships.find(f => f.peerUID === peer.uid);
+                let actionBtnMarkup = `<button onclick="dispatchHandshakeRequest('${peer.uid}')" class="bg-blue-600 text-[10px] px-3 py-1.5 rounded-xl font-bold">Handshake</button>`;
+                
+                if(isFriendNode) {
+                    if(isFriendNode.status === 'friends') actionBtnMarkup = `<span class="text-green-500 font-bold text-[10px] bg-green-500/10 px-2 py-1 rounded-lg">Connected</span>`;
+                    if(isFriendNode.status === 'requested') actionBtnMarkup = `<span class="text-slate-500 text-[10px] bg-slate-800 px-2 py-1 rounded-lg">Pending Pipeline</span>`;
+                    if(isFriendNode.status === 'received') actionBtnMarkup = `<button onclick="confirmHandshakePipeline('${peer.uid}')" class="bg-emerald-600 text-[10px] px-3 py-1.5 rounded-xl font-bold">Accept Link</button>`;
                 }
+
+                const nodeRow = document.createElement('div');
+                nodeRow.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
+                nodeRow.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${peer.pfp}" class="w-8 h-8 rounded-full border border-slate-700 object-cover">
+                        <div>
+                            <h4 class="font-bold flex items-center gap-1">${peer.name} ${peer.isPremium ? '<span class="text-[9px] text-cyan-400 font-black">PRO</span>':''}</h4>
+                            <p class="text-[9px] text-slate-500 font-mono">@${peer.uid} ${peer.profession ? `| ${peer.profession}` : ''}</p>
+                        </div>
+                    </div>
+                    ${actionBtnMarkup}
+                `;
+                grid.appendChild(nodeRow);
             });
         }
 
-        // Profile Inspector Architecture Module
-        function lookupExternalProfile(targetUID) {
-            const target = Object.values(registeredUsers).find(u => u.uid === targetUID);
-            if(!target) return alert("System data index mismatch.");
+        // P2P Pipeline Intersect Handshake Control Protocol
+        window.dispatchHandshakeRequest = function(targetUID) {
+            databaseState.friendships.push({ peerUID: targetUID, status: 'requested' });
+            logEvent(`Initiated handshake verification request routing loop to: ${targetUID}`);
+            
+            if (auth.currentUser) {
+                set(ref(db, 'friendships/' + auth.currentUser.uid + '/' + targetUID), { status: 'requested' });
+                set(ref(db, 'friendships/' + targetUID + '/' + auth.currentUser.uid), { status: 'received' });
+            }
 
-            document.getElementById('inspector-avatar').src = target.pfp;
-            document.getElementById('inspector-name').innerText = target.name;
-            document.getElementById('inspector-uid').innerText = "@" + target.uid;
-            document.getElementById('inspector-bio').innerText = target.bio || "No status uploaded.";
+            handleUnifiedSearch();
+            saveStateToHardware();
+        }
 
-            const actions = document.getElementById('inspector-action-container');
-            actions.innerHTML = "";
+        window.confirmHandshakePipeline = function(targetUID) {
+            const rel = databaseState.friendships.find(f => f.peerUID === targetUID);
+            if(rel) rel.status = 'friends';
+            else databaseState.friendships.push({ peerUID: targetUID, status: 'friends' });
 
-            const self = registeredUsers[localUserSession.uid];
-            if(self.uid !== target.uid) {
-                actions.innerHTML = `
-                    <div class="flex flex-col space-y-2">
-                        <button onclick="sendEcosystemHandshake('${target.firebaseUID}')" class="w-full bg-blue-600 font-bold py-2 rounded-xl text-xs">Send Connection/Message Signal</button>
+            logEvent(`Synchronized verified handshake pipeline configuration node: ${targetUID}`);
+            
+            if (auth.currentUser) {
+                set(ref(db, 'friendships/' + auth.currentUser.uid + '/' + targetUID), { status: 'friends' });
+                set(ref(db, 'friendships/' + targetUID + '/' + auth.currentUser.uid), { status: 'friends' });
+            }
+
+            switchChatSubView('active');
+            renderDirectChatEngineList();
+            saveStateToHardware();
+        }
+
+        window.renderIncomingHandshakeRequests = function() {
+            const list = document.getElementById('incoming-requests-list');
+            list.innerHTML = "";
+
+            const incoming = databaseState.friendships.filter(f => f.status === 'received');
+            document.getElementById('request-badge-count').innerText = incoming.length;
+            if(incoming.length > 0) document.getElementById('request-badge-count').classList.remove('hidden');
+            else document.getElementById('request-badge-count').classList.add('hidden');
+
+            if(incoming.length === 0) {
+                list.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-6">No pending system link connection requests.</p>`;
+                return;
+            }
+
+            incoming.forEach(req => {
+                const profile = databaseState.peers.find(p => p.uid === req.peerUID) || { uid: req.peerUID, name: "Node Entity", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" };
+                
+                const item = document.createElement('div');
+                item.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <img src="${profile.pfp}" class="w-7 h-7 rounded-full object-cover">
+                        <div>
+                            <span class="font-bold block">${profile.name}</span>
+                            <span class="text-[9px] text-slate-500 font-mono">@${profile.uid}</span>
+                        </div>
+                    </div>
+                    <button onclick="confirmHandshakePipeline('${profile.uid}')" class="bg-emerald-600 hover:bg-emerald-700 text-[10px] px-3 py-1.5 rounded-xl font-bold">Accept Link</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.renderDirectChatEngineList = function() {
+            const list = document.getElementById('active-chats-list');
+            if(!list) return;
+            list.innerHTML = "";
+
+            const connected = databaseState.friendships.filter(f => f.status === 'friends');
+            if(connected.length === 0) {
+                list.innerHTML = `<div class="text-center p-8 border border-dashed border-slate-800 rounded-2xl text-xs text-slate-500">No communication links configured. Search peer IDs to instantiate link channels.</div>`;
+                return;
+            }
+
+            connected.forEach(conn => {
+                const peer = databaseState.peers.find(p => p.uid === conn.peerUID) || { uid: conn.peerUID, name: "External Terminal Node", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", bio: "" };
+                const thread = databaseState.chatThreads[peer.uid] || [];
+                const lastMsg = thread.length > 0 ? thread[thread.length - 1].body : "Pipeline connection clear. Channel active.";
+
+                const card = document.createElement('div');
+                card.className = "bg-darkcard p-3.5 rounded-xl border border-slate-800/60 hover:border-slate-700 flex items-center space-x-3 cursor-pointer transition";
+                card.onclick = () => instantiateChatWindowPipeline(peer.uid);
+                card.innerHTML = `
+                    <img src="${peer.pfp}" class="w-9 h-9 rounded-full object-cover border border-slate-700">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-xs font-bold text-slate-300 truncate">${peer.name}</h4>
+                            <span class="text-[8px] font-mono text-slate-600">P2P NODE</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 truncate mt-0.5">${lastMsg}</p>
                     </div>
                 `;
+                list.appendChild(card);
+            });
+            
+            // Sync handshake request indicators
+            const incoming = databaseState.friendships.filter(f => f.status === 'received');
+            const badge = document.getElementById('request-badge-count');
+            if(badge) {
+                badge.innerText = incoming.length;
+                if(incoming.length > 0) badge.classList.remove('hidden');
+                else badge.classList.add('hidden');
             }
-
-            openModal('inspector-profile-modal');
         }
 
-        // Trigger dynamic mapping loops for private message generation
-        function sendEcosystemHandshake(targetFirebaseUID) {
-            closeModal('inspector-profile-modal');
-            launchDirectChatSession(targetFirebaseUID);
-        }
-
-        // Realtime Private Messaging Pipeline Controller
-        function launchDirectChatSession(peerFirebaseUID) {
-            activeTargetChatUID = peerFirebaseUID;
-            const peer = registeredUsers[peerFirebaseUID];
-            if(!peer) return;
-
+        // Active Communication Window Drivers
+        window.instantiateChatWindowPipeline = function(peerUID) {
+            databaseState.activeTargetChatUID = peerUID;
+            const peer = databaseState.peers.find(p => p.uid === peerUID) || { uid: peerUID, name: "External Terminal", pfp: "" };
+            
             document.getElementById('chat-window-avatar').src = peer.pfp;
             document.getElementById('chat-window-name').innerText = peer.name;
-            document.getElementById('chat-window-uid').innerText = "@" + peer.uid;
-
-            openModal('chat-window-modal');
-            listenToChatStream(peerFirebaseUID);
+            document.getElementById('chat-window-uid').innerText = `@${peer.uid}`;
+            
+            document.getElementById('chat-window-modal').classList.remove('hidden');
+            renderChatMessagesStreamPacket();
+            logEvent(`Connected target direct transmission link stream: User @${peerUID}`);
         }
 
-        // Listening engine binding messages into structured timelines
-        function listenToChatStream(peerUID) {
-            const { db, ref, onValue } = window.authModule;
-            const selfUID = localUserSession.uid;
-            const threadID = selfUID < peerUID ? `${selfUID}_${peerUID}` : `${peerUID}_${selfUID}`;
+        window.closeChatWindow = function() {
+            databaseState.activeTargetChatUID = null;
+            document.getElementById('chat-window-modal').classList.add('hidden');
+            renderDirectChatEngineList();
+        }
 
-            onValue(ref(db, 'chats/' + threadID), (snapshot) => {
-                const msgs = snapshot.val() || {};
-                const stream = document.getElementById('chat-messages-stream');
-                stream.innerHTML = "";
+        window.renderChatMessagesStreamPacket = function() {
+            const stream = document.getElementById('chat-messages-stream');
+            stream.innerHTML = "";
 
-                Object.values(msgs).forEach(m => {
-                    const isSelf = m.sender === selfUID;
-                    const alignment = isSelf ? 'self-end bg-blue-600 text-white' : 'self-start bg-slate-800 text-slate-200';
-                    stream.innerHTML += `
-                        <div class="max-w-[75%] p-2.5 rounded-2xl ${alignment} mb-1 flex flex-col">
-                            <span>${m.body}</span>
-                            <span class="text-[8px] text-slate-400 self-end mt-0.5">${m.timestamp || ''}</span>
-                        </div>
-                    `;
-                });
-                stream.scrollTop = stream.scrollHeight;
+            const thread = databaseState.chatThreads[databaseState.activeTargetChatUID] || [];
+            thread.forEach((msg, index) => {
+                const isMe = msg.sender === databaseState.currentUser.uid;
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex flex-col max-w-[75%] ${isMe ? 'self-end items-end' : 'self-start items-start'} mb-1`;
+
+                let bodyMarkup = `<div class="p-3 rounded-2xl text-slate-200 leading-relaxed break-words shadow-md ${isMe ? 'bg-blue-600 rounded-tr-none' : 'bg-slate-800 rounded-tl-none'}">${msg.body}</div>`;
+                if(msg.type === 'image') {
+                    bodyMarkup = `<div class="rounded-2xl overflow-hidden border border-slate-700/50 bg-slate-900 shadow-xl"><img src="${msg.body}" class="max-w-full max-h-40 object-cover"></div>`;
+                }
+
+                // Reaction matrices elements string mapping loop injection 
+                let rxMarkup = "";
+                if(msg.reactions && msg.reactions.length > 0) {
+                    rxMarkup = `<div class="flex gap-0.5 mt-1 -translate-y-1.5 px-1 bg-slate-900/90 border border-slate-800 rounded-full text-[9px] shadow-sm cursor-pointer">${msg.reactions.join('')}</div>`;
+                }
+
+                wrapper.innerHTML = `
+                    ${bodyMarkup}
+                    ${rxMarkup}
+                    <div class="text-[8px] text-slate-600 font-mono mt-0.5 px-1 flex gap-2 items-center">
+                        <span>${msg.timestamp}</span>
+                        <button onclick="appendReactionNodeMessagePacket(${index}, '👍')" class="opacity-0 hover:opacity-100 transition-opacity">👍</button>
+                        <button onclick="appendReactionNodeMessagePacket(${index}, '🔥')" class="opacity-0 hover:opacity-100 transition-opacity">🔥</button>
+                    </div>
+                `;
+                stream.appendChild(wrapper);
             });
+            stream.scrollTop = stream.scrollHeight;
         }
 
-        // Send chat streams to DB instantly
-        function dispatchDirectMessage() {
-            const input = document.getElementById('chat-input-field');
-            const body = input.value.trim();
-            if(!body || !activeTargetChatUID) return;
+        window.dispatchDirectMessage = function() {
+            const field = document.getElementById('chat-input-field');
+            if(!field.value.trim() || !databaseState.activeTargetChatUID) return;
 
-            const { db, ref, push } = window.authModule;
-            const selfUID = localUserSession.uid;
-            const threadID = selfUID < activeTargetChatUID ? `${selfUID}_${activeTargetChatUID}` : `${activeTargetChatUID}_${selfUID}`;
-
-            const payload = {
-                sender: selfUID,
-                body: body,
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            const newMsg = {
+                sender: databaseState.currentUser.uid,
+                type: 'text',
+                body: field.value,
+                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                reactions: []
             };
 
-            push(ref(db, 'chats/' + threadID), payload).then(() => {
-                input.value = "";
-            });
-        }
-
-        function closeChatWindow() {
-            closeModal('chat-window-modal');
-            activeTargetChatUID = null;
-        }
-
-        // Interface synchronization helpers
-        function syncProfileUI() {
-            const profile = registeredUsers[localUserSession?.uid];
-            if(!profile) return;
-            document.getElementById('profile-display-name').innerText = profile.name;
-            document.getElementById('profile-display-avatar').src = profile.pfp;
-            document.getElementById('profile-display-uid').innerText = "@" + profile.uid;
-        }
-
-        function switchTab(tabId) {
-            ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
-            document.getElementById(tabId + '-screen').classList.remove('hidden');
-
-            if(tabId === 'chat') {
-                renderActiveChatsGrid();
+            if(!databaseState.chatThreads[databaseState.activeTargetChatUID]) {
+                databaseState.chatThreads[databaseState.activeTargetChatUID] = [];
             }
+            databaseState.chatThreads[databaseState.activeTargetChatUID].push(newMsg);
+            
+            if (auth.currentUser) {
+                push(ref(db, 'chats/' + auth.currentUser.uid + '/' + databaseState.activeTargetChatUID), newMsg);
+                push(ref(db, 'chats/' + databaseState.activeTargetChatUID + '/' + auth.currentUser.uid), newMsg);
+            }
+
+            field.value = "";
+            renderChatMessagesStreamPacket();
+            saveStateToHardware();
         }
 
-        function renderActiveChatsGrid() {
-            const grid = document.getElementById('active-chats-list');
-            grid.innerHTML = "";
+        window.processDirectChatFile = function() {
+            const input = document.getElementById('chat-file-input');
+            if(!input.files[0] || !databaseState.activeTargetChatUID) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newMsg = {
+                    sender: databaseState.currentUser.uid,
+                    type: 'image',
+                    body: e.target.result,
+                    timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    reactions: []
+                };
+                if(!databaseState.chatThreads[databaseState.activeTargetChatUID]) databaseState.chatThreads[databaseState.activeTargetChatUID] = [];
+                databaseState.chatThreads[databaseState.activeTargetChatUID].push(newMsg);
+                
+                if (auth.currentUser) {
+                    push(ref(db, 'chats/' + auth.currentUser.uid + '/' + databaseState.activeTargetChatUID), newMsg);
+                    push(ref(db, 'chats/' + databaseState.activeTargetChatUID + '/' + auth.currentUser.uid), newMsg);
+                }
+
+                renderChatMessagesStreamPacket();
+                saveStateToHardware();
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        window.appendReactionNodeMessagePacket = function(msgIndex, emojiStr) {
+            const thread = databaseState.chatThreads[databaseState.activeTargetChatUID];
+            if(!thread || !thread[msgIndex]) return;
             
-            Object.values(registeredUsers).forEach(u => {
-                if(u.firebaseUID !== localUserSession.uid) {
-                    grid.innerHTML += `
-                        <div onclick="launchDirectChatSession('${u.firebaseUID}')" class="bg-darkcard p-3 rounded-xl border border-slate-900 flex items-center space-x-3 cursor-pointer hover:border-slate-800 transition">
-                            <img src="${u.pfp}" class="w-9 h-9 rounded-full object-cover">
-                            <div>
-                                <h4 class="text-xs font-bold">${u.name}</h4>
-                                <p class="text-[10px] text-slate-500 font-mono">Open continuous sync pipeline</p>
-                            </div>
+            if(!thread[msgIndex].reactions) thread[msgIndex].reactions = [];
+            if(thread[msgIndex].reactions.includes(emojiStr)) {
+                thread[msgIndex].reactions = thread[msgIndex].reactions.filter(e => e !== emojiStr);
+            } else {
+                if(thread[msgIndex].reactions.length < 3) thread[msgIndex].reactions.push(emojiStr);
+            }
+
+            if (auth.currentUser) {
+                update(ref(db, 'chats/' + auth.currentUser.uid + '/' + databaseState.activeTargetChatUID + '/' + msgIndex), { reactions: thread[msgIndex].reactions });
+                update(ref(db, 'chats/' + databaseState.activeTargetChatUID + '/' + auth.currentUser.uid + '/' + msgIndex), { reactions: thread[msgIndex].reactions });
+            }
+
+            renderChatMessagesStreamPacket();
+            saveStateToHardware();
+        }
+
+        // Inspection Node Viewer Modules
+        window.inspectPostNodePayload = function(postID) {
+            const post = databaseState.publications.find(p => p.id === postID);
+            if(!post) return;
+
+            const modalBody = document.getElementById('expanded-post-payload');
+            modalBody.innerHTML = "";
+
+            let commentsMarkup = "";
+            if(post.comments.length === 0) {
+                commentsMarkup = `<p class="text-[11px] text-slate-600 text-center py-4">No discussions verified inside this node thread.</p>`;
+            } else {
+                post.comments.forEach(c => {
+                    commentsMarkup += `
+                        <div class="bg-slate-900/60 p-2.5 border border-slate-900 rounded-xl space-y-1">
+                            <div class="flex justify-between text-[9px] text-slate-500 font-mono"><span>@${c.userUID}</span><span>${c.timestamp}</span></div>
+                            <p class="text-xs text-slate-300">${c.body}</p>
                         </div>
                     `;
-                }
+                });
+            }
+
+            modalBody.innerHTML = `
+                <div class="bg-slate-900/40 p-4 border border-slate-900 rounded-2xl">
+                    <p class="text-xs text-slate-200 ${post.fontClass}">${post.content}</p>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <label class="text-[10px] font-bold tracking-widest text-slate-500 uppercase block">Discussions (${post.comments.length})</label>
+                    <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">${commentsMarkup}</div>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <input type="text" id="node-comment-input" placeholder="Inject thread reply narrative..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
+                    <button onclick="injectThreadDiscussionCommentNode(${post.id})" class="bg-blue-600 text-white font-bold px-4 rounded-xl text-xs transition">Reply</button>
+                </div>
+            `;
+            openModal('expanded-post-modal');
+        }
+
+        window.injectThreadDiscussionCommentNode = function(postID) {
+            const input = document.getElementById('node-comment-input');
+            if(!input || !input.value.trim()) return;
+
+            const post = databaseState.publications.find(p => p.id === postID);
+            if(!post) return;
+
+            post.comments.push({
+                userUID: databaseState.currentUser.uid,
+                body: input.value,
+                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            });
+
+            if (auth.currentUser) {
+                const pubRef = ref(db, 'publications');
+                onValue(pubRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const key = Object.keys(data).find(k => data[k].id === postID);
+                        if (key) {
+                            update(ref(db, 'publications/' + key), { comments: post.comments });
+                        }
+                    }
+                }, { onlyOnce: true });
+            }
+
+            logEvent(`Injected discussion transaction packet thread commentary to Node ${postID}`);
+            inspectPostNodePayload(postID);
+            renderCoreTimeline();
+            saveStateToHardware();
+        }
+
+        // Distribution Router (Sharing Elements) Modules
+        window.openShareDistributionModal = function(postID) {
+            databaseState.activeTargetPostShareID = postID;
+            openModal('share-distribution-modal');
+            filterShareDistributionGrid();
+        }
+
+        window.filterShareDistributionGrid = function() {
+            const query = document.getElementById('share-peer-search').value.toLowerCase().trim();
+            const grid = document.getElementById('share-distribution-peers-grid');
+            grid.innerHTML = "";
+
+            const targetPeers = databaseState.friendships.filter(f => f.status === 'friends');
+            const records = targetPeers.map(f => databaseState.peers.find(p => p.uid === f.peerUID)).filter(p => p && (p.name.toLowerCase().includes(query) || p.uid.toLowerCase().includes(query)));
+
+            if(records.length === 0) {
+                grid.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No active pipeline interfaces found.</p>`;
+                return;
+            }
+
+            records.forEach(peer => {
+                const row = document.createElement('div');
+                row.className = "bg-slate-900/40 p-2.5 rounded-xl border border-slate-900 flex justify-between items-center text-xs";
+                row.innerHTML = `
+                    <span class="font-bold">${peer.name} <span class="text-[9px] font-mono text-slate-500">@${peer.uid}</span></span>
+                    <button onclick="executeSharePacketDispatchRouting('${peer.uid}')" class="bg-blue-600 text-[10px] font-bold px-3 py-1 rounded-lg">Route Packets</button>
+                `;
+                grid.appendChild(row);
             });
         }
 
-        function switchChatSubView(view) {
-            toggleElement('chat-menu');
-            if(view === 'active') {
-                document.getElementById('active-chats-list').classList.remove('hidden');
-                document.getElementById('incoming-requests-list').classList.add('hidden');
+        window.executeSharePacketDispatchRouting = function(peerUID) {
+            const post = databaseState.publications.find(p => p.id === databaseState.activeTargetPostShareID);
+            if(!post) return;
+
+            const packetBody = `[SHARED ARCHIVE COMPILATION NODE]\n"${post.content}"\nOrigin Author Identity Reference Node: @${post.authorUID}`;
+            const newMsg = {
+                sender: databaseState.currentUser.uid,
+                type: 'text',
+                body: packetBody,
+                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                reactions: []
+            };
+
+            if(!databaseState.chatThreads[peerUID]) databaseState.chatThreads[peerUID] = [];
+            databaseState.chatThreads[peerUID].push(newMsg);
+            
+            if (auth.currentUser) {
+                push(ref(db, 'chats/' + auth.currentUser.uid + '/' + peerUID), newMsg);
+                push(ref(db, 'chats/' + peerUID + '/' + auth.currentUser.uid), newMsg);
             }
+
+            closeModal('share-distribution-modal');
+            logEvent(`Routed transaction matrix payload mapping to peer terminal: @${peerUID}`);
+            saveStateToHardware();
+            alert("Payload successfully shared.");
         }
 
-        function executeLogout() {
-            if(window.authModule) {
-                window.authModule.signOut(window.authModule.auth).then(() => {
-                    window.location.reload();
+        // Subsetting Control Panel Management Layers
+        window.openSubSettingPage = function(subsetKey) {
+            closeModal('settings-hub-modal');
+            const title = document.getElementById('subsetting-title');
+            const body = document.getElementById('subsetting-dynamic-body');
+            body.innerHTML = "";
+
+            if(subsetKey === 'edit-profile') {
+                title.innerText = "Edit Core Matrix Settings";
+                
+                let selectOptions = `<option value="">Select Domain Specialization Matrix</option>`;
+                FIXED_PROFESSIONS.forEach(p => {
+                    selectOptions += `<option value="${p}" ${databaseState.currentUser.profession === p ? 'selected':''}>${p}</option>`;
+                });
+
+                body.innerHTML = `
+                    <div class="space-y-4">
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Identity Tag (Name)</label><input type="text" id="edit-name" value="${databaseState.currentUser.name}" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl focus:outline-none"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Ecosystem Biography Vector</label><textarea id="edit-bio" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl focus:outline-none h-20 resize-none">${databaseState.currentUser.bio}</textarea></div>
+                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Domain Operations Cluster</label><select id="edit-profession" class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl focus:outline-none">${selectOptions}</select></div>
+                        <button onclick="saveCoreProfileModificationsPipeline()" class="w-full bg-blue-600 font-bold py-2.5 rounded-xl transition mt-2">Commit Structural Variations</button>
+                    </div>
+                `;
+            } else if(subsetKey === 'history') {
+                title.innerText = "System Event Logs Registry";
+                if(databaseState.auditLogs.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 py-4 text-center">Audit trail ledger empty.</p>`;
+                } else {
+                    databaseState.auditLogs.forEach(log => {
+                        const row = document.createElement('div');
+                        row.className = "p-2 border-b border-slate-900 text-[11px] flex justify-between gap-4 text-slate-400";
+                        row.innerHTML = `<span>${log.desc}</span><span class="font-mono text-slate-600 shrink-0">${log.timestamp}</span>`;
+                        body.appendChild(row);
+                    });
+                }
+            } else if(subsetKey === 'liked') {
+                title.innerText = "Appreciated Streams Matrix";
+                const likedPosts = databaseState.publications.filter(p => p.likes.includes(databaseState.currentUser.uid));
+                if(likedPosts.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 py-4 text-center">No nodes validated via appreciation channels.</p>`;
+                } else {
+                    likedPosts.forEach(p => {
+                        const item = document.createElement('div');
+                        item.className = "p-2.5 bg-slate-900/40 border border-slate-900 rounded-xl mb-2";
+                        item.innerHTML = `<p class="truncate text-slate-300">"${p.content}"</p><span class="text-[9px] font-mono text-slate-600">ID Ref: ${p.id}</span>`;
+                        body.appendChild(item);
+                    });
+                }
+            } else if(subsetKey === 'commented') {
+                title.innerText = "Verified Stream Discussions Node Matrix";
+                let logsFound = false;
+                databaseState.publications.forEach(p => {
+                    const myComments = p.comments.filter(c => c.userUID === databaseState.currentUser.uid);
+                    if(myComments.length > 0) {
+                        logsFound = true;
+                        myComments.forEach(c => {
+                            const item = document.createElement('div');
+                            item.className = "p-2.5 bg-slate-900/40 border border-slate-900 rounded-xl mb-2 space-y-1";
+                            item.innerHTML = `<div class="text-[9px] text-slate-500 flex justify-between"><span>Node thread target: ${p.id}</span><span>${c.timestamp}</span></div><p class="text-slate-300">"${c.body}"</p>`;
+                            body.appendChild(item);
+                        });
+                    }
+                });
+                if(!logsFound) body.innerHTML = `<p class="text-slate-600 py-4 text-center">No structural commentary logs discovered.</p>`;
+            } else if(subsetKey === 'saved') {
+                title.innerText = "Archived Workspace Collections";
+                const saved = databaseState.publications.filter(p => p.saves.includes(databaseState.currentUser.uid));
+                if(saved.length === 0) {
+                    body.innerHTML = `<p class="text-slate-600 py-4 text-center">No dataset instances registry collections stored.</p>`;
+                } else {
+                    saved.forEach(p => {
+                        const item = document.createElement('div');
+                        item.className = "p-2.5 bg-slate-900/40 border border-slate-900 rounded-xl mb-2 cursor-pointer hover:border-slate-700" ;
+                        item.onclick = () => { closeModal('subsetting-view-modal'); inspectPostNodePayload(p.id); };
+                        item.innerHTML = `<p class="truncate text-slate-300">"${p.content}"</p><span class="text-[9px] text-slate-500 font-mono">Author node: @${p.authorUID}</span>`;
+                        body.appendChild(item);
+                    });
+                }
+            }
+            openModal('subsetting-view-modal');
+        }
+
+        window.saveCoreProfileModificationsPipeline = function() {
+            const name = document.getElementById('edit-name').value.trim();
+            const bio = document.getElementById('edit-bio').value.trim();
+            const prof = document.getElementById('edit-profession').value;
+
+            if(!name) return;
+            databaseState.currentUser.name = name;
+            databaseState.currentUser.bio = bio;
+            databaseState.currentUser.profession = prof;
+
+            if (auth.currentUser) {
+                update(ref(db, 'users/' + auth.currentUser.uid), {
+                    name: name,
+                    bio: bio,
+                    profession: prof
                 });
             }
+
+            logEvent("Updated core ecosystem matrix values profile properties schema.");
+            closeModal('subsetting-view-modal');
+            syncProfileUI();
+            saveStateToHardware();
         }
 
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleElement(id) { document.getElementById(id).classList.toggle('hidden'); }
+        // Subscription Tier Logic Operations
+        window.handleSubscriptionActivation = function() {
+            databaseState.currentUser.isPremium = true;
+            logEvent("Membership database configuration upgraded to VIP Matrix.");
+            
+            if (auth.currentUser) {
+                update(ref(db, 'users/' + auth.currentUser.uid), { isPremium: true });
+            }
+
+            saveStateToHardware();
+            syncProfileUI();
+            closeModal('subscription-modal');
+            
+            // Activate dynamic panel selectors inside content creation module
+            document.getElementById('vip-font-selector-container').classList.remove('hidden');
+            openModal('premium-dashboard-modal');
+        }
+
+        window.executePremiumTweak = function(factor, selectionValue) {
+            const user = databaseState.currentUser;
+            if(factor === 'theme') user.premiumTheme = selectionValue;
+            if(factor === 'font') user.premiumFont = selectionValue;
+            if(factor === 'frame') user.premiumFrame = selectionValue;
+            if(factor === 'badge') user.hasVerifiedBadge = selectionValue;
+
+            if (auth.currentUser) {
+                update(ref(db, 'users/' + auth.currentUser.uid), {
+                    premiumTheme: user.premiumTheme,
+                    premiumFont: user.premiumFont,
+                    premiumFrame: user.premiumFrame,
+                    hasVerifiedBadge: user.hasVerifiedBadge
+                });
+            }
+
+            saveStateToHardware();
+            syncProfileUI();
+            alert("Dynamic parameters updated.");
+        }
+
+        window.processGroupGeneration = function() {
+            const nameInput = document.getElementById('group-name-input');
+            if(!nameInput || !nameInput.value.trim()) return;
+            
+            const channelId = 'group_' + Date.now();
+            const newChannel = {
+                uid: channelId,
+                name: nameInput.value.trim(),
+                pfp: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=100",
+                bio: "Assembled dynamic chat channel node architecture.",
+                profession: "Group Channel",
+                isPremium: false
+            };
+            
+            databaseState.peers.push(newChannel);
+            databaseState.friendships.push({ peerUID: channelId, status: 'friends' });
+            
+            if (auth.currentUser) {
+                set(ref(db, 'users/' + channelId), newChannel);
+                set(ref(db, 'friendships/' + auth.currentUser.uid + '/' + channelId), { status: 'friends' });
+            }
+
+            nameInput.value = "";
+            closeModal('group-modal');
+            logEvent(`Assembled and bundled dynamic group channel channel: ${newChannel.name}`);
+            renderDirectChatEngineList();
+            saveStateToHardware();
+        }
+
+        // System Initialization Bootstrap Setup Loop
+        recoverStateFromHardware();
+        
+        // Setup initial loop mock notifications received trigger simulation mechanics
+        if(databaseState.friendships.length === 0) {
+            databaseState.friendships.push({ peerUID: 'operator_alpha', status: 'received' });
+        }
     </script>
 </body>
 </html>
