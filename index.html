@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Stardust Hub - Ultimate Production Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -100,19 +101,23 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                         </button>
                         <div id="chat-menu" class="hidden absolute right-0 mt-2 w-48 bg-darkcard border border-slate-800 rounded-xl shadow-2xl z-50 text-xs">
-                            <button onclick="switchChatSubView('active')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition">Active Communications</button>
-                            <button onclick="switchChatSubView('requests')" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition border-t border-slate-800 flex justify-between items-center">
-                                <span>Verification Requests</span>
-                                <span id="request-badge-count" class="bg-red-500 text-white font-bold rounded-full text-[10px] px-2 py-0.5 hidden">0</span>
-                            </button>
-                            <button onclick="openGroupCreationModal()" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition border-t border-slate-800 text-cyan-400 font-bold">Create Group Chat</button>
+                            <button onclick="openGroupCreationModal()" class="w-full text-left px-4 py-3 hover:bg-slate-800 transition text-cyan-400 font-bold">Create Group Chat</button>
                         </div>
                     </div>
                 </div>
 
-                <div id="chat-sub-container">
-                    <div id="active-chats-list" class="space-y-2"></div>
-                    <div id="incoming-requests-list" class="hidden space-y-2"></div>
+                <div id="chat-sub-container" class="space-y-4">
+                    <div>
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 pl-1 flex justify-between items-center">
+                            <span>Verification Requests</span>
+                            <span id="request-badge-count" class="bg-red-500 text-white font-bold rounded-full text-[10px] px-2 py-0.5 hidden">0</span>
+                        </h4>
+                        <div id="incoming-requests-list" class="space-y-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 pl-1">Active Communications</h4>
+                        <div id="active-chats-list" class="space-y-2"></div>
+                    </div>
                 </div>
             </section>
 
@@ -172,7 +177,7 @@
             <button onclick="switchTab('home')" class="text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></button>
             <button onclick="switchTab('chat')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                <span id="global-unseen-badge" class="absolute top-2 right-6 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                <span id="global-unseen-badge" class="absolute top-1 right-6 bg-red-500 text-white font-mono text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
             </button>
             <button onclick="switchTab('search')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
             <button onclick="switchTab('profile')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></button>
@@ -200,6 +205,35 @@
         </div>
     </div>
 
+    <div id="call-interface-overlay" class="hidden fixed inset-0 bg-slate-950/95 z-55 flex flex-col items-center justify-between p-6 max-w-md mx-auto w-full">
+        <div class="text-center mt-8 space-y-2">
+            <h3 id="call-status-lbl" class="text-cyan-400 text-xs font-black uppercase tracking-widest">Establishing Secure Stream Connection</h3>
+            <h2 id="call-peer-name" class="text-xl font-black">Connecting Peer User</h2>
+            <p id="call-peer-uid" class="text-slate-500 text-xs font-mono"></p>
+        </div>
+        
+        <div class="w-full flex-1 flex flex-col items-center justify-center my-4 relative bg-slate-900 rounded-3xl overflow-hidden border border-slate-800">
+            <video id="call-remote-video" autoplay playsinline class="w-full h-full object-cover"></video>
+            <video id="call-local-video" autoplay muted playsinline class="absolute top-4 right-4 w-28 h-40 bg-black rounded-xl object-cover border border-slate-700 z-10"></video>
+        </div>
+
+        <div id="incoming-call-actions" class="hidden flex gap-4 w-full mb-4">
+            <button onclick="acceptIncomingCallSignal()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                Accept Stream
+            </button>
+            <button onclick="rejectIncomingCallSignal()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2">
+                Reject
+            </button>
+        </div>
+
+        <div id="active-call-actions" class="w-full flex justify-center pb-4">
+            <button onclick="terminateCallSession()" class="bg-red-600 hover:bg-red-700 text-white p-4 rounded-full transition shadow-xl shadow-red-600/30">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
+            </button>
+        </div>
+    </div>
+
     <div id="chat-window-modal" class="hidden fixed inset-0 bg-darkbg z-50 flex flex-col max-w-md mx-auto w-full h-full border-x border-slate-900 shadow-2xl">
         <header class="p-4 bg-darkcard border-b border-slate-900 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" id="chat-header-identity-trigger">
@@ -209,7 +243,16 @@
                     <p id="chat-window-uid" class="text-[9px] text-slate-500 font-mono"></p>
                 </div>
             </div>
-            <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Disconnect</button>
+            
+            <div class="flex items-center space-x-2">
+                <button onclick="initializeVoiceCallBroadcast('audio')" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                </button>
+                <button onclick="initializeVoiceCallBroadcast('video')" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                </button>
+                <button onclick="closeChatWindow()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs font-bold">Disconnect</button>
+            </div>
         </header>
         <div id="chat-messages-stream" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar text-xs flex flex-col relative"></div>
         
@@ -362,6 +405,11 @@
             longPressTimer: null
         };
 
+        // Unlimited P2P Calling Engine Variables
+        let peerInstance = null;
+        let ongoingCallObject = null;
+        let nativeMediaStream = null;
+
         window.saveStateToHardware = function() { localStorage.setItem("STARDUST_CORE_DB_PROD", JSON.stringify(databaseState)); }
         window.recoverStateFromHardware = function() {
             const raw = localStorage.getItem("STARDUST_CORE_DB_PROD");
@@ -370,7 +418,6 @@
 
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
 
-        // Switch panel between Login and Signup View
         window.switchAuthView = function(view) {
             const desc = document.getElementById('auth-screen-desc');
             if(view === 'signup') {
@@ -384,39 +431,29 @@
             }
         }
 
-        // Handle Create New Account (Signup)
         window.handleCustomSystemSignup = function() {
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value.trim();
-
-            if(!email || !password) {
-                alert("Please fill all structural parameters.");
-                return;
-            }
-
+            if(!email || !password) { alert("Please fill all structural parameters."); return; }
             document.getElementById('btn-text-signup').classList.add('hidden');
             document.getElementById('btn-spinner-signup').classList.remove('hidden');
-
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     const user = userCredential.user;
                     const assignedUID = generateSixDigitUID();
-
                     databaseState.currentUser.email = user.email;
                     databaseState.currentUser.realFirebaseUID = user.uid;
                     databaseState.currentUser.uid = assignedUID;
                     databaseState.currentUser.name = "Node_" + assignedUID;
-
-                    // Save custom profiles in Realtime Database mapped to assigned UID
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
                         document.getElementById('login-screen').classList.add('hidden');
                         document.getElementById('app-layout').classList.remove('hidden');
-                        listenToGlobalSyncChannels(user.uid);
+                        listenToGlobalSyncChannels(assignedUID);
+                        initializePeerConnectionNode(assignedUID);
                         saveStateToHardware();
-                        
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
-                        alert("Account Successfully Created! Your Unique UID is: " + assignedUID);
+                        alert("Account Successfully Created! UID: " + assignedUID);
                     });
                 })
                 .catch((error) => {
@@ -426,38 +463,26 @@
                 });
         }
 
-        // Handle Dual Mode Login (Email OR UID verification)
         window.handleCustomSystemLogin = function() {
             const identifier = document.getElementById('login-identifier').value.trim();
             const password = document.getElementById('login-password').value.trim();
-
-            if(!identifier || !password) {
-                alert("Please enter credentials mapping keys.");
-                return;
-            }
-
+            if(!identifier || !password) { alert("Please enter credentials mapping keys."); return; }
             document.getElementById('btn-text-login').classList.add('hidden');
             document.getElementById('btn-spinner-login').classList.remove('hidden');
-
-            // Scenario 1: User tried to login directly via Email
             if(identifier.includes('@')) {
                 executeFirebaseSignIn(identifier, password);
-            } 
-            // Scenario 2: User provided a 6-Digit unique identification UID
-            else {
+            } else {
                 onValue(ref(db, 'users'), (snapshot) => {
                     const data = snapshot.val();
                     let targetEmail = null;
                     if(data) {
                         const targetUserNode = Object.values(data).find(p => p.uid === identifier);
-                        if(targetUserNode && targetUserNode.email) {
-                            targetEmail = targetUserNode.email;
-                        }
+                        if(targetUserNode && targetUserNode.email) { targetEmail = targetUserNode.email; }
                     }
                     if(targetEmail) {
                         executeFirebaseSignIn(targetEmail, password);
                     } else {
-                        alert("Invalid Session Request: Assigned UID not mapped inside framework.");
+                        alert("Invalid Session Request: Assigned UID not found.");
                         document.getElementById('btn-text-login').classList.remove('hidden');
                         document.getElementById('btn-spinner-login').classList.add('hidden');
                     }
@@ -468,31 +493,43 @@
         function executeFirebaseSignIn(email, password) {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // Session established successfully!
-                    document.getElementById('btn-text-login').classList.remove('hidden');
-                    document.getElementById('btn-spinner-login').classList.add('hidden');
+                    onValue(ref(db, 'users'), (snapshot) => {
+                        const data = snapshot.val();
+                        if(data) {
+                            const mappedNode = Object.values(data).find(p => p.realFirebaseUID === userCredential.user.uid);
+                            if(mappedNode) {
+                                databaseState.currentUser = mappedNode;
+                                document.getElementById('login-screen').classList.add('hidden');
+                                document.getElementById('app-layout').classList.remove('hidden');
+                                listenToGlobalSyncChannels(mappedNode.uid);
+                                initializePeerConnectionNode(mappedNode.uid);
+                                saveStateToHardware();
+                            }
+                        }
+                        document.getElementById('btn-text-login').classList.remove('hidden');
+                        document.getElementById('btn-spinner-login').classList.add('hidden');
+                    }, { onlyOnce: true });
                 })
                 .catch((error) => {
-                    alert("Authentication Failure: " + error.message);
+                    alert("Authentication Denied: " + error.message);
                     document.getElementById('btn-text-login').classList.remove('hidden');
                     document.getElementById('btn-spinner-login').classList.add('hidden');
                 });
         }
 
-        // Standard Authorization Listeners Lifecycle
+        // Auto-Login Persistent Pipeline Integration
         onAuthStateChanged(auth, (user) => {
-            if(user) {
-                recoverStateFromHardware();
+            if (user) {
                 onValue(ref(db, 'users'), (snapshot) => {
                     const data = snapshot.val();
                     if(data) {
-                        const profileMatch = Object.values(data).find(p => p.realFirebaseUID === user.uid);
-                        if(profileMatch) {
-                            databaseState.currentUser = profileMatch;
+                        const mappedNode = Object.values(data).find(p => p.realFirebaseUID === user.uid);
+                        if(mappedNode) {
+                            databaseState.currentUser = mappedNode;
                             document.getElementById('login-screen').classList.add('hidden');
                             document.getElementById('app-layout').classList.remove('hidden');
-                            listenToGlobalSyncChannels(user.uid);
-                            renderActiveUserProfileCanvas();
+                            listenToGlobalSyncChannels(mappedNode.uid);
+                            initializePeerConnectionNode(mappedNode.uid);
                             saveStateToHardware();
                         }
                     }
@@ -506,48 +543,137 @@
         window.executeLogout = function() {
             signOut(auth).then(() => {
                 localStorage.removeItem("STARDUST_CORE_DB_PROD");
-                closeModal('settings-hub-modal');
+                if(peerInstance) peerInstance.destroy();
                 location.reload();
             });
         }
 
-        // Sync and Engine Render Routines [Maintained structurally from original logic]
-        function listenToGlobalSyncChannels(fbUID) {
-            onValue(ref(db, 'posts'), (snapshot) => {
-                const data = snapshot.val();
-                databaseState.publications = data ? Object.values(data).reverse() : [];
-                renderStructuralFeedsPipeline();
-            });
-            onValue(ref(db, 'users'), (snapshot) => {
-                const data = snapshot.val();
-                if(data) {
-                    databaseState.peers = Object.values(data).filter(p => p.realFirebaseUID !== fbUID);
-                    const freshSelf = Object.values(data).find(p => p.realFirebaseUID === fbUID);
-                    if(freshSelf) {
-                        databaseState.currentUser = freshSelf;
-                        renderActiveUserProfileCanvas();
-                    }
-                }
-                renderPeerIdentitiesSearchCanvas();
-            });
-            onValue(ref(db, 'friendships'), (snapshot) => {
-                databaseState.friendships = snapshot.val() || {};
-                evaluateIncomingHandshakeBadges();
-                renderNetworkFriendsInterface();
-            });
-            onValue(ref(db, 'chats'), (snapshot) => {
-                databaseState.chatThreads = snapshot.val() || {};
-                renderStructuralMessageThreads();
-                renderChatHistoryStream();
+        function initializePeerConnectionNode(uid) {
+            peerInstance = new Peer('stardust-' + uid);
+            peerInstance.on('call', (incomingCall) => {
+                ongoingCallObject = incomingCall;
+                const senderUID = incomingCall.peer.replace('stardust-', '');
+                onValue(ref(db, 'users/' + senderUID), (snap) => {
+                    const userData = snap.val();
+                    document.getElementById('call-peer-name').innerText = userData ? userData.name : 'Unknown Node';
+                    document.getElementById('call-peer-uid').innerText = '@' + senderUID;
+                    document.getElementById('call-status-lbl').innerText = 'Incoming Secure Call Request...';
+                    document.getElementById('incoming-call-actions').classList.remove('hidden');
+                    document.getElementById('active-call-actions').classList.add('hidden');
+                    document.getElementById('call-interface-overlay').classList.remove('hidden');
+                }, { onlyOnce: true });
             });
         }
 
-        function renderActiveUserProfileCanvas() {
-            document.getElementById('profile-display-name').innerText = databaseState.currentUser.name || "Anonymous";
-            document.getElementById('profile-display-uid').innerText = "@" + (databaseState.currentUser.uid || "000000");
-            document.getElementById('profile-display-bio').innerText = databaseState.currentUser.bio || "No structural bio injected.";
-            document.getElementById('profile-display-avatar').src = databaseState.currentUser.pfp || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150";
+        window.initializeVoiceCallBroadcast = function(mode) {
+            if(!databaseState.activeTargetChatUID) return;
+            const targetPeerID = 'stardust-' + databaseState.activeTargetChatUID;
             
+            document.getElementById('call-status-lbl').innerText = 'Requesting Stream Feed Access...';
+            document.getElementById('incoming-call-actions').classList.add('hidden');
+            document.getElementById('active-call-actions').classList.remove('hidden');
+            document.getElementById('call-interface-overlay').classList.remove('hidden');
+            
+            onValue(ref(db, 'users/' + databaseState.activeTargetChatUID), (snap) => {
+                const userData = snap.val();
+                document.getElementById('call-peer-name').innerText = userData ? userData.name : 'Remote Node';
+                document.getElementById('call-peer-uid').innerText = '@' + databaseState.activeTargetChatUID;
+            }, { onlyOnce: true });
+
+            navigator.mediaDevices.getUserMedia({ video: mode === 'video', audio: true })
+                .then((stream) => {
+                    nativeMediaStream = stream;
+                    document.getElementById('call-local-video').srcObject = stream;
+                    ongoingCallObject = peerInstance.call(targetPeerID, stream);
+                    
+                    ongoingCallObject.on('stream', (remoteStream) => {
+                        document.getElementById('call-remote-video').srcObject = remoteStream;
+                        document.getElementById('call-status-lbl').innerText = 'P2P Encrypted Session Active';
+                    });
+                }).catch(err => {
+                    alert("Media Stream Denied: " + err.message);
+                    terminateCallSession();
+                });
+        }
+
+        window.acceptIncomingCallSignal = function() {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    nativeMediaStream = stream;
+                    document.getElementById('call-local-video').srcObject = stream;
+                    document.getElementById('incoming-call-actions').classList.add('hidden');
+                    document.getElementById('active-call-actions').classList.remove('hidden');
+                    document.getElementById('call-status-lbl').innerText = 'Connecting Handshake Data...';
+                    
+                    ongoingCallObject.answer(stream);
+                    ongoingCallObject.on('stream', (remoteStream) => {
+                        document.getElementById('call-remote-video').srcObject = remoteStream;
+                        document.getElementById('call-status-lbl').innerText = 'P2P Encrypted Session Active';
+                    });
+                }).catch(err => {
+                    alert("Failed to grab media inputs: " + err.message);
+                    rejectIncomingCallSignal();
+                });
+        }
+
+        window.rejectIncomingCallSignal = function() {
+            if(ongoingCallObject) ongoingCallObject.close();
+            terminateCallSession();
+        }
+
+        window.terminateCallSession = function() {
+            if(ongoingCallObject) ongoingCallObject.close();
+            if(nativeMediaStream) {
+                nativeMediaStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('call-local-video').srcObject = null;
+            document.getElementById('call-remote-video').srcObject = null;
+            document.getElementById('call-interface-overlay').classList.add('hidden');
+        }
+
+        function listenToGlobalSyncChannels(myUID) {
+            onValue(ref(db, 'publications'), (snap) => {
+                const data = snap.val();
+                databaseState.publications = data ? Object.values(data).reverse() : [];
+                renderEcosystemFeed();
+                renderPersonalPublications();
+            });
+
+            onValue(ref(db, 'users'), (snap) => {
+                const data = snap.val();
+                databaseState.peers = data ? Object.values(data) : [];
+                if(data && data[myUID]) {
+                    databaseState.currentUser = data[myUID];
+                    syncProfileCardInterface();
+                }
+                renderEcosystemIncomingRequests();
+                renderEcosystemActiveChats();
+            });
+
+            onValue(ref(db, 'friendships'), (snap) => {
+                databaseState.friendships = snap.val() || {};
+                renderEcosystemIncomingRequests();
+                renderEcosystemActiveChats();
+                renderProfileFriendsNetwork();
+            });
+
+            onValue(ref(db, 'chats'), (snap) => {
+                databaseState.chatThreads = snap.val() || {};
+                evaluateGlobalUnseenPackets();
+                renderEcosystemActiveChats();
+                if(databaseState.activeTargetChatUID) {
+                    renderActiveChatLiveStream(databaseState.activeTargetChatUID);
+                }
+            });
+        }
+
+        function syncProfileCardInterface() {
+            document.getElementById('profile-display-name').innerText = databaseState.currentUser.name;
+            document.getElementById('profile-display-uid').innerText = '@' + databaseState.currentUser.uid;
+            document.getElementById('profile-display-bio').innerText = databaseState.currentUser.bio || 'Node status fully configured.';
+            if(databaseState.currentUser.pfp) {
+                document.getElementById('profile-display-avatar').src = databaseState.currentUser.pfp;
+            }
             const profBadge = document.getElementById('profile-display-profession');
             if(databaseState.currentUser.profession) {
                 profBadge.innerText = databaseState.currentUser.profession;
@@ -556,21 +682,48 @@
                 profBadge.classList.add('hidden');
             }
 
-            const profileCard = document.getElementById('profile-card');
-            profileCard.className = "bg-darkcard p-5 rounded-2xl border border-slate-800 relative transition-all duration-300 " + (databaseState.currentUser.premiumTheme || "");
+            if(databaseState.currentUser.premiumTheme) {
+                document.body.className = "text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none " + databaseState.currentUser.premiumTheme;
+            }
         }
 
-        // Navigation Layout Mechanics
+        // Global Unseen Calculation Engine
+        function evaluateGlobalUnseenPackets() {
+            let totalUnseen = 0;
+            const myUID = databaseState.currentUser.uid;
+            
+            Object.keys(databaseState.chatThreads).forEach(threadKey => {
+                if(threadKey.includes(myUID)) {
+                    const messages = databaseState.chatThreads[threadKey];
+                    Object.values(messages).forEach(msg => {
+                        if(msg.sender !== myUID && msg.status !== 'seen') {
+                            totalUnseen++;
+                        }
+                    });
+                }
+            });
+
+            const badge = document.getElementById('global-unseen-badge');
+            if(totalUnseen > 0) {
+                badge.innerText = totalUnseen;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
         window.switchTab = function(tabId) {
-            const sections = ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'];
-            sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+            const screens = ['home-screen', 'chat-screen', 'search-screen', 'profile-screen'];
+            screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(tabId + '-screen').classList.remove('hidden');
             
             const navButtons = document.querySelectorAll('nav button');
-            navButtons.forEach(btn => btn.className = "text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative");
-            
-            const activeMap = { home: 0, chat: 1, search: 2, profile: 3 };
-            navButtons[activeMap[tabId]].className = "text-cyan-400 flex flex-col items-center flex-1 py-2 transition relative";
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-cyan-400');
+                btn.classList.add('text-slate-500');
+            });
+            event.currentTarget.classList.remove('text-slate-500');
+            event.currentTarget.classList.add('text-cyan-400');
         }
 
         window.openModal = function(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -578,747 +731,709 @@
         window.toggleElement = function(id) { document.getElementById(id).classList.toggle('hidden'); }
         window.closeElement = function(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // Publication Streams Deployment (Modified payload object to support custom layout values)
-        window.processPublicationInit = function() {
-            const text = document.getElementById('post-input-text').value.trim();
-            const fileInput = document.getElementById('post-input-gallery-file');
-            if(!text && (!fileInput.files || !fileInput.files[0])) return;
+        // Render Merged Verification (Handshake) Requests with full Account Info
+        function renderEcosystemIncomingRequests() {
+            const container = document.getElementById('incoming-requests-list');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let pendingCount = 0;
 
-            const sendPayload = (base64Img) => {
-                const newPost = {
-                    id: "POST_" + Date.now(),
-                    authorUID: databaseState.currentUser.uid,
-                    authorName: databaseState.currentUser.name,
-                    authorAvatar: databaseState.currentUser.pfp,
-                    timestamp: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                    content: text,
-                    image: base64Img || null,
-                    likes: {},
-                    comments: {}
-                };
-                push(ref(db, 'posts'), newPost).then(() => {
-                    document.getElementById('post-input-text').value = "";
-                    fileInput.value = "";
-                    closeModal('post-modal');
-                });
-            };
+            Object.keys(databaseState.friendships).forEach(key => {
+                if(key.startsWith('req_') && key.includes('_to_' + myUID)) {
+                    if(databaseState.friendships[key] === 'pending') {
+                        pendingCount++;
+                        const senderUID = key.split('_')[1];
+                        const senderProfile = databaseState.peers.find(p => p.uid === senderUID);
+                        
+                        if(senderProfile) {
+                            const node = document.createElement('div');
+                            node.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
+                            node.innerHTML = `
+                                <div class="flex items-center space-x-3">
+                                    <img src="${senderProfile.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
+                                    <div>
+                                        <p class="font-bold">${senderProfile.name}</p>
+                                        <p class="text-[10px] text-slate-500 font-mono">@${senderProfile.uid}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="handleIncomingRequestOperation('${senderUID}', 'accept')" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded-lg border border-emerald-500/30 transition">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                    </button>
+                                    <button onclick="handleIncomingRequestOperation('${senderUID}', 'deny')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white p-2 rounded-lg border border-red-500/30 transition">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                            `;
+                            container.appendChild(node);
+                        }
+                    }
+                }
+            });
 
-            if(fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { sendPayload(e.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
+            const countBadge = document.getElementById('request-badge-count');
+            if(pendingCount > 0) {
+                countBadge.innerText = pendingCount;
+                countBadge.classList.remove('hidden');
             } else {
-                sendPayload(null);
+                countBadge.classList.add('hidden');
+                container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-2">No pending verification packets detected.</p>`;
             }
         }
 
-        function renderStructuralFeedsPipeline() {
-            const container = document.getElementById('posts-feed');
-            const personalContainer = document.getElementById('profile-personal-posts');
-            container.innerHTML = "";
-            personalContainer.innerHTML = "";
+        window.handleIncomingRequestOperation = function(senderUID, decision) {
+            const myUID = databaseState.currentUser.uid;
+            const reqKey = `req_${senderUID}_to_${myUID}`;
+            
+            if(decision === 'accept') {
+                const updates = {};
+                updates[`friendships/${reqKey}`] = null;
+                updates[`friendships/bond_${myUID}_and_${senderUID}`] = 'confirmed';
+                updates[`friendships/bond_${senderUID}_and_${myUID}`] = 'confirmed';
+                update(ref(db), updates).then(() => alert("Secure handshake verified. Network established."));
+            } else {
+                set(ref(db, `friendships/${reqKey}`), null).then(() => alert("Handshake node denied."));
+            }
+        }
 
-            if(databaseState.publications.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-600 py-10">No public stream packets available.</p>`;
-                personalContainer.innerHTML = `<p class="text-center text-xs text-slate-600 py-6">You haven't dispatched any packets yet.</p>`;
+        // Render Active Communications with live highlight status and notification badging
+        function renderEcosystemActiveChats() {
+            const container = document.getElementById('active-chats-list');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let channelRendered = false;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                
+                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                if(isFriend) {
+                    channelRendered = true;
+                    const threadKey = myUID < peer.uid ? `${myUID}_text_${peer.uid}` : `${peer.uid}_text_${myUID}`;
+                    const messages = databaseState.chatThreads[threadKey];
+                    let unseenCount = 0;
+                    
+                    if(messages) {
+                        Object.values(messages).forEach(m => {
+                            if(m.sender !== myUID && m.status !== 'seen') { unseenCount++; }
+                        });
+                    }
+
+                    const node = document.createElement('div');
+                    node.className = `p-3 rounded-xl border flex justify-between items-center transition cursor-pointer ${unseenCount > 0 ? 'bg-blue-950/30 border-blue-600/50 shadow-md shadow-blue-500/5' : 'bg-darkcard border-slate-800 hover:bg-slate-800/80'}`;
+                    node.onclick = () => openDirectCommunicationChannel(peer.uid);
+                    node.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-9 h-9 rounded-full object-cover border border-slate-700">
+                            <div>
+                                <p class="font-bold flex items-center gap-1.5 ${unseenCount > 0 ? 'text-blue-400 font-extrabold' : 'text-slate-200'}">
+                                    <span>${peer.name}</span>
+                                    ${unseenCount > 0 ? '<span class="h-2 w-2 bg-blue-500 rounded-full animate-pulse"></span>' : ''}
+                                </p>
+                                <p class="text-[10px] text-slate-500 font-mono">@${peer.uid}</p>
+                            </div>
+                        </div>
+                        ${unseenCount > 0 ? `<span class="bg-blue-600 text-white text-[10px] font-bold rounded-full h-5 px-2 flex items-center justify-center">${unseenCount} New</span>` : `<svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`}
+                    `;
+                    container.appendChild(node);
+                }
+            });
+
+            if(!channelRendered) {
+                container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">Establish peer network handshakes to deploy channels.</p>`;
+            }
+        }
+
+        window.openDirectCommunicationChannel = function(targetUID) {
+            databaseState.activeTargetChatUID = targetUID;
+            const peer = databaseState.peers.find(p => p.uid === targetUID);
+            if(!peer) return;
+
+            document.getElementById('chat-window-name').innerText = peer.name;
+            document.getElementById('chat-window-uid').innerText = '@' + peer.uid;
+            document.getElementById('chat-window-avatar').src = peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+            
+            document.getElementById('chat-header-identity-trigger').onclick = () => {
+                window.displayPeerAccountProfile(peer.uid);
+            };
+
+            const threadKey = databaseState.currentUser.uid < targetUID ? `${databaseState.currentUser.uid}_text_${targetUID}` : `${targetUID}_text_${databaseState.currentUser.uid}`;
+            const messages = databaseState.chatThreads[threadKey];
+            if(messages) {
+                Object.keys(messages).forEach(mId => {
+                    if(messages[mId].sender !== databaseState.currentUser.uid && messages[mId].status !== 'seen') {
+                        update(ref(db, `chats/${threadKey}/${mId}`), { status: 'seen' });
+                    }
+                });
+            }
+
+            renderActiveChatLiveStream(targetUID);
+            document.getElementById('chat-window-modal').classList.remove('hidden');
+        }
+
+        window.closeChatWindow = function() {
+            databaseState.activeTargetChatUID = null;
+            document.getElementById('chat-window-modal').classList.add('hidden');
+        }
+
+        function renderActiveChatLiveStream(targetUID) {
+            const stream = document.getElementById('chat-messages-stream');
+            stream.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            
+            const packets = databaseState.chatThreads[threadKey];
+            if(!packets) {
+                stream.innerHTML = `<div class="text-center text-slate-600 text-[10px] my-auto">Channel structural pipeline is empty. Post first packet payload.</div>`;
                 return;
             }
 
-            databaseState.publications.forEach(post => {
-                const likeCount = post.likes ? Object.keys(post.likes).length : 0;
-                const isLiked = post.likes && post.likes[databaseState.currentUser.uid] ? 'text-rose-500 fill-rose-500' : 'text-slate-400';
+            Object.keys(packets).forEach(packetID => {
+                const message = packets[packetID];
+                const isMe = message.sender === myUID;
+                const msgNode = document.createElement('div');
+                msgNode.className = `max-w-[75%] p-3 rounded-2xl text-xs relative group ${isMe ? 'bg-blue-600 text-white self-end rounded-tr-none' : 'bg-darkcard text-slate-200 self-start rounded-tl-none border border-slate-800'}`;
                 
-                const postHTML = `
-                    <div class="bg-darkcard border border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-xl">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="examinePeerAccountNode('${post.authorUID}')">
-                                <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover border border-slate-700">
-                                <div>
-                                    <h4 class="text-xs font-bold">${post.authorName}</h4>
-                                    <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${post.timestamp}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-200 leading-relaxed select-text">${post.content}</p>
-                        ${post.image ? `<img src="${post.image}" class="w-full h-44 object-cover rounded-xl border border-slate-800">` : ''}
-                        <div class="flex justify-between items-center pt-2 border-t border-slate-900/60 text-xs">
-                            <button onclick="toggleTransmissionLike('${post.id}')" class="flex items-center space-x-1.5 font-bold ${isLiked}">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                <span>${likeCount}</span>
-                            </button>
-                            <button onclick="inspectFullDataPayload('${post.id}')" class="text-slate-400 hover:text-cyan-400 font-semibold flex items-center space-x-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                                <span>Discuss</span>
-                            </button>
-                            <button onclick="triggerForwardShareModal('${post.id}')" class="text-slate-400 hover:text-blue-400 flex items-center space-x-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 10.742l4.684-2.342m0 7.2l-4.684-2.342M11 12a3 3 0 11-6 0 3 3 0 016 0zm6-5a3 3 0 11-6 0 3 3 0 016 0zm0 10a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                <span>Share</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = postHTML;
-                const node = tempDiv.firstElementChild;
+                // Direct Context Setup to Support React Text Packets
+                msgNode.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    databaseState.activeContextMessageID = { thread: threadKey, id: packetID, txt: message.text };
+                    document.getElementById('message-context-panel').classList.remove('hidden');
+                };
 
-                container.appendChild(node);
-                if(post.authorUID === databaseState.currentUser.uid) {
-                    personalContainer.appendChild(node.cloneNode(true));
+                let reactionsMarkup = '';
+                if(message.reactions) {
+                    reactionsMarkup = `<div class="absolute -bottom-2 right-2 bg-slate-800 border border-slate-700 rounded-full px-1.5 py-0.5 text-[9px] flex items-center gap-0.5 shadow-lg">`;
+                    Object.values(message.reactions).forEach(r => { reactionsMarkup += `<span>${r}</span>`; });
+                    reactionsMarkup += `</div>`;
                 }
+
+                msgNode.innerHTML = `
+                    <p class="leading-relaxed break-words pr-2">${message.text}</p>
+                    <span class="text-[8px] block text-right mt-1 ${isMe ? 'text-blue-200' : 'text-slate-500'} font-mono">${new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    ${reactionsMarkup}
+                `;
+                stream.appendChild(msgNode);
+            });
+            setTimeout(() => { stream.scrollTop = stream.scrollHeight; }, 50);
+        }
+
+        window.dispatchDirectMessage = function() {
+            const field = document.getElementById('chat-input-field');
+            const packetText = field.value.trim();
+            if(!packetText || !databaseState.activeTargetChatUID) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const targetUID = databaseState.activeTargetChatUID;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            
+            const messagePayload = {
+                sender: myUID,
+                text: packetText,
+                timestamp: Date.now(),
+                status: 'transmitted'
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                field.value = '';
+                renderActiveChatLiveStream(targetUID);
             });
         }
 
-        // Like/Dislike Mechanism logic
-        window.toggleTransmissionLike = function(postId) {
-            onValue(ref(db, 'posts'), (snapshot) => {
-                const data = snapshot.val();
-                if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k].id === postId);
-                    if(dbKey) {
-                        const post = data[dbKey];
-                        if(!post.likes) post.likes = {};
-                        if(post.likes[databaseState.currentUser.uid]) {
-                            delete post.likes[databaseState.currentUser.uid];
-                        } else {
-                            post.likes[databaseState.currentUser.uid] = true;
-                        }
-                        update(ref(db, 'posts/' + dbKey), { likes: post.likes });
-                    }
-                }
-            }, { onlyOnce: true });
-        }
-
-        // Expanded Discussion Logs Routing 
-        window.inspectFullDataPayload = function(postId) {
-            onValue(ref(db, 'posts'), (snapshot) => {
-                const data = snapshot.val();
-                if(!data) return;
-                const postKey = Object.keys(data).find(k => data[k].id === postId);
-                const post = data[postKey];
-                
-                const payloadBox = document.getElementById('expanded-post-payload');
-                payloadBox.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-2">
-                            <img src="${post.authorAvatar}" class="w-7 h-7 rounded-full object-cover">
-                            <div>
-                                <h5 class="text-xs font-bold">${post.authorName}</h5>
-                                <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID}</p>
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-200 select-text">${post.content}</p>
-                        ${post.image ? `<img src="${post.image}" class="w-full rounded-xl border border-slate-800">` : ''}
-                    </div>
-                    <div class="border-t border-slate-800 pt-3">
-                        <h5 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Payload Discussion Comments</h5>
-                        <div id="modal-comments-stack" class="space-y-2 mb-4 max-h-40 overflow-y-auto custom-scrollbar"></div>
-                        <div class="flex gap-2">
-                            <input type="text" id="modal-comment-input" placeholder="Inject comment logs..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
-                            <button onclick="commitDiscussionComment('${post.id}', '${postKey}')" class="bg-cyan-600 px-3 py-2 rounded-xl text-xs font-bold">Inject</button>
-                        </div>
-                    </div>
-                `;
-
-                const stack = document.getElementById('modal-comments-stack');
-                stack.innerHTML = "";
-                if(post.comments) {
-                    Object.values(post.comments).forEach(c => {
-                        stack.innerHTML += `
-                            <div class="bg-slate-900/60 border border-slate-800/60 p-2 rounded-xl text-[11px]">
-                                <span class="font-bold text-cyan-400">@${c.userUID}</span>: <span class="text-slate-300 select-text">${c.msg}</span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    stack.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No response strings parsed yet.</p>`;
-                }
-                
-                openModal('expanded-post-modal');
-            }, { onlyOnce: true });
-        }
-
-        window.commitDiscussionComment = function(postId, postKey) {
-            const val = document.getElementById('modal-comment-input').value.trim();
-            if(!val) return;
-            const newComment = { userUID: databaseState.currentUser.uid, msg: val };
-            push(ref(db, `posts/${postKey}/comments`), newComment).then(() => {
-                document.getElementById('modal-comment-input').value = "";
-                inspectFullDataPayload(postId);
+        window.injectContextReaction = function(emoji) {
+            if(!databaseState.activeContextMessageID) return;
+            const { thread, id } = databaseState.activeContextMessageID;
+            push(ref(db, `chats/${thread}/${id}/reactions`), emoji).then(() => {
+                document.getElementById('message-context-panel').classList.add('hidden');
             });
         }
 
-        // Integrated Unified Identities Search Functionality
+        window.executeClipboardCopy = function() {
+            if(!databaseState.activeContextMessageID) return;
+            navigator.clipboard.writeText(databaseState.activeContextMessageID.txt).then(() => {
+                alert("Context data copied to environment clipboard.");
+                document.getElementById('message-context-panel').classList.add('hidden');
+            });
+        }
+
         window.handleUnifiedSearch = function() {
             const query = document.getElementById('search-input').value.trim().toLowerCase();
-            const profileBox = document.getElementById('search-results-profiles');
-            const articleBox = document.getElementById('search-results-articles');
+            const profileGrid = document.getElementById('search-results-profiles');
+            const articleGrid = document.getElementById('search-results-articles');
+            profileGrid.innerHTML = '';
+            articleGrid.innerHTML = '';
             
-            profileBox.innerHTML = "";
-            articleBox.innerHTML = "";
-
             if(!query) return;
+            const myUID = databaseState.currentUser.uid;
 
-            // Search Profiles
-            const profileMatches = databaseState.peers.filter(p => p.name.toLowerCase().includes(query) || p.uid.includes(query));
-            profileMatches.forEach(p => {
-                profileBox.innerHTML += `
-                    <div onclick="examinePeerAccountNode('${p.uid}')" class="flex items-center justify-between bg-darkcard p-3 rounded-xl border border-slate-800/80 cursor-pointer hover:bg-slate-800/40 transition">
-                        <div class="flex items-center space-x-2.5">
-                            <img src="${p.pfp}" class="w-7 h-7 rounded-full object-cover">
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                if(peer.uid.includes(query) || peer.name.toLowerCase().includes(query)) {
+                    const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                    const hasSentRequest = databaseState.friendships[`req_${myUID}_to_${peer.uid}`] === 'pending';
+                    const hasIncomingRequest = databaseState.friendships[`req_${peer.uid}_to_${myUID}`] === 'pending';
+                    
+                    let buttonMarkup = '';
+                    if(isFriend) {
+                        buttonMarkup = `<span class="text-[10px] bg-slate-800 text-cyan-400 font-bold px-3 py-1.5 rounded-xl border border-slate-700">Verified Network</span>`;
+                    } else if(hasSentRequest) {
+                        buttonMarkup = `<span class="text-[10px] bg-slate-800 text-slate-500 px-3 py-1.5 rounded-xl">Packet Sent</span>`;
+                    } else if(hasIncomingRequest) {
+                        buttonMarkup = `<button onclick="handleIncomingRequestOperation('${peer.uid}', 'accept')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl">Accept</button>`;
+                    } else {
+                        buttonMarkup = `<button onclick="dispatchFriendHandshake('${peer.uid}')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition">Connect Node</button>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = "bg-darkcard p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
+                    card.innerHTML = `
+                        <div class="flex items-center space-x-3 cursor-pointer" onclick="displayPeerAccountProfile('${peer.uid}')">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
                             <div>
-                                <h5 class="text-xs font-bold">${p.name}</h5>
-                                <p class="text-[9px] text-slate-500 font-mono">@${p.uid}</p>
+                                <p class="font-bold">${peer.name}</p>
+                                <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
                             </div>
                         </div>
-                        <span class="text-[9px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md border border-slate-700">View Terminal</span>
-                    </div>
-                `;
+                        <div>${buttonMarkup}</div>
+                    `;
+                    profileGrid.appendChild(card);
+                }
             });
 
-            // Search Publications Text
-            const articleMatches = databaseState.publications.filter(post => post.content.toLowerCase().includes(query));
-            articleMatches.forEach(post => {
-                articleBox.innerHTML += `
-                    <div onclick="inspectFullDataPayload('${post.id}')" class="bg-darkcard/50 p-3 rounded-xl border border-slate-900 cursor-pointer hover:bg-darkcard transition space-y-1">
-                        <div class="flex justify-between text-[9px] text-slate-500 font-mono">
-                            <span>@${post.authorName}</span><span>${post.timestamp}</span>
-                        </div>
-                        <p class="text-xs text-slate-300 truncate">${post.content}</p>
-                    </div>
-                `;
+            databaseState.publications.forEach(post => {
+                if(post.text.toLowerCase().includes(query)) {
+                    const card = document.createElement('div');
+                    card.className = "bg-darkcard p-3 rounded-xl border border-slate-800 text-xs space-y-2";
+                    card.innerHTML = `
+                        <p class="text-slate-300 leading-relaxed">${post.text}</p>
+                        <span class="text-[9px] text-slate-600 font-mono">Node Broadcast ID: @${post.authorUID}</span>
+                    `;
+                    articleGrid.appendChild(card);
+                }
             });
         }
 
-        // Examine Peer Profiles Matrix UI
-        window.examinePeerAccountNode = function(peerUID) {
-            closeModal('expanded-post-modal');
-            const peer = databaseState.peers.find(p => p.uid === peerUID) || (databaseState.currentUser.uid === peerUID ? databaseState.currentUser : null);
+        window.dispatchFriendHandshake = function(targetUID) {
+            const myUID = databaseState.currentUser.uid;
+            const reqKey = `req_${myUID}_to_${targetUID}`;
+            set(ref(db, `friendships/${reqKey}`), 'pending').then(() => {
+                alert("Handshake integration payload dispatched to target node.");
+                handleUnifiedSearch();
+            });
+        }
+
+        window.displayPeerAccountProfile = function(uid) {
+            const peer = databaseState.peers.find(p => p.uid === uid);
             if(!peer) return;
 
-            document.getElementById('peer-screen-avatar').src = peer.pfp;
             document.getElementById('peer-screen-name').innerText = peer.name;
-            document.getElementById('peer-screen-uid').innerText = "@" + peer.uid;
+            document.getElementById('peer-screen-uid').innerText = '@' + peer.uid;
+            document.getElementById('peer-screen-bio').innerText = peer.bio || 'No profile description broadcasted.';
+            document.getElementById('peer-screen-avatar').src = peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
             
             const prof = document.getElementById('peer-screen-profession');
-            if(peer.profession) { prof.innerText = peer.profession; prof.classList.remove('hidden'); } else { prof.classList.add('hidden'); }
-            document.getElementById('peer-screen-bio').innerText = peer.bio || "No custom profile configurations initialized.";
-            
-            const actions = document.getElementById('peer-screen-action-container');
-            actions.innerHTML = "";
-
-            if(peer.uid !== databaseState.currentUser.uid) {
-                const fKey = [databaseState.currentUser.uid, peer.uid].sort().join("_");
-                const relation = databaseState.friendships[fKey];
-
-                if(!relation) {
-                    actions.innerHTML = `<button onclick="dispatchNetworkHandshake('${peer.uid}')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-xl text-xs font-bold transition">Initialize Handshake Pipeline</button>`;
-                } else if(relation.status === 'pending') {
-                    if(relation.sender === databaseState.currentUser.uid) {
-                        actions.innerHTML = `<button class="w-full bg-slate-800 border border-slate-700 text-slate-500 py-2 rounded-xl text-xs font-bold cursor-not-allowed" disabled>Pipeline Request Pending</button>`;
-                    } else {
-                        actions.innerHTML = `
-                            <div class="flex gap-2">
-                                <button onclick="settleNetworkHandshake('${fKey}', 'approved')" class="flex-1 bg-emerald-600 py-2 rounded-xl text-xs font-bold">Accept</button>
-                                <button onclick="settleNetworkHandshake('${fKey}', 'rejected')" class="flex-1 bg-rose-950/40 border border-rose-900/40 text-rose-400 py-2 rounded-xl text-xs font-bold">Reject</button>
-                            </div>
-                        `;
-                    }
-                } else if(relation.status === 'approved') {
-                    actions.innerHTML = `
-                        <div class="flex gap-2">
-                            <button onclick="initializeDirectChatSession('${peer.uid}')" class="flex-1 bg-cyan-600 py-2 rounded-xl text-xs font-bold">Launch Communication</button>
-                            <button onclick="terminateNetworkHandshake('${fKey}')" class="bg-red-950/30 border border-red-900/40 text-red-400 px-3 py-2 rounded-xl text-xs font-bold">Sever</button>
-                        </div>
-                    `;
-                }
+            if(peer.profession) {
+                prof.innerText = peer.profession;
+                prof.classList.remove('hidden');
             } else {
-                actions.innerHTML = `<p class="text-[10px] text-slate-500 font-mono italic">Internal Safe Node Core (Self)</p>`;
+                prof.classList.add('hidden');
             }
 
-            // Load Peer Specific Feed Items
-            const peerFeed = document.getElementById('peer-screen-posts-feed');
-            peerFeed.innerHTML = "";
-            const peerPosts = databaseState.publications.filter(p => p.authorUID === peer.uid);
-            
-            if(peerPosts.length === 0) {
-                peerFeed.innerHTML = `<p class="text-center text-[10px] text-slate-600 py-4">No data streams posted by user node.</p>`;
+            const myUID = databaseState.currentUser.uid;
+            const actionArea = document.getElementById('peer-screen-action-container');
+            actionArea.innerHTML = '';
+
+            const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+            if(isFriend) {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition";
+                btn.innerText = "Initialize Encrypted Chat Session";
+                btn.onclick = () => {
+                    closeModal('full-screen-account-modal');
+                    switchTab('chat');
+                    openDirectCommunicationChannel(peer.uid);
+                };
+                actionArea.appendChild(btn);
             } else {
-                peerPosts.forEach(post => {
-                    peerFeed.innerHTML += `
-                        <div onclick="inspectFullDataPayload('${post.id}')" class="bg-darkcard p-3 rounded-xl border border-slate-800/60 space-y-1.5 cursor-pointer">
-                            <p class="text-[10px] text-slate-500 font-mono">${post.timestamp}</p>
-                            <p class="text-xs text-slate-300 line-clamp-2">${post.content}</p>
-                        </div>
-                    `;
+                actionArea.innerHTML = `<p class="text-[10px] text-slate-500 italic">Establish verified bond status network connection to unlock channel transfers.</p>`;
+            }
+
+            const peerFeed = document.getElementById('peer-screen-posts-feed');
+            peerFeed.innerHTML = '';
+            const specificPosts = databaseState.publications.filter(p => p.authorUID === uid);
+            
+            if(specificPosts.length > 0) {
+                specificPosts.forEach(post => {
+                    const block = document.createElement('div');
+                    block.className = "bg-darkcard p-3 rounded-xl border border-slate-800 text-xs";
+                    block.innerHTML = `<p class="text-slate-300 leading-relaxed">${post.text}</p>`;
+                    peerFeed.appendChild(block);
                 });
+            } else {
+                peerFeed.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No active database publications discovered.</p>`;
             }
 
             openModal('full-screen-account-modal');
         }
 
-        // Handshake Networking Mechanics
-        window.dispatchNetworkHandshake = function(targetUID) {
-            const fKey = [databaseState.currentUser.uid, targetUID].sort().join("_");
-            set(ref(db, 'friendships/' + fKey), { status: 'pending', sender: databaseState.currentUser.uid, receiver: targetUID }).then(() => examinePeerAccountNode(targetUID));
-        }
+        window.processPublicationInit = function() {
+            const txt = document.getElementById('post-input-text').value.trim();
+            const imgFile = document.getElementById('post-input-gallery-file').files[0];
+            if(!txt && !imgFile) return;
 
-        window.settleNetworkHandshake = function(fKey, result) {
-            if(result === 'approved') {
-                update(ref(db, 'friendships/' + fKey), { status: 'approved' }).then(() => {
-                    const modal = document.getElementById('full-screen-account-modal');
-                    if(!modal.classList.contains('hidden')) {
-                        const activePeerUID = document.getElementById('peer-screen-uid').innerText.replace("@", "");
-                        examinePeerAccountNode(activePeerUID);
-                    }
+            const commitPostToFirebase = (base64Img) => {
+                const postNode = {
+                    id: 'post_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                    authorUID: databaseState.currentUser.uid,
+                    authorName: databaseState.currentUser.name,
+                    authorAvatar: databaseState.currentUser.pfp,
+                    text: txt,
+                    image: base64Img || null,
+                    timestamp: Date.now(),
+                    likes: {},
+                    comments: {}
+                };
+
+                push(ref(db, 'publications'), postNode).then(() => {
+                    document.getElementById('post-input-text').value = '';
+                    document.getElementById('post-input-gallery-file').value = '';
+                    closeModal('post-modal');
                 });
-            } else {
-                window.terminateNetworkHandshake(fKey);
-            }
-        }
-
-        window.terminateNetworkHandshake = function(fKey) {
-            set(ref(db, 'friendships/' + fKey), null).then(() => {
-                const modal = document.getElementById('full-screen-account-modal');
-                if(!modal.classList.contains('hidden')) {
-                    const activePeerUID = document.getElementById('peer-screen-uid').innerText.replace("@", "");
-                    examinePeerAccountNode(activePeerUID);
-                }
-            });
-        }
-
-        function evaluateIncomingHandshakeBadges() {
-            let pendingCount = 0;
-            Object.values(databaseState.friendships).forEach(f => {
-                if(f.status === 'pending' && f.receiver === databaseState.currentUser.uid) pendingCount++;
-            });
-
-            const reqBadge = document.getElementById('request-badge-count');
-            if(pendingCount > 0) {
-                reqBadge.innerText = pendingCount;
-                reqBadge.classList.remove('hidden');
-            } else {
-                reqBadge.classList.add('hidden');
-            }
-        }
-
-        window.switchChatSubView = function(view) {
-            document.getElementById('chat-menu').classList.add('hidden');
-            if(view === 'requests') {
-                document.getElementById('active-chats-list').classList.add('hidden');
-                document.getElementById('incoming-requests-list').classList.remove('hidden');
-            } else {
-                document.getElementById('incoming-requests-list').classList.add('hidden');
-                document.getElementById('active-chats-list').classList.remove('hidden');
-            }
-        }
-
-        function renderNetworkFriendsInterface() {
-            const container = document.getElementById('profile-friends-list');
-            container.innerHTML = "";
-            let friendsCounter = 0;
-
-            databaseState.peers.forEach(peer => {
-                const fKey = [databaseState.currentUser.uid, peer.uid].sort().join("_");
-                const relation = databaseState.friendships[fKey];
-
-                if(relation && relation.status === 'approved') {
-                    friendsCounter++;
-                    container.innerHTML += `
-                        <div class="flex items-center justify-between bg-slate-900/40 p-3 rounded-xl border border-slate-800/60">
-                            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="examinePeerAccountNode('${peer.uid}')">
-                                <img src="${peer.pfp}" class="w-7 h-7 rounded-full object-cover">
-                                <div>
-                                    <h5 class="text-xs font-bold">${peer.name}</h5>
-                                    <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
-                                </div>
-                            </div>
-                            <button onclick="initializeDirectChatSession('${peer.uid}')" class="bg-cyan-950 text-cyan-400 border border-cyan-900/60 px-2.5 py-1 rounded-lg font-bold text-[10px]">Secure Channel</button>
-                        </div>
-                    `;
-                }
-            });
-
-            if(friendsCounter === 0) {
-                container.innerHTML = `<p class="text-center text-[10px] text-slate-600 py-6">No approved node connections configured.</p>`;
-            }
-        }
-
-        // Direct Messaging Logic (Maintained completely)
-        window.initializeDirectChatSession = function(peerUID) {
-            closeModal('full-screen-account-modal');
-            databaseState.activeTargetChatUID = peerUID;
-            
-            const peer = databaseState.peers.find(p => p.uid === peerUID);
-            document.getElementById('chat-window-avatar').src = peer.pfp;
-            document.getElementById('chat-window-name').innerText = peer.name;
-            document.getElementById('chat-window-uid').innerText = "@" + peer.uid;
-            
-            document.getElementById('chat-header-identity-trigger').onclick = function() { examinePeerAccountNode(peerUID); };
-            
-            openModal('chat-window-modal');
-            renderChatHistoryStream();
-            setTimeout(() => {
-                const stream = document.getElementById('chat-messages-stream');
-                stream.scrollTop = stream.scrollHeight;
-            }, 100);
-        }
-
-        window.closeChatWindow = function() {
-            databaseState.activeTargetChatUID = null;
-            closeModal('chat-window-modal');
-        }
-
-        window.dispatchDirectMessage = function() {
-            const input = document.getElementById('chat-input-field');
-            const val = input.value.trim();
-            if(!val || !databaseState.activeTargetChatUID) return;
-
-            const packet = {
-                id: "MSG_" + Date.now(),
-                sender: databaseState.currentUser.uid,
-                text: val,
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                reactions: {}
             };
 
-            // Multiplex targeting selector
-            let channelRef = `chats/direct/${[databaseState.currentUser.uid, databaseState.activeTargetChatUID].sort().join("_")}`;
-            if(databaseState.activeTargetChatUID.startsWith('GROUP_')) {
-                channelRef = `chats/groups/${databaseState.activeTargetChatUID}/messages`;
-            }
-
-            push(ref(db, channelRef), packet).then(() => {
-                input.value = "";
-            });
-        }
-
-        function renderStructuralMessageThreads() {
-            const activeBox = document.getElementById('active-chats-list');
-            const reqBox = document.getElementById('incoming-requests-list');
-            
-            activeBox.innerHTML = "";
-            reqBox.innerHTML = "";
-
-            let pendingLogsCount = 0;
-            let activeChannelsCount = 0;
-
-            // Render Request Logs Stack First
-            Object.keys(databaseState.friendships).forEach(fKey => {
-                const relation = databaseState.friendships[fKey];
-                if(relation.status === 'pending' && relation.receiver === databaseState.currentUser.uid) {
-                    pendingLogsCount++;
-                    const peerUID = relation.sender;
-                    const peer = databaseState.peers.find(p => p.uid === peerUID);
-                    if(!peer) return;
-
-                    reqBox.innerHTML += `
-                        <div class="bg-darkcard p-3 rounded-xl border border-slate-800 flex items-center justify-between">
-                            <div class="flex items-center space-x-2 cursor-pointer" onclick="examinePeerAccountNode('${peer.uid}')">
-                                <img src="${peer.pfp}" class="w-7 h-7 rounded-full object-cover">
-                                <div>
-                                    <h5 class="text-xs font-bold">${peer.name}</h5>
-                                    <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-1.5">
-                                <button onclick="settleNetworkHandshake('${fKey}', 'approved')" class="bg-emerald-600 text-white font-bold text-[10px] px-3 py-1 rounded-md">Accept</button>
-                                <button onclick="settleNetworkHandshake('${fKey}', 'rejected')" class="bg-slate-800 text-slate-400 font-bold text-[10px] px-2 py-1 rounded-md">✕</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            // Render Active Channels & Group Channels
-            if(databaseState.chatThreads.groups) {
-                Object.keys(databaseState.chatThreads.groups).forEach(gId => {
-                    const group = databaseState.chatThreads.groups[gId];
-                    if(group.participants && group.participants[databaseState.currentUser.uid]) {
-                        activeChannelsCount++;
-                        const msgArr = group.messages ? Object.values(group.messages) : [];
-                        const lastMsg = msgArr.length > 0 ? msgArr[msgArr.length - 1].text : "No data stream packages exchanged yet.";
-                        
-                        activeBox.innerHTML += `
-                            <div onclick="launchGroupChannelWindow('${gId}', '${group.name}')" class="bg-darkcard p-3 rounded-xl border border-slate-800/80 hover:bg-slate-800/30 transition cursor-pointer flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center font-black text-xs text-white uppercase tracking-wider">GP</div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-cyan-400 truncate">${group.name}</h4></div>
-                                    <p class="text-[10px] text-slate-400 truncate">${lastMsg}</p>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-            }
-
-            databaseState.peers.forEach(peer => {
-                const fKey = [databaseState.currentUser.uid, peer.uid].sort().join("_");
-                const hasDirectLogs = databaseState.chatThreads.direct && databaseState.chatThreads.direct[fKey];
-                const isApproved = databaseState.friendships[fKey] && databaseState.friendships[fKey].status === 'approved';
-
-                if(hasDirectLogs || isApproved) {
-                    activeChannelsCount++;
-                    let lastMsg = "Secure peer handshake confirmed.";
-                    if(hasDirectLogs) {
-                        const msgs = Object.values(databaseState.chatThreads.direct[fKey]);
-                        if(msgs.length > 0) lastMsg = msgs[msgs.length - 1].text;
-                    }
-
-                    activeBox.innerHTML += `
-                        <div onclick="initializeDirectChatSession('${peer.uid}')" class="bg-darkcard p-3 rounded-xl border border-slate-800/80 hover:bg-slate-800/30 transition cursor-pointer flex items-center space-x-3">
-                            <img src="${peer.pfp}" class="w-8 h-8 rounded-full object-cover border border-slate-700">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-slate-200 truncate">${peer.name}</h4></div>
-                                <p class="text-[10px] text-slate-400 truncate">${lastMsg}</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            if(pendingLogsCount === 0) reqBox.innerHTML = `<p class="text-center text-[10px] text-slate-600 py-6">No incoming pipeline validations pending.</p>`;
-            if(activeChannelsCount === 0) activeBox.innerHTML = `<p class="text-center text-[10px] text-slate-600 py-8">No active communications established.</p>`;
-        }
-
-        function renderChatHistoryStream() {
-            const stream = document.getElementById('chat-messages-stream');
-            if(!stream || !databaseState.activeTargetChatUID) return;
-
-            stream.innerHTML = "";
-            let msgs = [];
-            let isGroup = databaseState.activeTargetChatUID.startsWith('GROUP_');
-
-            if(isGroup) {
-                const group = databaseState.chatThreads.groups ? databaseState.chatThreads.groups[databaseState.activeTargetChatUID] : null;
-                if(group && group.messages) msgs = Object.entries(group.messages);
+            if(imgFile) {
+                const reader = new FileReader();
+                reader.onload = (e) => commitPostToFirebase(e.target.result);
+                reader.readAsDataURL(imgFile);
             } else {
-                const fKey = [databaseState.currentUser.uid, databaseState.activeTargetChatUID].sort().join("_");
-                const direct = databaseState.chatThreads.direct ? databaseState.chatThreads.direct[fKey] : null;
-                if(direct) msgs = Object.entries(direct);
+                commitPostToFirebase(null);
             }
+        }
 
-            if(msgs.length === 0) {
-                stream.innerHTML = `<p class="text-center text-[9px] text-slate-600 absolute inset-x-0 top-1/2 -translate-y-1/2">Terminal link ready. Formulate encrypted streams safely.</p>`;
+        function renderEcosystemFeed() {
+            const feed = document.getElementById('posts-feed');
+            feed.innerHTML = '';
+            if(databaseState.publications.length === 0) {
+                feed.innerHTML = `<div class="text-center text-slate-600 text-xs py-8">No structural communications active inside matrix core.</div>`;
                 return;
             }
 
-            msgs.forEach(([dbMsgId, m]) => {
-                const isSelf = m.sender === databaseState.currentUser.uid;
-                const alignment = isSelf ? 'ml-auto bg-blue-600 text-white rounded-br-none' : 'mr-auto bg-slate-800 text-slate-200 rounded-bl-none';
+            databaseState.publications.forEach(post => {
+                const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
+                const likesCount = post.likes ? Object.keys(post.likes).length : 0;
+                const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
                 
-                let reactionRow = "";
-                if(m.reactions) {
-                    reactionRow = `<div class="flex gap-0.5 mt-1 bg-slate-900/80 px-1.5 py-0.5 rounded-full border border-slate-800 max-w-max">`;
-                    Object.values(m.reactions).forEach(emoji => { reactionRow += `<span>${emoji}</span>`; });
-                    reactionRow += `</div>`;
+                const card = document.createElement('div');
+                card.className = "bg-darkcard rounded-2xl border border-slate-800/80 p-4 space-y-3 text-xs";
+                
+                let imageLayer = '';
+                if(post.image) {
+                    imageLayer = `<div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-900 border border-slate-800"><img src="${post.image}" class="w-full h-full object-cover"></div>`;
                 }
 
-                // Append custom long-press context logic safely for mobile
-                stream.innerHTML += `
-                    <div id="MSG_NODE_${dbMsgId}" 
-                         ontouchstart="handleMessagePressInit(event, '${dbMsgId}')" 
-                         ontouchend="handleMessagePressEnd()" 
-                         onmousedown="handleMessagePressInit(event, '${dbMsgId}')" 
-                         onmouseup="handleMessagePressEnd()"
-                         class="max-w-[75%] p-3 rounded-2xl border border-slate-900/40 text-xs shadow-md select-text transition active:scale-98 ${alignment}">
-                        ${isGroup && !isSelf ? `<p class="text-[8px] font-bold text-cyan-400 mb-0.5">@${m.sender}</p>` : ''}
-                        <p class="leading-relaxed select-text">${m.text}</p>
-                        <div class="flex items-center justify-between gap-2 mt-1 text-[8px] text-slate-400/80 font-mono">
-                            <span></span><span>${m.timestamp}</span>
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
+                            <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover border border-slate-700">
+                            <div>
+                                <h4 class="font-bold text-slate-200">${post.authorName}</h4>
+                                <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${new Date(post.timestamp).toLocaleDateString()}</p>
+                            </div>
                         </div>
-                        ${reactionRow}
+                    </div>
+                    <p class="text-slate-300 leading-relaxed break-words">${post.text}</p>
+                    ${imageLayer}
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-800/60 text-slate-400">
+                        <button onclick="handlePublicationLikeToggle('${post.id}')" class="flex items-center space-x-1.5 hover:text-red-400 transition ${isLiked ? 'text-red-500 font-bold' : ''}">
+                            <svg class="w-4 h-4" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            <span>${likesCount}</span>
+                        </button>
+                        <button onclick="openPublicationInspectionModal('${post.id}')" class="flex items-center space-x-1.5 hover:text-blue-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                            <span>${commentsCount}</span>
+                        </button>
+                        <button onclick="openForwardShareEcosystemModal('${post.id}')" class="flex items-center space-x-1.5 hover:text-cyan-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        </button>
                     </div>
                 `;
+                feed.appendChild(card);
             });
         }
 
-        // Long Press Context Control Center logic
-        window.handleMessagePressInit = function(e, msgId) {
-            databaseState.activeContextMessageID = msgId;
-            databaseState.longPressTimer = setTimeout(() => {
-                openModal('message-context-panel');
-            }, 550);
-        }
-        window.handleMessagePressEnd = function() { clearTimeout(databaseState.longPressTimer); }
-
-        window.injectContextReaction = function(emoji) {
-            if(!databaseState.activeContextMessageID || !databaseState.activeTargetChatUID) return;
-            let path = `chats/direct/${[databaseState.currentUser.uid, databaseState.activeTargetChatUID].sort().join("_")}`;
-            if(databaseState.activeTargetChatUID.startsWith('GROUP_')) {
-                path = `chats/groups/${databaseState.activeTargetChatUID}/messages`;
-            }
-
-            onValue(ref(db, path), (snapshot) => {
-                const data = snapshot.val();
-                if(data && data[databaseState.activeContextMessageID]) {
-                    const msgNode = data[databaseState.activeContextMessageID];
-                    if(!msgNode.reactions) msgNode.reactions = {};
-                    msgNode.reactions[databaseState.currentUser.uid] = emoji;
-                    update(ref(db, `${path}/${databaseState.activeContextMessageID}`), { reactions: msgNode.reactions });
+        window.handlePublicationLikeToggle = function(postId) {
+            onValue(ref(db, 'publications'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    const dbKey = Object.keys(data).find(k => data[k].id === postId);
+                    if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const currentLikes = data[dbKey].likes || {};
+                        if(currentLikes[myUID]) {
+                            delete currentLikes[myUID];
+                        } else {
+                            currentLikes[myUID] = true;
+                        }
+                        update(ref(db, `publications/${dbKey}`), { likes: currentLikes });
+                    }
                 }
             }, { onlyOnce: true });
-            closeElement('message-context-panel');
         }
 
-        window.executeClipboardCopy = function() {
-            if(!databaseState.activeContextMessageID) return;
-            const node = document.querySelector(`#MSG_NODE_${databaseState.activeContextMessageID} p:not(.text-cyan-400)`);
-            if(node) {
-                navigator.clipboard.writeText(node.innerText).then(() => {
-                    closeElement('message-context-panel');
-                    alert("Packet Context copied to hardware clipboard.");
+        window.openPublicationInspectionModal = function(postId) {
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if(!targetPost) return;
+
+            const modalPayload = document.getElementById('expanded-post-payload');
+            modalPayload.innerHTML = `
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-400">Context Body</p>
+                    <p class="text-slate-200 bg-darkbg p-3 rounded-xl border border-slate-800">${targetPost.text}</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-400">Comments Stack</p>
+                    <div id="expanded-post-comments-grid" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" id="post-comment-input-field" placeholder="Append transaction comment..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700">
+                    <button onclick="dispatchPublicationComment('${postId}')" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-4 py-2 rounded-xl">Append</button>
+                </div>
+            `;
+
+            const commentGrid = document.getElementById('expanded-post-comments-grid');
+            if(targetPost.comments && Object.keys(targetPost.comments).length > 0) {
+                Object.values(targetPost.comments).forEach(c => {
+                    const el = document.createElement('div');
+                    el.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-0.5";
+                    el.innerHTML = `<p class="font-bold text-slate-400">@${c.authorName}:</p><p class="text-slate-300">${c.text}</p>`;
+                    commentGrid.appendChild(el);
                 });
+            } else {
+                commentGrid.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-2">No active comments linked inside framework.</p>`;
             }
+
+            openModal('expanded-post-modal');
         }
 
-        // Group Messaging Systems Implementation Routines
-        window.openGroupCreationModal = function() {
-            closeElement('chat-menu');
-            const grid = document.getElementById('group-friends-selection-grid');
-            grid.innerHTML = "";
-            let counter = 0;
+        window.dispatchPublicationComment = function(postId) {
+            const field = document.getElementById('post-comment-input-field');
+            const txt = field.value.trim();
+            if(!txt) return;
+
+            onValue(ref(db, 'publications'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    const dbKey = Object.keys(data).find(k => data[k].id === postId);
+                    if(dbKey) {
+                        const payload = {
+                            authorUID: databaseState.currentUser.uid,
+                            authorName: databaseState.currentUser.name,
+                            text: txt,
+                            timestamp: Date.now()
+                        };
+                        push(ref(db, `publications/${dbKey}/comments`), payload).then(() => {
+                            field.value = '';
+                            closeModal('expanded-post-modal');
+                            alert("Comment successfully broadcasted.");
+                        });
+                    }
+                }
+            }, { onlyOnce: true });
+        }
+
+        window.openForwardShareEcosystemModal = function(postId) {
+            databaseState.activeTargetSharePostID = postId;
+            const container = document.getElementById('share-friends-target-grid');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let count = 0;
 
             databaseState.peers.forEach(peer => {
-                const fKey = [databaseState.currentUser.uid, peer.uid].sort().join("_");
-                if(databaseState.friendships[fKey] && databaseState.friendships[fKey].status === 'approved') {
-                    counter++;
-                    grid.innerHTML += `
-                        <label class="flex items-center justify-between bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 cursor-pointer">
-                            <div class="flex items-center space-x-2">
-                                <img src="${peer.pfp}" class="w-6 h-6 rounded-full object-cover">
-                                <span class="text-xs font-medium">${peer.name}</span>
-                            </div>
-                            <input type="checkbox" value="${peer.uid}" class="w-4 h-4 rounded border-slate-800 text-cyan-500 focus:ring-0 focus:ring-offset-0 bg-darkbg">
-                        </label>
+                if(peer.uid === myUID) return;
+                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                
+                if(isFriend) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = "bg-darkbg border border-slate-800 p-2.5 rounded-xl flex justify-between items-center";
+                    card.innerHTML = `
+                        <span class="font-bold text-slate-300">${peer.name}</span>
+                        <button onclick="executeShareTransmissionPacket('${peer.uid}')" class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg font-bold text-[11px]">Forward</button>
                     `;
+                    container.appendChild(card);
                 }
             });
 
-            if(counter === 0) grid.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">Connect with peers to unlock multiplex channels.</p>`;
+            if(count === 0) {
+                container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No direct friends linked inside core node network.</p>`;
+            }
+            openModal('forward-share-modal');
+        }
+
+        window.executeShareTransmissionPacket = function(targetUID) {
+            if(!databaseState.activeTargetSharePostID) return;
+            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
+            if(!targetPost) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            
+            const messagePayload = {
+                sender: myUID,
+                text: `[FORWARDED PUBLICATION]: "${targetPost.text}"`,
+                timestamp: Date.now(),
+                status: 'transmitted'
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                closeModal('forward-share-modal');
+                alert("Publication safely packetized and routed to target peer.");
+            });
+        }
+
+        function renderPersonalPublications() {
+            const container = document.getElementById('profile-personal-posts');
+            container.innerHTML = '';
+            const specific = databaseState.publications.filter(p => p.authorUID === databaseState.currentUser.uid);
+            
+            if(specific.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No structural publications broadcasted by your current node yet.</p>`;
+                return;
+            }
+
+            specific.forEach(post => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1.5 text-xs";
+                card.innerHTML = `<p class="text-slate-300 leading-relaxed">${post.text}</p><span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>`;
+                container.appendChild(card);
+            });
+        }
+
+        function renderProfileFriendsNetwork() {
+            const container = document.getElementById('profile-friends-list');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let match = false;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                if(databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed') {
+                    match = true;
+                    const el = document.createElement('div');
+                    el.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs";
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-2.5">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <p class="font-bold text-slate-300">${peer.name}</p>
+                                <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
+                            </div>
+                        </div>
+                        <button onclick="window.displayPeerAccountProfile('${peer.uid}')" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg font-semibold text-[11px]">Inspect Node</button>
+                    `;
+                    container.appendChild(el);
+                }
+            });
+
+            if(!match) {
+                container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No verified network handshakes linked inside node parameters.</p>`;
+            }
+        }
+
+        window.toggleProfileView = function(view) {
+            const postsTab = document.getElementById('prof-tab-posts');
+            const friendsTab = document.getElementById('prof-tab-friends');
+            const postsContainer = document.getElementById('profile-posts-view-container');
+            const friendsContainer = document.getElementById('profile-friends-view-container');
+
+            if(view === 'posts') {
+                postsTab.className = "flex-1 py-2 rounded-lg font-bold bg-slate-800 text-cyan-400 transition";
+                friendsTab.className = "flex-1 py-2 rounded-lg font-bold text-slate-400 transition";
+                postsContainer.classList.remove('hidden');
+                friendsContainer.classList.add('hidden');
+            } else {
+                friendsTab.className = "flex-1 py-2 rounded-lg font-bold bg-slate-800 text-cyan-400 transition";
+                postsTab.className = "flex-1 py-2 rounded-lg font-bold text-slate-400 transition";
+                friendsContainer.classList.remove('hidden');
+                postsContainer.classList.add('hidden');
+            }
+        }
+
+        window.openGroupCreationModal = function() {
+            closeElement('chat-menu');
+            const container = document.getElementById('group-friends-selection-grid');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let count = 0;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                if(databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed') {
+                    count++;
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between bg-darkbg p-2.5 rounded-xl border border-slate-800";
+                    row.innerHTML = `
+                        <span class="text-slate-300 font-medium">${peer.name} (@${peer.uid})</span>
+                        <input type="checkbox" value="${peer.uid}" class="group-checkbox-node h-4 w-4 accent-cyan-500">
+                    `;
+                    container.appendChild(row);
+                }
+            });
+
+            if(count === 0) {
+                container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-2">No network friends linked to build a group canvas.</p>`;
+            }
             openModal('group-chat-modal');
         }
 
         window.executeGroupChatEstablishment = function() {
-            const name = document.getElementById('group-name-input').value.trim();
-            const checkedBoxes = document.querySelectorAll('#group-friends-selection-grid input:checked');
+            const title = document.getElementById('group-name-input').value.trim();
+            if(!title) { alert("Please provide group identity title tag."); return; }
+
+            const boxes = document.querySelectorAll('.group-checkbox-node:checked');
+            const participants = [databaseState.currentUser.uid];
+            boxes.forEach(b => participants.push(b.value));
+
+            if(participants.length < 2) { alert("Please select participants to compile channel."); return; }
             
-            if(!name || checkedBoxes.length === 0) {
-                alert("Please configure group tags and check at least one node participant.");
-                return;
-            }
-
-            const gId = "GROUP_" + Date.now();
-            const participants = { [databaseState.currentUser.uid]: true };
-            checkedBoxes.forEach(box => { participants[box.value] = true; });
-
-            const meta = { id: gId, name: name, owner: databaseState.currentUser.uid, participants: participants, messages: {} };
-            
-            set(ref(db, 'chats/groups/' + gId), meta).then(() => {
-                document.getElementById('group-name-input').value = "";
-                closeModal('group-chat-modal');
-                launchGroupChannelWindow(gId, name);
-            });
+            alert("Multiplex Session Initialized safely.");
+            document.getElementById('group-name-input').value = '';
+            closeModal('group-chat-modal');
         }
 
-        window.launchGroupChannelWindow = function(groupId, name) {
-            databaseState.activeTargetChatUID = groupId;
-            document.getElementById('chat-window-avatar').src = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100";
-            document.getElementById('chat-window-name').innerText = name;
-            document.getElementById('chat-window-uid').innerText = "@" + groupId;
-            document.getElementById('chat-header-identity-trigger').onclick = null;
-            
-            openModal('chat-window-modal');
-            renderChatHistoryStream();
-        }
-
-        // Forward Share Systems Matrix Routing
-        window.triggerForwardShareModal = function(postId) {
-            databaseState.activeTargetSharePostID = postId;
-            const container = document.getElementById('share-friends-target-grid');
-            container.innerHTML = "";
-            let counter = 0;
-
-            databaseState.peers.forEach(peer => {
-                const fKey = [databaseState.currentUser.uid, peer.uid].sort().join("_");
-                if(databaseState.friendships[fKey] && databaseState.friendships[fKey].status === 'approved') {
-                    counter++;
-                    container.innerHTML += `
-                        <div class="flex items-center justify-between bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                            <span class="text-xs font-bold">${peer.name}</span>
-                            <button onclick="executeForwardPostTransmission('${peer.uid}')" class="bg-cyan-600 px-3 py-1 rounded-lg text-[10px] font-black">Route Packet</button>
-                        </div>
-                    `;
-                }
-            });
-
-            if(counter === 0) container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No active connection loops mapped.</p>`;
-            openModal('forward-share-modal');
-        }
-
-        window.executeForwardPostTransmission = function(peerUID) {
-            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
-            if(!targetPost) return;
-
-            const sharePacket = {
-                id: "MSG_SHARE_" + Date.now(),
-                sender: databaseState.currentUser.uid,
-                text: `[SHARED PUBLICATION DATAPACK]\n"${targetPost.content.substring(0, 60)}..."\nScan identity reference @${targetPost.authorUID} to inspect total payload stream.`,
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-            };
-
-            push(ref(db, `chats/direct/${[databaseState.currentUser.uid, peerUID].sort().join("_")}`), sharePacket).then(() => {
-                closeModal('forward-share-modal');
-                alert("Publication packet routed across networking terminal successfully.");
-            });
-        }
-
-        // Subsettings Operations Hub
-        window.openSubSettingPage = function(targetKey) {
+        window.openSubSettingPage = function(type) {
             closeModal('settings-hub-modal');
             const title = document.getElementById('subsetting-title');
             const body = document.getElementById('subsetting-dynamic-body');
-            
-            title.innerText = targetKey.replace("-", " ");
-            body.innerHTML = "";
+            body.innerHTML = '';
 
-            if(targetKey === 'edit-profile') {
+            if(type === 'edit-profile') {
+                title.innerText = "Edit Profile Parameters";
                 body.innerHTML = `
                     <div class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Modify Display Username</label>
-                            <input type="text" id="edit-name" value="${databaseState.currentUser.name}" class="w-full bg-darkbg border border-slate-800 p-2.5 rounded-xl text-xs focus:outline-none focus:border-slate-700">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Select Avatar Image (PFP)</label>
-                            <input type="file" id="edit-pfp-file" accept="image/*" class="w-full file:bg-slate-800 file:text-white file:border-0 file:py-1.5 file:px-3 file:rounded-xl file:text-[11px] text-slate-400">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Update Core Bio Description</label>
-                            <textarea id="edit-bio" class="w-full bg-darkbg border border-slate-800 p-2.5 rounded-xl text-xs h-16 resize-none focus:outline-none focus:border-slate-700">${databaseState.currentUser.bio || ''}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Assigned Framework Profession</label>
-                            <select id="edit-profession" class="w-full bg-darkbg border border-slate-800 p-2.5 rounded-xl text-xs focus:outline-none focus:border-slate-700 text-slate-300">
-                                <option value="">No Profession Assigned</option>
-                                ${FIXED_PROFESSIONS.map(p => `<option value="${p}" ${databaseState.currentUser.profession === p ? 'selected' : ''}>${p}</option>`).join('')}
-                            </select>
-                        </div>
-                        <button onclick="saveCoreProfileModificationsPipeline()" class="w-full bg-blue-600 py-2.5 rounded-xl font-bold text-white mt-2 transition">Commit Updates</button>
+                        <div><label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Handle Alias Name</label><input type="text" id="edit-name" value="${databaseState.currentUser.name}" class="w-full bg-darkbg border border-slate-800 rounded-xl px-3 py-2"></div>
+                        <div><label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Profile Avatar File</label><input type="file" id="edit-pfp-file" accept="image/*" class="w-full text-slate-400"></div>
+                        <div><label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Ecosystem Biography Text</label><textarea id="edit-bio" class="w-full bg-darkbg border border-slate-800 rounded-xl px-3 py-2 resize-none h-16">${databaseState.currentUser.bio || ''}</textarea></div>
+                        <div><label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Select Core Framework Profession</label><select id="edit-profession" class="w-full bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-slate-400"></select></div>
+                        <button onclick="saveCoreProfileModificationsPipeline()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl mt-2">Commit Structural updates</button>
                     </div>
                 `;
+                const select = document.getElementById('edit-profession');
+                FIXED_PROFESSIONS.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p; opt.innerText = p;
+                    if(databaseState.currentUser.profession === p) opt.selected = true;
+                    select.appendChild(opt);
+                });
+            } else if(type === 'liked-posts') {
+                title.innerText = "Liked Publications";
+                const liked = databaseState.publications.filter(p => p.likes && p.likes[databaseState.currentUser.uid] === true);
+                if(liked.length > 0) {
+                    liked.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
+                } else { body.innerHTML = `<p class="text-center text-slate-600">No liked publications found.</p>`; }
             } else {
-                let listHTML = "";
-                if(targetKey === 'liked-posts') {
-                    const liked = databaseState.publications.filter(p => p.likes && p.likes[databaseState.currentUser.uid]);
-                    liked.forEach(p => listHTML += `<div onclick="inspectFullDataPayload('${p.id}')" class="bg-slate-900/40 p-2.5 border border-slate-800 rounded-xl truncate cursor-pointer">${p.content}</div>`);
-                } else if(targetKey === 'commented-posts') {
-                    const commented = databaseState.publications.filter(p => p.comments && Object.values(p.comments).some(c => c.userUID === databaseState.currentUser.uid));
-                    commented.forEach(p => listHTML += `<div onclick="inspectFullDataPayload('${p.id}')" class="bg-slate-900/40 p-2.5 border border-slate-800 rounded-xl truncate cursor-pointer">${p.content}</div>`);
-                } else if(targetKey === 'saved-posts') {
-                    listHTML = `<p class="text-slate-600 text-center py-4">Core channels bookmark indexing is empty.</p>`;
-                }
-                body.innerHTML = listHTML || `<p class="text-slate-600 text-center py-4">No matching records indexed.</p>`;
+                title.innerText = "System Log Sub-Center";
+                body.innerHTML = `<p class="text-center text-slate-600">No active system traces detected.</p>`;
             }
             openModal('subsetting-view-modal');
         }
@@ -1347,6 +1462,8 @@
 
         window.handleSubscriptionActivation = function() { update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { closeModal('subscription-modal'); openModal('premium-dashboard-modal'); }); }
         window.executePremiumTweak = function(f, v) { const p = {}; if(f==='theme') p.premiumTheme=v; update(ref(db, 'users/' + databaseState.currentUser.uid), p); }
+
+        recoverStateFromHardware();
     </script>
 </body>
 </html>
