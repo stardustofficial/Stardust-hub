@@ -184,6 +184,16 @@
         </nav>
     </div>
 
+    <div id="full-screen-image-viewer" class="hidden fixed inset-0 bg-black/95 z-[90] flex flex-col justify-between items-center p-4">
+        <div class="w-full flex justify-end">
+            <button onclick="closeModal('full-screen-image-viewer')" class="text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold mt-2 mr-2">✕ Close</button>
+        </div>
+        <div class="flex-1 flex items-center justify-center w-full max-w-md">
+            <img id="viewer-target-image" src="" class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl">
+        </div>
+        <div class="mb-4"></div>
+    </div>
+
     <div id="full-screen-account-modal" class="hidden fixed inset-0 bg-darkbg z-50 flex flex-col p-6 overflow-y-auto custom-scrollbar">
         <div class="max-w-md mx-auto w-full space-y-6 pt-4">
             <div class="flex justify-between items-center">
@@ -205,31 +215,34 @@
         </div>
     </div>
 
-    <div id="call-interface-overlay" class="hidden fixed inset-0 bg-slate-950/95 z-55 flex flex-col items-center justify-between p-6 max-w-md mx-auto w-full">
-        <div class="text-center mt-8 space-y-2">
-            <h3 id="call-status-lbl" class="text-cyan-400 text-xs font-black uppercase tracking-widest">Establishing Secure Stream Connection</h3>
-            <h2 id="call-peer-name" class="text-xl font-black">Connecting Peer User</h2>
-            <p id="call-peer-uid" class="text-slate-500 text-xs font-mono"></p>
+    <div id="call-interface-overlay" class="hidden fixed inset-0 bg-slate-950/98 z-[80] flex flex-col items-center justify-between p-6 max-w-md mx-auto w-full">
+        <div class="text-center mt-8 space-y-2 w-full">
+            <div class="inline-flex items-center justify-center p-1 px-3 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-400 text-[10px] font-black uppercase tracking-widest animate-pulse">
+                Encrypted Connection
+            </div>
+            <h2 id="call-peer-name" class="text-2xl font-black text-white mt-4">Connecting Peer User</h2>
+            <p id="call-peer-uid" class="text-slate-400 text-sm font-mono"></p>
+            <p id="call-status-lbl" class="text-slate-500 text-xs">Awaiting Network Sync</p>
         </div>
         
-        <div class="w-full flex-1 flex flex-col items-center justify-center my-4 relative bg-slate-900 rounded-3xl overflow-hidden border border-slate-800">
+        <div class="w-full flex-1 flex flex-col items-center justify-center my-6 relative bg-slate-900 rounded-[32px] overflow-hidden border border-slate-800 shadow-2xl">
             <video id="call-remote-video" autoplay playsinline class="w-full h-full object-cover"></video>
-            <video id="call-local-video" autoplay muted playsinline class="absolute top-4 right-4 w-28 h-40 bg-black rounded-xl object-cover border border-slate-700 z-10"></video>
+            <video id="call-local-video" autoplay muted playsinline class="absolute top-4 right-4 w-28 h-40 bg-black rounded-2xl object-cover border-2 border-slate-700/80 z-10 shadow-lg"></video>
         </div>
 
-        <div id="incoming-call-actions" class="hidden flex gap-4 w-full mb-4">
-            <button onclick="acceptIncomingCallSignal()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                Accept Stream
+        <div id="incoming-call-actions" class="hidden flex gap-4 w-full mb-4 px-2">
+            <button onclick="acceptIncomingCallSignal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                Accept Call
             </button>
-            <button onclick="rejectIncomingCallSignal()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2">
+            <button onclick="rejectIncomingCallSignal()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 transition duration-200">
                 Reject
             </button>
         </div>
 
-        <div id="active-call-actions" class="w-full flex justify-center pb-4">
-            <button onclick="terminateCallSession()" class="bg-red-600 hover:bg-red-700 text-white p-4 rounded-full transition shadow-xl shadow-red-600/30">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
+        <div id="active-call-actions" class="w-full flex justify-center pb-6">
+            <button onclick="terminateCallSession()" class="bg-red-600 hover:bg-red-500 text-white p-5 rounded-full transition shadow-xl shadow-red-600/30 hover:scale-105 duration-200">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
             </button>
         </div>
     </div>
@@ -557,7 +570,7 @@
                     const userData = snap.val();
                     document.getElementById('call-peer-name').innerText = userData ? userData.name : 'Unknown Node';
                     document.getElementById('call-peer-uid').innerText = '@' + senderUID;
-                    document.getElementById('call-status-lbl').innerText = 'Incoming Secure Call Request...';
+                    document.getElementById('call-status-lbl').innerText = 'Incoming Encrypted Peer Connection Request...';
                     document.getElementById('incoming-call-actions').classList.remove('hidden');
                     document.getElementById('active-call-actions').classList.add('hidden');
                     document.getElementById('call-interface-overlay').classList.remove('hidden');
@@ -634,7 +647,16 @@
         function listenToGlobalSyncChannels(myUID) {
             onValue(ref(db, 'publications'), (snap) => {
                 const data = snap.val();
-                databaseState.publications = data ? Object.values(data).reverse() : [];
+                let loadedPubs = [];
+                if(data) {
+                    Object.keys(data).forEach(k => {
+                        if(data[k] && data[k].id && data[k].text) {
+                            loadedPubs.push(data[k]);
+                        }
+                    });
+                }
+                // Correctly Sort by Timestamp Latest on Top
+                databaseState.publications = loadedPubs.sort((a,b) => b.timestamp - a.timestamp);
                 renderEcosystemFeed();
                 renderPersonalPublications();
             });
@@ -730,6 +752,11 @@
         window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
         window.toggleElement = function(id) { document.getElementById(id).classList.toggle('hidden'); }
         window.closeElement = function(id) { document.getElementById(id).classList.add('hidden'); }
+
+        window.openImageViewer = function(imageSrc) {
+            document.getElementById('viewer-target-image').src = imageSrc;
+            openModal('full-screen-image-viewer');
+        }
 
         // Render Merged Verification (Handshake) Requests with full Account Info
         function renderEcosystemIncomingRequests() {
@@ -1000,8 +1027,9 @@
                 }
             });
 
+            // Deep Article Matches Search Core Algorithm Fix
             databaseState.publications.forEach(post => {
-                if(post.text.toLowerCase().includes(query)) {
+                if(post && post.text && post.text.toLowerCase().includes(query)) {
                     const card = document.createElement('div');
                     card.className = "bg-darkcard p-3 rounded-xl border border-slate-800 text-xs space-y-2";
                     card.innerHTML = `
@@ -1113,22 +1141,25 @@
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
             feed.innerHTML = '';
+            
             if(databaseState.publications.length === 0) {
                 feed.innerHTML = `<div class="text-center text-slate-600 text-xs py-8">No structural communications active inside matrix core.</div>`;
                 return;
             }
 
             databaseState.publications.forEach(post => {
+                if(!post || !post.id) return; // Filtering null/undefined posts from rendering cascade
+                
                 const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
                 const likesCount = post.likes ? Object.keys(post.likes).length : 0;
                 const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
                 
                 const card = document.createElement('div');
-                card.className = "bg-darkcard rounded-2xl border border-slate-800/80 p-4 space-y-3 text-xs";
+                card.className = "bg-darkcard rounded-2xl border border-slate-800/80 p-4 space-y-3 text-xs shadow-md";
                 
                 let imageLayer = '';
                 if(post.image) {
-                    imageLayer = `<div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-900 border border-slate-800"><img src="${post.image}" class="w-full h-full object-cover"></div>`;
+                    imageLayer = `<div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-900 border border-slate-800 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>`;
                 }
 
                 card.innerHTML = `
@@ -1165,7 +1196,7 @@
             onValue(ref(db, 'publications'), (snap) => {
                 const data = snap.val();
                 if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k].id === postId);
+                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
                     if(dbKey) {
                         const myUID = databaseState.currentUser.uid;
                         const currentLikes = data[dbKey].likes || {};
@@ -1223,7 +1254,7 @@
             onValue(ref(db, 'publications'), (snap) => {
                 const data = snap.val();
                 if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k].id === postId);
+                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
                     if(dbKey) {
                         const payload = {
                             authorUID: databaseState.currentUser.uid,
@@ -1294,7 +1325,7 @@
         function renderPersonalPublications() {
             const container = document.getElementById('profile-personal-posts');
             container.innerHTML = '';
-            const specific = databaseState.publications.filter(p => p.authorUID === databaseState.currentUser.uid);
+            const specific = databaseState.publications.filter(p => p && p.authorUID === databaseState.currentUser.uid);
             
             if(specific.length === 0) {
                 container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No structural publications broadcasted by your current node yet.</p>`;
@@ -1427,7 +1458,7 @@
                 });
             } else if(type === 'liked-posts') {
                 title.innerText = "Liked Publications";
-                const liked = databaseState.publications.filter(p => p.likes && p.likes[databaseState.currentUser.uid] === true);
+                const liked = databaseState.publications.filter(p => p && p.likes && p.likes[databaseState.currentUser.uid] === true);
                 if(liked.length > 0) {
                     liked.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No liked publications found.</p>`; }
