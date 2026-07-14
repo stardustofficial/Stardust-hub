@@ -39,9 +39,109 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .floating-call-window {
+            position: fixed;
+            width: 180px;
+            height: 240px;
+            border-radius: 20px;
+            overflow: hidden;
+            z-index: 100;
+            border: 2px solid #334155;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            cursor: grab;
+            transition: opacity 0.3s ease;
+        }
+        .floating-call-window:active { cursor: grabbing; }
+        .floating-call-window video { width: 100%; height: 100%; object-fit: cover; }
+        .floating-call-window .caller-pfp {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.85);
+        }
+        .floating-call-window .caller-pfp img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #06b6d4;
+            object-fit: cover;
+        }
+        .floating-call-window .call-duration {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 11px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .call-reaction-float {
+            position: fixed;
+            font-size: 48px;
+            pointer-events: none;
+            z-index: 200;
+            animation: floatUp 1.2s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-150px) scale(1.3); }
+        }
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #0b1528;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        #loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+        .floating-minimize-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+        .floating-minimize-btn:hover { background: rgba(0,0,0,0.8); }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <h1 class="text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">STARDUST</h1>
+        <p class="text-slate-500 text-xs mt-2">Establishing secure connection...</p>
+    </div>
 
     <div id="login-screen" class="fixed inset-0 flex flex-col items-center justify-center p-6 bg-darkbg z-50">
         <div class="text-center max-w-sm w-full bg-darkcard p-8 rounded-3xl border border-slate-800 shadow-2xl relative transition-all duration-300">
@@ -184,6 +284,16 @@
         </nav>
     </div>
 
+    <!-- FLOATING CALL WINDOW -->
+    <div id="floating-call-window" class="floating-call-window hidden" style="top: 80px; right: 16px;">
+        <div class="caller-pfp" id="floating-caller-pfp">
+            <img id="floating-caller-img" src="" alt="Caller">
+        </div>
+        <video id="floating-remote-video" autoplay playsinline style="display:none;"></video>
+        <div class="call-duration" id="floating-call-duration">00:00</div>
+        <button class="floating-minimize-btn" onclick="restoreCallWindow()">⤢</button>
+    </div>
+
     <div id="full-screen-image-viewer" class="hidden fixed inset-0 bg-black/95 z-[90] flex flex-col justify-between items-center p-4">
         <div class="w-full flex justify-end">
             <button onclick="closeModal('full-screen-image-viewer')" class="text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold mt-2 mr-2">✕ Close</button>
@@ -220,6 +330,11 @@
             <div class="inline-flex items-center justify-center p-1 px-3 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-400 text-[10px] font-black uppercase tracking-widest animate-pulse">
                 Encrypted Connection
             </div>
+            <div id="call-peer-pfp-container" class="flex justify-center mt-4">
+                <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-cyan-500/60 shadow-2xl shadow-cyan-500/20">
+                    <img id="call-peer-pfp" src="" class="w-full h-full object-cover" alt="Caller">
+                </div>
+            </div>
             <h2 id="call-peer-name" class="text-2xl font-black text-white mt-4">Connecting Peer User</h2>
             <p id="call-peer-uid" class="text-slate-400 text-sm font-mono"></p>
             <p id="call-status-lbl" class="text-slate-500 text-xs">Awaiting Network Sync</p>
@@ -230,6 +345,56 @@
             <video id="call-local-video" autoplay muted playsinline class="absolute top-4 right-4 w-28 h-40 bg-black rounded-2xl object-cover border-2 border-slate-700/80 z-10 shadow-lg"></video>
         </div>
 
+        <!-- Call Bottom Navigation -->
+        <div id="call-bottom-nav" class="w-full flex justify-center items-center gap-3 pb-4 px-2">
+            <!-- Reactions Button -->
+            <button onclick="toggleCallReactions()" class="bg-slate-800 hover:bg-slate-700 text-white p-3.5 rounded-full transition border border-slate-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </button>
+            
+            <!-- Switch to Video Button -->
+            <button onclick="toggleVideoDuringCall()" id="call-toggle-video-btn" class="bg-slate-800 hover:bg-slate-700 text-white p-3.5 rounded-full transition border border-slate-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            </button>
+            
+            <!-- Chat Button -->
+            <button onclick="toggleCallChat()" class="bg-slate-800 hover:bg-slate-700 text-white p-3.5 rounded-full transition border border-slate-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            </button>
+
+            <!-- End Call Button -->
+            <button onclick="terminateCallSession()" class="bg-red-600 hover:bg-red-500 text-white p-3.5 rounded-full transition shadow-xl shadow-red-600/30 hover:scale-105 duration-200 border-2 border-red-500/50">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
+            </button>
+        </div>
+
+        <!-- Reactions Popup -->
+        <div id="call-reactions-popup" class="hidden absolute bottom-28 left-1/2 -translate-x-1/2 bg-darkcard/95 backdrop-blur-md border border-slate-700 rounded-2xl p-3 shadow-2xl z-20 flex gap-2 flex-wrap justify-center max-w-[280px]">
+            <button onclick="sendCallReaction('🔥')" class="text-2xl hover:scale-125 transition p-1">🔥</button>
+            <button onclick="sendCallReaction('❤️')" class="text-2xl hover:scale-125 transition p-1">❤️</button>
+            <button onclick="sendCallReaction('😂')" class="text-2xl hover:scale-125 transition p-1">😂</button>
+            <button onclick="sendCallReaction('👍')" class="text-2xl hover:scale-125 transition p-1">👍</button>
+            <button onclick="sendCallReaction('🎉')" class="text-2xl hover:scale-125 transition p-1">🎉</button>
+            <button onclick="sendCallReaction('😮')" class="text-2xl hover:scale-125 transition p-1">😮</button>
+            <button onclick="sendCallReaction('😢')" class="text-2xl hover:scale-125 transition p-1">😢</button>
+            <button onclick="sendCallReaction('😡')" class="text-2xl hover:scale-125 transition p-1">😡</button>
+            <button onclick="sendCallReaction('💀')" class="text-2xl hover:scale-125 transition p-1">💀</button>
+            <button onclick="sendCallReaction('🫡')" class="text-2xl hover:scale-125 transition p-1">🫡</button>
+        </div>
+
+        <!-- Call Chat Overlay -->
+        <div id="call-chat-overlay" class="hidden absolute inset-0 bg-black/80 backdrop-blur-sm z-15 flex flex-col p-4" style="padding-top: 60px;">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-slate-400">Call Chat</span>
+                <button onclick="toggleCallChat()" class="text-slate-400 bg-slate-800 px-3 py-1 rounded-xl text-xs">Close</button>
+            </div>
+            <div id="call-chat-messages" class="flex-1 overflow-y-auto space-y-2 mb-3 custom-scrollbar"></div>
+            <div class="flex gap-2">
+                <input type="text" id="call-chat-input" placeholder="Type a message..." class="flex-1 bg-darkbg border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                <button onclick="sendCallChatMessage()" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">Send</button>
+            </div>
+        </div>
+
         <div id="incoming-call-actions" class="hidden flex gap-4 w-full mb-4 px-2">
             <button onclick="acceptIncomingCallSignal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
@@ -237,12 +402,6 @@
             </button>
             <button onclick="rejectIncomingCallSignal()" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 transition duration-200">
                 Reject
-            </button>
-        </div>
-
-        <div id="active-call-actions" class="w-full flex justify-center pb-6">
-            <button onclick="terminateCallSession()" class="bg-red-600 hover:bg-red-500 text-white p-5 rounded-full transition shadow-xl shadow-red-600/30 hover:scale-105 duration-200">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
             </button>
         </div>
     </div>
@@ -393,7 +552,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue, push, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, update, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5ufTBjot8i-PJCBkJtUpc50jJcYmzMBQ",
@@ -413,15 +572,24 @@
         const FIXED_PROFESSIONS = ["Architect", "Software Engineer", "Systems Analyst", "Cybersecurity Specialist", "Creative Designer"];
         
         let databaseState = {
-            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "" },
+            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", savedPosts: [] },
             publications: [], peers: [], friendships: {}, chatThreads: {}, activeTargetChatUID: null, activeContextMessageID: null, activeTargetSharePostID: null,
             longPressTimer: null
         };
 
-        // Unlimited P2P Calling Engine Variables
-        let peerInstance = null;
-        let ongoingCallObject = null;
-        let nativeMediaStream = null;
+        // Call State
+        let callState = {
+            isActive: false,
+            isVideo: false,
+            peerId: null,
+            stream: null,
+            callObj: null,
+            durationInterval: null,
+            seconds: 0,
+            isFloating: false,
+            isChatOpen: false,
+            isReactionsOpen: false
+        };
 
         window.saveStateToHardware = function() { localStorage.setItem("STARDUST_CORE_DB_PROD", JSON.stringify(databaseState)); }
         window.recoverStateFromHardware = function() {
@@ -430,6 +598,9 @@
         }
 
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
+
+        // Show loading screen initially
+        document.getElementById('loading-screen').classList.remove('hidden');
 
         window.switchAuthView = function(view) {
             const desc = document.getElementById('auth-screen-desc');
@@ -458,7 +629,9 @@
                     databaseState.currentUser.realFirebaseUID = user.uid;
                     databaseState.currentUser.uid = assignedUID;
                     databaseState.currentUser.name = "Node_" + assignedUID;
+                    databaseState.currentUser.savedPosts = [];
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
+                        document.getElementById('loading-screen').classList.add('hidden');
                         document.getElementById('login-screen').classList.add('hidden');
                         document.getElementById('app-layout').classList.remove('hidden');
                         listenToGlobalSyncChannels(assignedUID);
@@ -512,6 +685,8 @@
                             const mappedNode = Object.values(data).find(p => p.realFirebaseUID === userCredential.user.uid);
                             if(mappedNode) {
                                 databaseState.currentUser = mappedNode;
+                                if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
+                                document.getElementById('loading-screen').classList.add('hidden');
                                 document.getElementById('login-screen').classList.add('hidden');
                                 document.getElementById('app-layout').classList.remove('hidden');
                                 listenToGlobalSyncChannels(mappedNode.uid);
@@ -539,6 +714,8 @@
                         const mappedNode = Object.values(data).find(p => p.realFirebaseUID === user.uid);
                         if(mappedNode) {
                             databaseState.currentUser = mappedNode;
+                            if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
+                            document.getElementById('loading-screen').classList.add('hidden');
                             document.getElementById('login-screen').classList.add('hidden');
                             document.getElementById('app-layout').classList.remove('hidden');
                             listenToGlobalSyncChannels(mappedNode.uid);
@@ -548,6 +725,7 @@
                     }
                 }, { onlyOnce: true });
             } else {
+                document.getElementById('loading-screen').classList.add('hidden');
                 document.getElementById('login-screen').classList.remove('hidden');
                 document.getElementById('app-layout').classList.add('hidden');
             }
@@ -571,37 +749,81 @@
                     document.getElementById('call-peer-name').innerText = userData ? userData.name : 'Unknown Node';
                     document.getElementById('call-peer-uid').innerText = '@' + senderUID;
                     document.getElementById('call-status-lbl').innerText = 'Incoming Encrypted Peer Connection Request...';
+                    if(userData && userData.pfp) {
+                        document.getElementById('call-peer-pfp').src = userData.pfp;
+                    }
                     document.getElementById('incoming-call-actions').classList.remove('hidden');
-                    document.getElementById('active-call-actions').classList.add('hidden');
+                    document.getElementById('call-bottom-nav').classList.add('hidden');
                     document.getElementById('call-interface-overlay').classList.remove('hidden');
+                    callState.peerId = senderUID;
                 }, { onlyOnce: true });
+            });
+
+            // Listen for call reactions
+            onValue(ref(db, 'call_reactions'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    const latest = Object.values(data).pop();
+                    if(latest && latest.target === uid) {
+                        renderCallReaction(latest.emoji);
+                    }
+                }
             });
         }
 
         window.initializeVoiceCallBroadcast = function(mode) {
             if(!databaseState.activeTargetChatUID) return;
-            const targetPeerID = 'stardust-' + databaseState.activeTargetChatUID;
+            const targetUID = databaseState.activeTargetChatUID;
+            const targetPeerID = 'stardust-' + targetUID;
             
             document.getElementById('call-status-lbl').innerText = 'Requesting Stream Feed Access...';
             document.getElementById('incoming-call-actions').classList.add('hidden');
-            document.getElementById('active-call-actions').classList.remove('hidden');
+            document.getElementById('call-bottom-nav').classList.remove('hidden');
             document.getElementById('call-interface-overlay').classList.remove('hidden');
+            callState.isActive = true;
+            callState.peerId = targetUID;
+            callState.isVideo = mode === 'video';
             
-            onValue(ref(db, 'users/' + databaseState.activeTargetChatUID), (snap) => {
+            if(mode === 'video') {
+                document.getElementById('call-toggle-video-btn').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                document.getElementById('call-local-video').style.display = 'block';
+            } else {
+                document.getElementById('call-toggle-video-btn').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                document.getElementById('call-local-video').style.display = 'none';
+            }
+            
+            onValue(ref(db, 'users/' + targetUID), (snap) => {
                 const userData = snap.val();
                 document.getElementById('call-peer-name').innerText = userData ? userData.name : 'Remote Node';
-                document.getElementById('call-peer-uid').innerText = '@' + databaseState.activeTargetChatUID;
+                document.getElementById('call-peer-uid').innerText = '@' + targetUID;
+                if(userData && userData.pfp) {
+                    document.getElementById('call-peer-pfp').src = userData.pfp;
+                }
             }, { onlyOnce: true });
 
             navigator.mediaDevices.getUserMedia({ video: mode === 'video', audio: true })
                 .then((stream) => {
                     nativeMediaStream = stream;
+                    callState.stream = stream;
                     document.getElementById('call-local-video').srcObject = stream;
                     ongoingCallObject = peerInstance.call(targetPeerID, stream);
+                    callState.callObj = ongoingCallObject;
                     
                     ongoingCallObject.on('stream', (remoteStream) => {
                         document.getElementById('call-remote-video').srcObject = remoteStream;
                         document.getElementById('call-status-lbl').innerText = 'P2P Encrypted Session Active';
+                        startCallDurationTimer();
+                    });
+                    
+                    // Listen for call reactions from peer
+                    onValue(ref(db, 'call_reactions'), (snap) => {
+                        const data = snap.val();
+                        if(data) {
+                            const latest = Object.values(data).pop();
+                            if(latest && latest.target === databaseState.currentUser.uid) {
+                                renderCallReaction(latest.emoji);
+                            }
+                        }
                     });
                 }).catch(err => {
                     alert("Media Stream Denied: " + err.message);
@@ -613,15 +835,32 @@
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then((stream) => {
                     nativeMediaStream = stream;
+                    callState.stream = stream;
+                    callState.isActive = true;
+                    callState.isVideo = true;
                     document.getElementById('call-local-video').srcObject = stream;
+                    document.getElementById('call-local-video').style.display = 'block';
                     document.getElementById('incoming-call-actions').classList.add('hidden');
-                    document.getElementById('active-call-actions').classList.remove('hidden');
+                    document.getElementById('call-bottom-nav').classList.remove('hidden');
                     document.getElementById('call-status-lbl').innerText = 'Connecting Handshake Data...';
                     
                     ongoingCallObject.answer(stream);
+                    callState.callObj = ongoingCallObject;
                     ongoingCallObject.on('stream', (remoteStream) => {
                         document.getElementById('call-remote-video').srcObject = remoteStream;
                         document.getElementById('call-status-lbl').innerText = 'P2P Encrypted Session Active';
+                        startCallDurationTimer();
+                    });
+                    
+                    // Listen for call reactions
+                    onValue(ref(db, 'call_reactions'), (snap) => {
+                        const data = snap.val();
+                        if(data) {
+                            const latest = Object.values(data).pop();
+                            if(latest && latest.target === databaseState.currentUser.uid) {
+                                renderCallReaction(latest.emoji);
+                            }
+                        }
                     });
                 }).catch(err => {
                     alert("Failed to grab media inputs: " + err.message);
@@ -639,9 +878,304 @@
             if(nativeMediaStream) {
                 nativeMediaStream.getTracks().forEach(track => track.stop());
             }
+            if(callState.durationInterval) {
+                clearInterval(callState.durationInterval);
+                callState.durationInterval = null;
+            }
             document.getElementById('call-local-video').srcObject = null;
             document.getElementById('call-remote-video').srcObject = null;
             document.getElementById('call-interface-overlay').classList.add('hidden');
+            document.getElementById('floating-call-window').classList.add('hidden');
+            callState.isActive = false;
+            callState.isFloating = false;
+            callState.seconds = 0;
+            document.getElementById('floating-call-duration').innerText = '00:00';
+            
+            // Remove reaction listener
+            // Clean up
+        }
+
+        function startCallDurationTimer() {
+            callState.seconds = 0;
+            if(callState.durationInterval) clearInterval(callState.durationInterval);
+            callState.durationInterval = setInterval(() => {
+                callState.seconds++;
+                const mins = String(Math.floor(callState.seconds / 60)).padStart(2, '0');
+                const secs = String(callState.seconds % 60).padStart(2, '0');
+                const duration = `${mins}:${secs}`;
+                document.getElementById('floating-call-duration').innerText = duration;
+            }, 1000);
+        }
+
+        // --- Call Reactions ---
+        function renderCallReaction(emoji) {
+            const el = document.createElement('div');
+            el.className = 'call-reaction-float';
+            el.innerText = emoji;
+            el.style.left = Math.random() * 60 + 20 + '%';
+            el.style.top = Math.random() * 40 + 20 + '%';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1200);
+        }
+
+        window.sendCallReaction = function(emoji) {
+            if(!callState.peerId) return;
+            const payload = {
+                emoji: emoji,
+                target: callState.peerId,
+                sender: databaseState.currentUser.uid,
+                timestamp: Date.now()
+            };
+            push(ref(db, 'call_reactions'), payload);
+            renderCallReaction(emoji);
+            document.getElementById('call-reactions-popup').classList.add('hidden');
+            callState.isReactionsOpen = false;
+        }
+
+        window.toggleCallReactions = function() {
+            const popup = document.getElementById('call-reactions-popup');
+            callState.isReactionsOpen = !callState.isReactionsOpen;
+            popup.classList.toggle('hidden');
+        }
+
+        // --- Toggle Video During Call ---
+        window.toggleVideoDuringCall = function() {
+            if(!callState.isActive || !callState.stream) return;
+            callState.isVideo = !callState.isVideo;
+            
+            const videoTrack = callState.stream.getVideoTracks()[0];
+            if(videoTrack) {
+                videoTrack.enabled = callState.isVideo;
+            }
+            
+            if(callState.isVideo) {
+                document.getElementById('call-local-video').style.display = 'block';
+                document.getElementById('call-toggle-video-btn').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+            } else {
+                document.getElementById('call-local-video').style.display = 'none';
+                document.getElementById('call-toggle-video-btn').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+            }
+        }
+
+        // --- Call Chat ---
+        window.toggleCallChat = function() {
+            callState.isChatOpen = !callState.isChatOpen;
+            document.getElementById('call-chat-overlay').classList.toggle('hidden');
+            if(callState.isChatOpen) {
+                document.getElementById('call-chat-input').focus();
+            }
+        }
+
+        window.sendCallChatMessage = function() {
+            const input = document.getElementById('call-chat-input');
+            const msg = input.value.trim();
+            if(!msg || !callState.peerId) return;
+            
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < callState.peerId ? `${myUID}_text_${callState.peerId}` : `${callState.peerId}_text_${myUID}`;
+            
+            const messagePayload = {
+                sender: myUID,
+                text: msg,
+                timestamp: Date.now(),
+                status: 'transmitted'
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                input.value = '';
+                renderCallChatMessages();
+            });
+        }
+
+        function renderCallChatMessages() {
+            if(!callState.peerId) return;
+            const container = document.getElementById('call-chat-messages');
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < callState.peerId ? `${myUID}_text_${callState.peerId}` : `${callState.peerId}_text_${myUID}`;
+            
+            const packets = databaseState.chatThreads[threadKey];
+            container.innerHTML = '';
+            
+            if(!packets) {
+                container.innerHTML = `<div class="text-center text-slate-600 text-[10px] py-2">No messages yet</div>`;
+                return;
+            }
+
+            const recent = Object.values(packets).slice(-20);
+            recent.forEach(msg => {
+                const isMe = msg.sender === myUID;
+                const el = document.createElement('div');
+                el.className = `max-w-[80%] p-2 rounded-xl text-xs ${isMe ? 'bg-blue-600 text-white self-end ml-auto' : 'bg-slate-700 text-slate-200 self-start'}`;
+                el.innerText = msg.text;
+                container.appendChild(el);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Listen for chat messages during call
+        onValue(ref(db, 'chats'), (snap) => {
+            databaseState.chatThreads = snap.val() || {};
+            if(callState.isChatOpen) {
+                renderCallChatMessages();
+            }
+            if(databaseState.activeTargetChatUID) {
+                renderActiveChatLiveStream(databaseState.activeTargetChatUID);
+            }
+        });
+
+        // --- Floating Call Window ---
+        let dragData = { isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 };
+
+        window.minimizeCallWindow = function() {
+            if(!callState.isActive) return;
+            callState.isFloating = true;
+            const floatingWindow = document.getElementById('floating-call-window');
+            const callerImg = document.getElementById('floating-caller-img');
+            const remoteVideo = document.getElementById('floating-remote-video');
+            
+            // Copy PFP
+            const pfpSrc = document.getElementById('call-peer-pfp').src;
+            callerImg.src = pfpSrc;
+            
+            // Copy remote video stream
+            const remoteStream = document.getElementById('call-remote-video').srcObject;
+            if(remoteStream) {
+                remoteVideo.srcObject = remoteStream;
+                remoteVideo.style.display = 'block';
+                document.getElementById('floating-caller-pfp').style.display = 'none';
+            } else {
+                remoteVideo.style.display = 'none';
+                document.getElementById('floating-caller-pfp').style.display = 'flex';
+            }
+            
+            // Position in corner
+            floatingWindow.style.top = '80px';
+            floatingWindow.style.right = '16px';
+            floatingWindow.style.left = 'auto';
+            floatingWindow.style.bottom = 'auto';
+            
+            floatingWindow.classList.remove('hidden');
+            document.getElementById('call-interface-overlay').classList.add('hidden');
+            
+            // Setup drag
+            setupFloatingDrag();
+        }
+
+        window.restoreCallWindow = function() {
+            callState.isFloating = false;
+            document.getElementById('floating-call-window').classList.add('hidden');
+            document.getElementById('call-interface-overlay').classList.remove('hidden');
+            document.getElementById('floating-remote-video').srcObject = null;
+        }
+
+        function setupFloatingDrag() {
+            const el = document.getElementById('floating-call-window');
+            
+            el.addEventListener('mousedown', startDrag);
+            el.addEventListener('touchstart', startDragTouch, { passive: false });
+            
+            document.addEventListener('mousemove', moveDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', moveDragTouch, { passive: false });
+            document.addEventListener('touchend', endDragTouch);
+        }
+
+        function startDrag(e) {
+            if(e.target.closest('.floating-minimize-btn')) return;
+            dragData.isDragging = true;
+            const rect = el.getBoundingClientRect();
+            dragData.offsetX = e.clientX - rect.left;
+            dragData.offsetY = e.clientY - rect.top;
+            el.style.cursor = 'grabbing';
+        }
+
+        function startDragTouch(e) {
+            if(e.target.closest('.floating-minimize-btn')) return;
+            const touch = e.touches[0];
+            dragData.isDragging = true;
+            const rect = el.getBoundingClientRect();
+            dragData.offsetX = touch.clientX - rect.left;
+            dragData.offsetY = touch.clientY - rect.top;
+        }
+
+        function moveDrag(e) {
+            if(!dragData.isDragging) return;
+            const el = document.getElementById('floating-call-window');
+            let x = e.clientX - dragData.offsetX;
+            let y = e.clientY - dragData.offsetY;
+            constrainPosition(el, x, y);
+        }
+
+        function moveDragTouch(e) {
+            if(!dragData.isDragging) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const el = document.getElementById('floating-call-window');
+            let x = touch.clientX - dragData.offsetX;
+            let y = touch.clientY - dragData.offsetY;
+            constrainPosition(el, x, y);
+        }
+
+        function constrainPosition(el, x, y) {
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const w = 180;
+            const h = 240;
+            
+            // Constrain to corners
+            const cornerX = x < winW/2 ? 16 : winW - w - 16;
+            const cornerY = y < winH/2 ? 80 : winH - h - 16;
+            
+            // Snap to nearest corner
+            const snapX = x < winW/2 ? 16 : winW - w - 16;
+            const snapY = y < winH/2 ? 80 : winH - h - 16;
+            
+            el.style.left = snapX + 'px';
+            el.style.top = snapY + 'px';
+            el.style.right = 'auto';
+            el.style.bottom = 'auto';
+        }
+
+        function endDrag() {
+            dragData.isDragging = false;
+            const el = document.getElementById('floating-call-window');
+            if(el) el.style.cursor = 'grab';
+        }
+
+        function endDragTouch() {
+            dragData.isDragging = false;
+        }
+
+        // --- Save Post Function ---
+        window.savePost = function(postId) {
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if(!targetPost) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const userRef = ref(db, 'users/' + myUID);
+            
+            get(userRef).then((snap) => {
+                const userData = snap.val();
+                let saved = userData.savedPosts || [];
+                
+                if(saved.includes(postId)) {
+                    saved = saved.filter(id => id !== postId);
+                    alert("Post removed from saved channels.");
+                } else {
+                    saved.push(postId);
+                    alert("Post saved to core channels.");
+                }
+                
+                update(userRef, { savedPosts: saved }).then(() => {
+                    databaseState.currentUser.savedPosts = saved;
+                    saveStateToHardware();
+                    renderEcosystemFeed();
+                });
+            });
+        }
+
+        function isPostSaved(postId) {
+            return databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(postId);
         }
 
         function listenToGlobalSyncChannels(myUID) {
@@ -655,7 +1189,6 @@
                         }
                     });
                 }
-                // Correctly Sort by Timestamp Latest on Top
                 databaseState.publications = loadedPubs.sort((a,b) => b.timestamp - a.timestamp);
                 renderEcosystemFeed();
                 renderPersonalPublications();
@@ -666,6 +1199,7 @@
                 databaseState.peers = data ? Object.values(data) : [];
                 if(data && data[myUID]) {
                     databaseState.currentUser = data[myUID];
+                    if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                     syncProfileCardInterface();
                 }
                 renderEcosystemIncomingRequests();
@@ -685,6 +1219,9 @@
                 renderEcosystemActiveChats();
                 if(databaseState.activeTargetChatUID) {
                     renderActiveChatLiveStream(databaseState.activeTargetChatUID);
+                }
+                if(callState.isChatOpen) {
+                    renderCallChatMessages();
                 }
             });
         }
@@ -709,7 +1246,6 @@
             }
         }
 
-        // Global Unseen Calculation Engine
         function evaluateGlobalUnseenPackets() {
             let totalUnseen = 0;
             const myUID = databaseState.currentUser.uid;
@@ -758,7 +1294,6 @@
             openModal('full-screen-image-viewer');
         }
 
-        // Render Merged Verification (Handshake) Requests with full Account Info
         function renderEcosystemIncomingRequests() {
             const container = document.getElementById('incoming-requests-list');
             container.innerHTML = '';
@@ -823,7 +1358,6 @@
             }
         }
 
-        // Render Active Communications with live highlight status and notification badging
         function renderEcosystemActiveChats() {
             const container = document.getElementById('active-chats-list');
             container.innerHTML = '';
@@ -921,7 +1455,6 @@
                 const msgNode = document.createElement('div');
                 msgNode.className = `max-w-[75%] p-3 rounded-2xl text-xs relative group ${isMe ? 'bg-blue-600 text-white self-end rounded-tr-none' : 'bg-darkcard text-slate-200 self-start rounded-tl-none border border-slate-800'}`;
                 
-                // Direct Context Setup to Support React Text Packets
                 msgNode.oncontextmenu = (e) => {
                     e.preventDefault();
                     databaseState.activeContextMessageID = { thread: threadKey, id: packetID, txt: message.text };
@@ -1027,7 +1560,6 @@
                 }
             });
 
-            // Deep Article Matches Search Core Algorithm Fix
             databaseState.publications.forEach(post => {
                 if(post && post.text && post.text.toLowerCase().includes(query)) {
                     const card = document.createElement('div');
@@ -1148,11 +1680,12 @@
             }
 
             databaseState.publications.forEach(post => {
-                if(!post || !post.id) return; // Filtering null/undefined posts from rendering cascade
+                if(!post || !post.id) return;
                 
                 const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
                 const likesCount = post.likes ? Object.keys(post.likes).length : 0;
                 const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
+                const isSaved = isPostSaved(post.id);
                 
                 const card = document.createElement('div');
                 card.className = "bg-darkcard rounded-2xl border border-slate-800/80 p-4 space-y-3 text-xs shadow-md";
@@ -1185,6 +1718,9 @@
                         </button>
                         <button onclick="openForwardShareEcosystemModal('${post.id}')" class="flex items-center space-x-1.5 hover:text-cyan-400 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        </button>
+                        <button onclick="savePost('${post.id}')" class="flex items-center space-x-1.5 hover:text-amber-400 transition ${isSaved ? 'text-amber-400 font-bold' : ''}">
+                            <svg class="w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                         </button>
                     </div>
                 `;
@@ -1462,6 +1998,12 @@
                 if(liked.length > 0) {
                     liked.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No liked publications found.</p>`; }
+            } else if(type === 'saved-posts') {
+                title.innerText = "Saved Core Channels";
+                const saved = databaseState.publications.filter(p => p && databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(p.id));
+                if(saved.length > 0) {
+                    saved.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
+                } else { body.innerHTML = `<p class="text-center text-slate-600">No saved publications found.</p>`; }
             } else {
                 title.innerText = "System Log Sub-Center";
                 body.innerHTML = `<p class="text-center text-slate-600">No active system traces detected.</p>`;
@@ -1493,6 +2035,9 @@
 
         window.handleSubscriptionActivation = function() { update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { closeModal('subscription-modal'); openModal('premium-dashboard-modal'); }); }
         window.executePremiumTweak = function(f, v) { const p = {}; if(f==='theme') p.premiumTheme=v; update(ref(db, 'users/' + databaseState.currentUser.uid), p); }
+
+        // Make savePost globally available
+        window.savePost = savePost;
 
         recoverStateFromHardware();
     </script>
