@@ -318,7 +318,7 @@
         }
         .notification-badge.hidden { display: none; }
         
-        /* Notification Dropdown - Fixed */
+        /* Notification Dropdown - Fixed & Taller */
         #notification-dropdown {
             position: absolute;
             right: 0;
@@ -331,7 +331,7 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             z-index: 60;
             overflow: hidden;
-            max-height: 440px;
+            max-height: 520px;
             display: none;
             left: auto;
         }
@@ -348,7 +348,7 @@
         }
         #notification-dropdown .notif-list {
             overflow-y: auto;
-            max-height: 350px;
+            max-height: 430px;
             padding: 8px;
         }
         #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
@@ -520,7 +520,7 @@
                                 <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 <span id="notification-count-badge" class="notification-badge hidden">0</span>
                             </button>
-                            <!-- Notification Dropdown - Fixed -->
+                            <!-- Notification Dropdown - Fixed & Taller -->
                             <div id="notification-dropdown" class="hidden">
                                 <div class="notif-header">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifications</span>
@@ -1014,7 +1014,6 @@
             longPressTimer: null,
             isUploading: false,
             notifications: [],
-            // Track which reels have had their view counted
             viewedReels: {}
         };
 
@@ -1055,11 +1054,9 @@
             };
             databaseState.notifications.unshift(notif);
             
-            // Auto-delete notifications older than 7 days
             const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
             databaseState.notifications = databaseState.notifications.filter(n => n.timestamp > sevenDaysAgo);
             
-            // Keep only last 50 notifications
             if (databaseState.notifications.length > 50) {
                 databaseState.notifications = databaseState.notifications.slice(0, 50);
             }
@@ -1125,7 +1122,6 @@
             
             if (isHidden) {
                 dropdown.classList.remove('hidden');
-                // Mark all as read when opened
                 databaseState.notifications.forEach(n => n.read = true);
                 saveStateToHardware();
                 renderNotifications();
@@ -1142,7 +1138,6 @@
             updateNotificationBadge();
         }
 
-        // Click outside to close notification dropdown
         document.addEventListener('click', function(e) {
             const dropdown = document.getElementById('notification-dropdown');
             const btn = e.target.closest('[onclick*="toggleNotificationDropdown"]') || 
@@ -1713,10 +1708,8 @@
             }
         };
 
-        // Track if we're currently rendering to prevent loops
         let isRenderingReels = false;
 
-        // Render Reels Feed - FIXED: no view tracking during render
         function renderReelsFeed() {
             if (isRenderingReels) return;
             isRenderingReels = true;
@@ -1786,23 +1779,18 @@
                 container.appendChild(div);
             });
 
-            // Setup auto-play after rendering
             setTimeout(() => {
                 setupReelAutoPlay();
                 isRenderingReels = false;
             }, 100);
         }
 
-        // Track view without triggering re-render
         function trackReelView(reelId) {
-            // Skip if already viewed
             if (databaseState.viewedReels[reelId]) return;
             
-            // Mark as viewed in memory
             databaseState.viewedReels[reelId] = true;
             saveStateToHardware();
             
-            // Update Firebase without triggering re-render
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
@@ -1822,7 +1810,6 @@
             const container = document.getElementById('reels-feed');
             const videos = container.querySelectorAll('.reel-item video');
             
-            // Cleanup old observer
             if (reelObserver) {
                 reelObserver.disconnect();
                 reelObserver = null;
@@ -1836,7 +1823,6 @@
                     
                     if(entry.isIntersecting) {
                         video.play().catch(() => {});
-                        // Track view only once per reel per session
                         if (reelId && !databaseState.viewedReels[reelId]) {
                             trackReelView(reelId);
                         }
@@ -1852,21 +1838,17 @@
         // ==================== GO TO USER PROFILE FROM REEL ====================
         window.goToUserProfile = function(userId) {
             if (userId === databaseState.currentUser.uid) {
-                // Go to own profile
                 switchTab('profile');
                 return;
             }
             
-            // Check if user exists in peers
             const peer = databaseState.peers.find(p => p.uid === userId);
             if (peer) {
                 displayPeerAccountProfile(userId);
             } else {
-                // Fetch user data from Firebase
                 onValue(ref(db, 'users/' + userId), (snap) => {
                     const userData = snap.val();
                     if (userData) {
-                        // Add to peers list temporarily
                         if (!databaseState.peers.find(p => p.uid === userId)) {
                             databaseState.peers.push(userData);
                         }
@@ -1878,24 +1860,34 @@
             }
         };
 
-        // Reel Like
+        // ==================== REEL LIKE - FIXED ====================
         window.toggleReelLike = function(reelId) {
+            // Find the reel in database
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
                 if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === reelId);
-                    if(dbKey) {
+                    // Find the correct database key for this reel
+                    let reelDbKey = null;
+                    const keys = Object.keys(data);
+                    for(let k of keys) {
+                        if(data[k] && data[k].id === reelId) {
+                            reelDbKey = k;
+                            break;
+                        }
+                    }
+                    
+                    if(reelDbKey) {
                         const myUID = databaseState.currentUser.uid;
-                        const currentLikes = data[dbKey].likes || {};
+                        const currentLikes = data[reelDbKey].likes || {};
                         const wasLiked = currentLikes[myUID];
                         
                         if(wasLiked) {
                             delete currentLikes[myUID];
                         } else {
                             currentLikes[myUID] = true;
-                            const reelOwner = data[dbKey].userId;
-                            if (reelOwner !== myUID) {
+                            const reelOwner = data[reelDbKey].userId;
+                            if (reelOwner && reelOwner !== myUID) {
                                 addNotification({
                                     type: 'reel_like',
                                     message: `${databaseState.currentUser.name} liked your reel 🎬`,
@@ -1905,7 +1897,7 @@
                                 });
                             }
                         }
-                        update(ref(db, `reels/${dbKey}`), { likes: currentLikes });
+                        update(ref(db, `reels/${reelDbKey}`), { likes: currentLikes });
                     }
                 }
             });
@@ -2226,7 +2218,7 @@
                 }
             });
 
-            // Reels Listener - only update when data changes, but don't re-render if same data
+            // Reels Listener - FIXED: use likes object length for comparison
             let lastReelsData = '';
             onValue(ref(db, 'reels'), (snap) => {
                 const data = snap.val();
@@ -2240,8 +2232,14 @@
                 }
                 loadedReels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
                 
-                // Check if data actually changed
-                const newDataStr = JSON.stringify(loadedReels.map(r => r.id + r.likesCount + r.commentsCount + r.views));
+                // Create a proper hash for comparison using actual data
+                const newDataStr = JSON.stringify(loadedReels.map(r => ({
+                    id: r.id,
+                    likesCount: r.likes ? Object.keys(r.likes).length : 0,
+                    commentsCount: r.comments ? Object.keys(r.comments).length : 0,
+                    views: r.views || 0
+                })));
+                
                 if (newDataStr !== lastReelsData) {
                     lastReelsData = newDataStr;
                     databaseState.reels = loadedReels;
