@@ -284,6 +284,74 @@
         .comment-delete-btn:hover {
             opacity: 1;
         }
+
+        /* Notification Styles */
+        .notification-item {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #0b1528;
+        }
+        .notification-badge.hidden { display: none; }
+
+        /* Success Toast */
+        .success-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #065f46, #047857);
+            border: 1px solid #34d399;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 20px;
+            z-index: 200;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            animation: toastIn 0.5s ease-out;
+            max-width: 90%;
+            text-align: center;
+        }
+        .success-toast.hidden { display: none; }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.9); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
+        /* Shared Media Preview in Chat */
+        .shared-media-preview {
+            max-width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .shared-media-preview:hover {
+            transform: scale(1.02);
+        }
+        .shared-media-preview img, .shared-media-preview video {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -338,11 +406,29 @@
             <section id="home-screen" class="space-y-4">
                 <header class="py-4 bg-darkbg border-b border-slate-900/60 flex justify-between items-center mb-2">
                     <h1 class="text-xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">STARDUST</h1>
-                    <div class="plus-btn-wrapper">
-                        <button onclick="openModal('post-modal')" id="main-plus-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition shadow-lg shadow-blue-600/20">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                        </button>
-                        <div id="upload-loading-spinner" class="upload-loading hidden"></div>
+                    <div class="flex items-center gap-3">
+                        <!-- Notification Button -->
+                        <div class="relative">
+                            <button onclick="toggleElement('notification-dropdown')" class="relative p-2 bg-slate-800/50 rounded-full hover:bg-slate-700 transition border border-slate-700">
+                                <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                                <span id="notification-count-badge" class="notification-badge hidden">0</span>
+                            </button>
+                            <!-- Notification Dropdown -->
+                            <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 max-h-96 bg-darkcard border border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                                <div class="p-3 border-b border-slate-800 flex justify-between items-center">
+                                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifications</span>
+                                    <button onclick="clearAllNotifications()" class="text-[10px] text-slate-500 hover:text-slate-300">Clear All</button>
+                                </div>
+                                <div id="notification-list" class="overflow-y-auto max-h-72 custom-scrollbar p-2 space-y-2"></div>
+                            </div>
+                        </div>
+                        <!-- Plus Button -->
+                        <div class="plus-btn-wrapper">
+                            <button onclick="openModal('post-modal')" id="main-plus-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition shadow-lg shadow-blue-600/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                            </button>
+                            <div id="upload-loading-spinner" class="upload-loading hidden"></div>
+                        </div>
                     </div>
                 </header>
                 <div id="posts-feed" class="space-y-4"></div>
@@ -756,6 +842,17 @@
         </div>
     </div>
 
+    <!-- SUCCESS TOAST -->
+    <div id="success-toast" class="success-toast hidden">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">✨</span>
+            <div>
+                <p id="toast-title" class="font-bold text-sm">Success!</p>
+                <p id="toast-message" class="text-xs text-emerald-200">Your content has been uploaded successfully.</p>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -791,7 +888,8 @@
             publications: [], peers: [], friendships: {}, chatThreads: {}, activeTargetChatUID: null, activeContextMessageID: null, activeTargetSharePostID: null,
             reels: [], activeReelId: null,
             longPressTimer: null,
-            isUploading: false
+            isUploading: false,
+            notifications: []
         };
 
         // Call State
@@ -814,12 +912,104 @@
         window.saveStateToHardware = function() { localStorage.setItem("STARDUST_CORE_DB_PROD", JSON.stringify(databaseState)); }
         window.recoverStateFromHardware = function() {
             const raw = localStorage.getItem("STARDUST_CORE_DB_PROD");
-            if (raw) { try { const parsed = JSON.parse(raw); if(parsed.currentUser) databaseState.currentUser = parsed.currentUser; } catch(e){} }
+            if (raw) { try { const parsed = JSON.parse(raw); if(parsed.currentUser) databaseState.currentUser = parsed.currentUser; if(parsed.notifications) databaseState.notifications = parsed.notifications; } catch(e){} }
         }
 
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
 
         document.getElementById('loading-screen').classList.remove('hidden');
+
+        // ==================== NOTIFICATION SYSTEM ====================
+        function addNotification(notification) {
+            const notif = {
+                id: 'notif_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                ...notification,
+                timestamp: Date.now(),
+                read: false
+            };
+            databaseState.notifications.unshift(notif);
+            // Keep only last 50 notifications
+            if (databaseState.notifications.length > 50) {
+                databaseState.notifications = databaseState.notifications.slice(0, 50);
+            }
+            saveStateToHardware();
+            renderNotifications();
+            updateNotificationBadge();
+            return notif;
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notification-list');
+            container.innerHTML = '';
+            const unread = databaseState.notifications.filter(n => !n.read);
+            
+            if (databaseState.notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-500 text-xs py-6">
+                        <span class="text-2xl block mb-2">🔔</span>
+                        No notifications yet
+                    </div>
+                `;
+                return;
+            }
+
+            databaseState.notifications.forEach(notif => {
+                const el = document.createElement('div');
+                el.className = `notification-item p-3 rounded-xl border ${notif.read ? 'bg-darkbg border-slate-800/50' : 'bg-slate-800/50 border-cyan-500/30'}`;
+                
+                let icon = '📬';
+                let color = 'text-blue-400';
+                if (notif.type === 'like') { icon = '❤️'; color = 'text-red-400'; }
+                else if (notif.type === 'comment') { icon = '💬'; color = 'text-cyan-400'; }
+                else if (notif.type === 'friend_request') { icon = '🤝'; color = 'text-emerald-400'; }
+                else if (notif.type === 'reel_like') { icon = '🎬'; color = 'text-pink-400'; }
+                else if (notif.type === 'reel_comment') { icon = '🎥'; color = 'text-purple-400'; }
+                
+                el.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="text-lg">${icon}</span>
+                        <div class="flex-1">
+                            <p class="text-xs ${color}">${notif.message}</p>
+                            <p class="text-[9px] text-slate-500 mt-0.5">${new Date(notif.timestamp).toLocaleString()}</p>
+                        </div>
+                        ${!notif.read ? '<span class="w-2 h-2 bg-cyan-400 rounded-full mt-1"></span>' : ''}
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notification-count-badge');
+            const unread = databaseState.notifications.filter(n => !n.read).length;
+            if (unread > 0) {
+                badge.textContent = unread;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        window.clearAllNotifications = function() {
+            databaseState.notifications = [];
+            saveStateToHardware();
+            renderNotifications();
+            updateNotificationBadge();
+            document.getElementById('notification-dropdown').classList.add('hidden');
+        }
+
+        // Mark notifications as read when dropdown opens
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('notification-dropdown');
+            const btn = e.target.closest('#notification-dropdown') || e.target.closest('[onclick="toggleElement(\'notification-dropdown\')"]');
+            if (!btn && dropdown && !dropdown.classList.contains('hidden')) {
+                // Mark all as read when opened
+                databaseState.notifications.forEach(n => n.read = true);
+                saveStateToHardware();
+                renderNotifications();
+                updateNotificationBadge();
+            }
+        });
 
         // ==================== UPLOAD LOADING SPINNER ====================
         function showUploadLoading() {
@@ -834,11 +1024,25 @@
             databaseState.isUploading = false;
         }
 
+        // ==================== SUCCESS TOAST ====================
+        function showSuccessToast(title, message) {
+            const toast = document.getElementById('success-toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('hidden');
+            
+            // Auto hide after 4 seconds
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+
         window.switchAuthView = function(view) {
             const desc = document.getElementById('auth-screen-desc');
             if(view === 'signup') {
                 document.getElementById('login-form-container').classList.add('hidden');
-                document.getElementById('signup-form-container').classList.remove('hidden');
+                document.getElementById('signup-form-container').class.classList.remove('hidden');
                 desc.innerText = "Create Your Professional Stardust Node";
             } else {
                 document.getElementById('signup-form-container').classList.add('hidden');
@@ -863,6 +1067,7 @@
                     databaseState.currentUser.name = "Node_" + assignedUID;
                     databaseState.currentUser.savedPosts = [];
                     databaseState.currentUser.savedReels = [];
+                    databaseState.notifications = [];
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
                         document.getElementById('loading-screen').classList.add('hidden');
                         document.getElementById('login-screen').classList.add('hidden');
@@ -872,7 +1077,7 @@
                         saveStateToHardware();
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
-                        alert("Account Successfully Created! UID: " + assignedUID);
+                        showSuccessToast('🚀 Welcome Aboard!', 'Your Stardust account has been created successfully.');
                     });
                 })
                 .catch((error) => {
@@ -920,6 +1125,7 @@
                                 databaseState.currentUser = mappedNode;
                                 if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                                 if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
+                                if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
                                 document.getElementById('loading-screen').classList.add('hidden');
                                 document.getElementById('login-screen').classList.add('hidden');
                                 document.getElementById('app-layout').classList.remove('hidden');
@@ -949,6 +1155,7 @@
                             databaseState.currentUser = mappedNode;
                             if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                             if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
+                            if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
                             document.getElementById('loading-screen').classList.add('hidden');
                             document.getElementById('login-screen').classList.add('hidden');
                             document.getElementById('app-layout').classList.remove('hidden');
@@ -1307,7 +1514,6 @@
                 return;
             }
 
-            // Show loading on plus button
             showUploadLoading();
             closeModal('post-modal');
 
@@ -1343,6 +1549,7 @@
                         likes: {},
                         comments: {},
                         savedBy: [],
+                        views: 0,
                         createdAt: Date.now()
                     };
 
@@ -1350,7 +1557,7 @@
                         hideUploadLoading();
                         document.getElementById('reel-input-file').value = '';
                         document.getElementById('reel-input-caption').value = '';
-                        alert('Reel uploaded successfully! 🎬');
+                        showSuccessToast('🎬 Reel Uploaded!', 'Your reel has been published successfully.');
                     });
                 } else {
                     hideUploadLoading();
@@ -1386,6 +1593,7 @@
                 const likesCount = reel.likes ? Object.keys(reel.likes).length : 0;
                 const commentsCount = reel.comments ? Object.keys(reel.comments).length : 0;
                 const isSaved = databaseState.currentUser.savedReels && databaseState.currentUser.savedReels.includes(reel.id);
+                const viewsCount = reel.views || 0;
 
                 const div = document.createElement('div');
                 div.className = 'reel-item';
@@ -1415,6 +1623,11 @@
                         <button onclick="toggleReelSave('${reel.id}')" class="hover:scale-110 transition">
                             <svg class="w-7 h-7" fill="${isSaved ? 'white' : 'none'}" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                         </button>
+                        <!-- Views Count -->
+                        <div class="flex items-center gap-1 text-white/70 text-xs mt-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <span>${viewsCount}</span>
+                        </div>
                     </div>
                 `;
 
@@ -1424,24 +1637,86 @@
             setupReelAutoPlay();
         }
 
+        // Track view count when reel is watched
+        function trackReelView(reelId) {
+            const reelRef = ref(db, 'reels');
+            get(reelRef).then((snap) => {
+                const data = snap.val();
+                if(data) {
+                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === reelId);
+                    if(dbKey) {
+                        const currentViews = data[dbKey].views || 0;
+                        update(ref(db, `reels/${dbKey}`), { views: currentViews + 1 });
+                    }
+                }
+            });
+        }
+
         function setupReelAutoPlay() {
             const container = document.getElementById('reels-feed');
             const videos = container.querySelectorAll('.reel-item video');
             
+            // Track views when reel is watched for more than 3 seconds
+            let viewTimers = {};
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const video = entry.target;
+                    const reelItem = video.closest('.reel-item');
+                    const reelId = reelItem ? databaseState.reels[parseInt(reelItem.dataset.index)]?.id : null;
+                    
                     if(entry.isIntersecting) {
                         video.play().catch(() => {});
                         video.muted = false;
+                        // Start view timer
+                        if (reelId && !viewTimers[reelId]) {
+                            viewTimers[reelId] = setTimeout(() => {
+                                trackReelView(reelId);
+                                viewTimers[reelId] = null;
+                            }, 3000);
+                        }
                     } else {
                         video.pause();
                         video.muted = true;
+                        // Clear view timer
+                        if (reelId && viewTimers[reelId]) {
+                            clearTimeout(viewTimers[reelId]);
+                            viewTimers[reelId] = null;
+                        }
                     }
                 });
             }, { threshold: 0.6 });
 
             videos.forEach(video => observer.observe(video));
+
+            // Long press to pause
+            videos.forEach(video => {
+                let longPressTimer = null;
+                
+                video.addEventListener('touchstart', (e) => {
+                    longPressTimer = setTimeout(() => {
+                        video.pause();
+                    }, 500);
+                });
+                
+                video.addEventListener('touchend', () => {
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                    // Resume if paused
+                    if (video.paused && !video.ended) {
+                        video.play().catch(() => {});
+                    }
+                });
+                
+                video.addEventListener('touchmove', () => {
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                });
+            });
         }
 
         // Reel Like
@@ -1453,10 +1728,23 @@
                     if(dbKey) {
                         const myUID = databaseState.currentUser.uid;
                         const currentLikes = data[dbKey].likes || {};
-                        if(currentLikes[myUID]) {
+                        const wasLiked = currentLikes[myUID];
+                        
+                        if(wasLiked) {
                             delete currentLikes[myUID];
                         } else {
                             currentLikes[myUID] = true;
+                            // Send notification to reel owner
+                            const reelOwner = data[dbKey].userId;
+                            if (reelOwner !== myUID) {
+                                addNotification({
+                                    type: 'reel_like',
+                                    message: `${databaseState.currentUser.name} liked your reel 🎬`,
+                                    targetUserId: reelOwner,
+                                    sourceUserId: myUID,
+                                    reelId: reelId
+                                });
+                            }
                         }
                         update(ref(db, `reels/${dbKey}`), { likes: currentLikes });
                     }
@@ -1475,8 +1763,10 @@
                 
                 if(saved.includes(reelId)) {
                     saved = saved.filter(id => id !== reelId);
+                    showSuccessToast('📁 Removed', 'Reel removed from saved list.');
                 } else {
                     saved.push(reelId);
+                    showSuccessToast('💾 Saved!', 'Reel saved to your collection.');
                 }
                 
                 update(userRef, { savedReels: saved }).then(() => {
@@ -1489,19 +1779,16 @@
 
         // ==================== REEL COMMENTS WITH DELETE ====================
         
-        // Delete Reel Comment
         window.deleteReelComment = function(reelId, commentKey) {
             if(confirm('Are you sure you want to delete this comment?')) {
                 remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
-                    // Refresh comments
-                    openReelComments(reelId);
+                    openReelComments(databaseState.activeReelId);
                 }).catch((error) => {
                     alert('Failed to delete comment: ' + error.message);
                 });
             }
         };
 
-        // Open Reel Comments with Delete Button
         window.openReelComments = function(reelId) {
             databaseState.activeReelId = reelId;
             const container = document.getElementById('reel-comments-container');
@@ -1511,7 +1798,6 @@
             if(!targetReel) return;
 
             if(targetReel.comments && Object.keys(targetReel.comments).length > 0) {
-                // Find the database key for this reel
                 const reelRef = ref(db, 'reels');
                 get(reelRef).then((snap) => {
                     const data = snap.val();
@@ -1559,7 +1845,6 @@
             openModal('reel-comments-modal');
         };
 
-        // Add Reel Comment
         window.addReelComment = function() {
             const field = document.getElementById('reel-comment-input');
             const txt = field.value.trim();
@@ -1570,8 +1855,11 @@
                 if(data) {
                     const dbKey = Object.keys(data).find(k => data[k] && data[k].id === databaseState.activeReelId);
                     if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const reelOwner = data[dbKey].userId;
+                        
                         const payload = {
-                            authorUID: databaseState.currentUser.uid,
+                            authorUID: myUID,
                             authorName: databaseState.currentUser.name,
                             text: txt,
                             timestamp: Date.now()
@@ -1580,13 +1868,24 @@
                             field.value = '';
                             closeModal('reel-comments-modal');
                             renderReelsFeed();
+                            
+                            // Send notification to reel owner
+                            if (reelOwner !== myUID) {
+                                addNotification({
+                                    type: 'reel_comment',
+                                    message: `${databaseState.currentUser.name} commented on your reel: "${txt}"`,
+                                    targetUserId: reelOwner,
+                                    sourceUserId: myUID,
+                                    reelId: databaseState.activeReelId
+                                });
+                            }
                         });
                     }
                 }
             }, { onlyOnce: true });
         };
 
-        // Reel Share
+        // ==================== REEL SHARE WITH FULL MEDIA ====================
         window.openReelShareModal = function(reelId) {
             databaseState.activeTargetSharePostID = reelId;
             const container = document.getElementById('reel-share-target-grid');
@@ -1624,16 +1923,21 @@
             const myUID = databaseState.currentUser.uid;
             const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
             
+            // Send full reel data with video URL and thumbnail
             const messagePayload = {
                 sender: myUID,
-                text: `🎬 Check out this reel! ${targetReel.videoUrl}`,
+                text: `🎬 Shared a reel: ${targetReel.caption || 'Check this out!'}`,
                 timestamp: Date.now(),
-                status: 'transmitted'
+                status: 'transmitted',
+                mediaType: 'reel',
+                mediaUrl: targetReel.videoUrl,
+                mediaThumbnail: targetReel.thumbnail || targetReel.videoUrl,
+                reelId: targetReel.id
             };
 
             push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
                 closeModal('reel-share-modal');
-                alert("Reel shared successfully!");
+                showSuccessToast('🎬 Reel Shared!', 'Reel sent to your friend successfully.');
             });
         };
 
@@ -1652,10 +1956,10 @@
                 
                 if(saved.includes(postId)) {
                     saved = saved.filter(id => id !== postId);
-                    alert("Post removed from saved channels.");
+                    showSuccessToast('📁 Removed', 'Post removed from saved list.');
                 } else {
                     saved.push(postId);
-                    alert("Post saved to core channels.");
+                    showSuccessToast('💾 Saved!', 'Post saved to your collection.');
                 }
                 
                 update(userRef, { savedPosts: saved }).then(() => {
@@ -1669,6 +1973,31 @@
         function isPostSaved(postId) {
             return databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(postId);
         }
+
+        // ==================== POST SHARE WITH FULL MEDIA ====================
+        window.executeShareTransmissionPacket = function(targetUID) {
+            if(!databaseState.activeTargetSharePostID) return;
+            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
+            if(!targetPost) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            
+            const messagePayload = {
+                sender: myUID,
+                text: `📝 Shared a post: "${targetPost.text}"`,
+                timestamp: Date.now(),
+                status: 'transmitted',
+                mediaType: 'post',
+                mediaUrl: targetPost.image || null,
+                postId: targetPost.id
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                closeModal('forward-share-modal');
+                showSuccessToast('📝 Post Shared!', 'Post sent to your friend successfully.');
+            });
+        };
 
         // ==================== LISTENERS ====================
 
@@ -1695,6 +2024,7 @@
                     databaseState.currentUser = data[myUID];
                     if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                     if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
+                    if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
                     syncProfileCardInterface();
                 }
                 renderEcosystemIncomingRequests();
@@ -1754,6 +2084,13 @@
             if(databaseState.currentUser.premiumTheme) {
                 document.body.className = "text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none " + databaseState.currentUser.premiumTheme;
             }
+
+            // Restore notifications
+            if (databaseState.currentUser.notifications) {
+                databaseState.notifications = databaseState.currentUser.notifications;
+                renderNotifications();
+                updateNotificationBadge();
+            }
         }
 
         function evaluateGlobalUnseenPackets() {
@@ -1811,7 +2148,17 @@
 
         window.openModal = function(id) { document.getElementById(id).classList.remove('hidden'); }
         window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); }
-        window.toggleElement = function(id) { document.getElementById(id).classList.toggle('hidden'); }
+        window.toggleElement = function(id) { 
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+            // If notification dropdown is opened, mark all as read
+            if (id === 'notification-dropdown' && !el.classList.contains('hidden')) {
+                databaseState.notifications.forEach(n => n.read = true);
+                saveStateToHardware();
+                renderNotifications();
+                updateNotificationBadge();
+            }
+        }
         window.closeElement = function(id) { document.getElementById(id).classList.add('hidden'); }
 
         window.openImageViewer = function(imageSrc) {
@@ -1879,9 +2226,20 @@
                 updates[`friendships/${reqKey}`] = null;
                 updates[`friendships/bond_${myUID}_and_${senderUID}`] = 'confirmed';
                 updates[`friendships/bond_${senderUID}_and_${myUID}`] = 'confirmed';
-                update(ref(db), updates).then(() => alert("Secure handshake verified. Network established."));
+                update(ref(db), updates).then(() => {
+                    showSuccessToast('🤝 Connected!', 'Friend request accepted successfully.');
+                    // Send notification
+                    addNotification({
+                        type: 'friend_request',
+                        message: `${databaseState.currentUser.name} accepted your friend request! 🤝`,
+                        targetUserId: senderUID,
+                        sourceUserId: myUID
+                    });
+                });
             } else {
-                set(ref(db, `friendships/${reqKey}`), null).then(() => alert("Handshake node denied."));
+                set(ref(db, `friendships/${reqKey}`), null).then(() => {
+                    showSuccessToast('❌ Declined', 'Friend request denied.');
+                });
             }
         }
 
@@ -1995,8 +2353,26 @@
                     reactionsMarkup += `</div>`;
                 }
 
+                // Check for media in message
+                let mediaHtml = '';
+                if (message.mediaType === 'reel' && message.mediaUrl) {
+                    mediaHtml = `
+                        <div class="mt-2 rounded-lg overflow-hidden border border-slate-700 shared-media-preview" onclick="openFullScreenMedia('${message.mediaUrl}', 'video')">
+                            <video src="${message.mediaUrl}" muted playsinline style="max-height: 120px; width: 100%; object-fit: cover;"></video>
+                            <div class="text-[9px] text-slate-400 p-1 text-center">🎬 Reel</div>
+                        </div>
+                    `;
+                } else if (message.mediaType === 'post' && message.mediaUrl) {
+                    mediaHtml = `
+                        <div class="mt-2 rounded-lg overflow-hidden border border-slate-700 shared-media-preview" onclick="openFullScreenMedia('${message.mediaUrl}', 'image')">
+                            <img src="${message.mediaUrl}" style="max-height: 120px; width: 100%; object-fit: cover;">
+                        </div>
+                    `;
+                }
+
                 msgNode.innerHTML = `
                     <p class="leading-relaxed break-words pr-2">${message.text}</p>
+                    ${mediaHtml}
                     <span class="text-[8px] block text-right mt-1 ${isMe ? 'text-blue-200' : 'text-slate-500'} font-mono">${new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                     ${reactionsMarkup}
                 `;
@@ -2004,6 +2380,27 @@
             });
             setTimeout(() => { stream.scrollTop = stream.scrollHeight; }, 50);
         }
+
+        window.openFullScreenMedia = function(url, type) {
+            const viewer = document.getElementById('full-screen-image-viewer');
+            if (type === 'image') {
+                document.getElementById('viewer-target-image').src = url;
+                viewer.classList.remove('hidden');
+            } else if (type === 'video') {
+                // Create a video player overlay
+                const existing = document.getElementById('full-screen-video-player');
+                if (existing) existing.remove();
+                
+                const overlay = document.createElement('div');
+                overlay.id = 'full-screen-video-player';
+                overlay.className = 'fixed inset-0 bg-black/95 z-[90] flex flex-col justify-center items-center p-4';
+                overlay.innerHTML = `
+                    <button onclick="this.parentElement.remove()" class="absolute top-4 right-4 text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold">✕ Close</button>
+                    <video src="${url}" controls autoplay playsinline style="max-width: 100%; max-height: 80vh; border-radius: 12px;"></video>
+                `;
+                document.body.appendChild(overlay);
+            }
+        };
 
         window.dispatchDirectMessage = function() {
             const field = document.getElementById('chat-input-field');
@@ -2104,8 +2501,15 @@
             const myUID = databaseState.currentUser.uid;
             const reqKey = `req_${myUID}_to_${targetUID}`;
             set(ref(db, `friendships/${reqKey}`), 'pending').then(() => {
-                alert("Handshake integration payload dispatched to target node.");
+                showSuccessToast('📨 Request Sent!', 'Friend request sent successfully.');
                 handleUnifiedSearch();
+                // Send notification to target
+                addNotification({
+                    type: 'friend_request',
+                    message: `${databaseState.currentUser.name} sent you a friend request! 🤝`,
+                    targetUserId: targetUID,
+                    sourceUserId: myUID
+                });
             });
         }
 
@@ -2168,7 +2572,6 @@
             const imgFile = document.getElementById('post-input-gallery-file').files[0];
             if(!txt && !imgFile) return;
 
-            // Show loading on plus button
             showUploadLoading();
             closeModal('post-modal');
 
@@ -2189,6 +2592,7 @@
                     document.getElementById('post-input-text').value = '';
                     document.getElementById('post-input-gallery-file').value = '';
                     hideUploadLoading();
+                    showSuccessToast('📝 Post Published!', 'Your post has been published successfully.');
                 });
             };
 
@@ -2267,10 +2671,23 @@
                     if(dbKey) {
                         const myUID = databaseState.currentUser.uid;
                         const currentLikes = data[dbKey].likes || {};
-                        if(currentLikes[myUID]) {
+                        const wasLiked = currentLikes[myUID];
+                        
+                        if(wasLiked) {
                             delete currentLikes[myUID];
                         } else {
                             currentLikes[myUID] = true;
+                            // Send notification to post owner
+                            const postOwner = data[dbKey].authorUID;
+                            if (postOwner !== myUID) {
+                                addNotification({
+                                    type: 'like',
+                                    message: `${databaseState.currentUser.name} liked your post ❤️`,
+                                    targetUserId: postOwner,
+                                    sourceUserId: myUID,
+                                    postId: postId
+                                });
+                            }
                         }
                         update(ref(db, `publications/${dbKey}`), { likes: currentLikes });
                     }
@@ -2288,6 +2705,7 @@
                     <p class="font-bold text-slate-400">Context Body</p>
                     <p class="text-slate-200 bg-darkbg p-3 rounded-xl border border-slate-800">${targetPost.text}</p>
                 </div>
+                ${targetPost.image ? `<div class="rounded-xl overflow-hidden border border-slate-700 cursor-pointer" onclick="openImageViewer('${targetPost.image}')"><img src="${targetPost.image}" class="w-full max-h-40 object-cover"></div>` : ''}
                 <div class="space-y-2">
                     <p class="font-bold text-slate-400">Comments Stack</p>
                     <div id="expanded-post-comments-grid" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
@@ -2323,8 +2741,11 @@
                 if(data) {
                     const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
                     if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const postOwner = data[dbKey].authorUID;
+                        
                         const payload = {
-                            authorUID: databaseState.currentUser.uid,
+                            authorUID: myUID,
                             authorName: databaseState.currentUser.name,
                             text: txt,
                             timestamp: Date.now()
@@ -2332,7 +2753,17 @@
                         push(ref(db, `publications/${dbKey}/comments`), payload).then(() => {
                             field.value = '';
                             closeModal('expanded-post-modal');
-                            alert("Comment successfully broadcasted.");
+                            showSuccessToast('💬 Commented!', 'Your comment has been posted.');
+                            
+                            if (postOwner !== myUID) {
+                                addNotification({
+                                    type: 'comment',
+                                    message: `${databaseState.currentUser.name} commented on your post: "${txt}"`,
+                                    targetUserId: postOwner,
+                                    sourceUserId: myUID,
+                                    postId: postId
+                                });
+                            }
                         });
                     }
                 }
@@ -2368,27 +2799,6 @@
             openModal('forward-share-modal');
         }
 
-        window.executeShareTransmissionPacket = function(targetUID) {
-            if(!databaseState.activeTargetSharePostID) return;
-            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
-            if(!targetPost) return;
-
-            const myUID = databaseState.currentUser.uid;
-            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
-            
-            const messagePayload = {
-                sender: myUID,
-                text: `[FORWARDED PUBLICATION]: "${targetPost.text}"`,
-                timestamp: Date.now(),
-                status: 'transmitted'
-            };
-
-            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
-                closeModal('forward-share-modal');
-                alert("Publication safely packetized and routed to target peer.");
-            });
-        }
-
         function renderPersonalPublications() {
             const container = document.getElementById('profile-personal-posts');
             container.innerHTML = '';
@@ -2402,7 +2812,11 @@
             specific.forEach(post => {
                 const card = document.createElement('div');
                 card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1.5 text-xs";
-                card.innerHTML = `<p class="text-slate-300 leading-relaxed">${post.text}</p><span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>`;
+                card.innerHTML = `
+                    <p class="text-slate-300 leading-relaxed">${post.text}</p>
+                    ${post.image ? `<div class="rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
+                    <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
+                `;
                 container.appendChild(card);
             });
         }
@@ -2494,7 +2908,7 @@
 
             if(participants.length < 2) { alert("Please select participants to compile channel."); return; }
             
-            alert("Multiplex Session Initialized safely.");
+            showSuccessToast('👥 Group Created!', 'Multiplex session initialized successfully.');
             document.getElementById('group-name-input').value = '';
             closeModal('group-chat-modal');
         }
@@ -2527,20 +2941,54 @@
                 title.innerText = "Liked Publications";
                 const liked = databaseState.publications.filter(p => p && p.likes && p.likes[databaseState.currentUser.uid] === true);
                 if(liked.length > 0) {
-                    liked.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
+                    liked.forEach(p => { 
+                        body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}${p.image ? ' 📷' : ''}</div>`; 
+                    });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No liked publications found.</p>`; }
             } else if(type === 'saved-posts') {
                 title.innerText = "Saved Core Channels";
                 const saved = databaseState.publications.filter(p => p && databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(p.id));
                 if(saved.length > 0) {
-                    saved.forEach(p => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}</div>`; });
+                    saved.forEach(p => { 
+                        body.innerHTML += `
+                            <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">
+                                <p>${p.text}</p>
+                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-32"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
+                            </div>
+                        `; 
+                    });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No saved publications found.</p>`; }
             } else if(type === 'saved-reels') {
                 title.innerText = "Saved Reels";
                 const saved = databaseState.reels.filter(r => r && databaseState.currentUser.savedReels && databaseState.currentUser.savedReels.includes(r.id));
                 if(saved.length > 0) {
-                    saved.forEach(r => { body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1 text-xs">🎬 Reel by ${r.userName}</div>`; });
+                    saved.forEach(r => { 
+                        body.innerHTML += `
+                            <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1 text-xs">
+                                <p>🎬 ${r.caption || 'Reel'}</p>
+                                <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover"></video>
+                                <p class="text-[9px] text-slate-500 mt-0.5">By ${r.userName}</p>
+                            </div>
+                        `; 
+                    });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No saved reels found.</p>`; }
+            } else if(type === 'commented-posts') {
+                title.innerText = "Commented Matrix Logs";
+                let comments = [];
+                databaseState.publications.forEach(p => {
+                    if(p.comments) {
+                        Object.values(p.comments).forEach(c => {
+                            if(c.authorUID === databaseState.currentUser.uid) {
+                                comments.push({ post: p.text, comment: c.text, time: c.timestamp });
+                            }
+                        });
+                    }
+                });
+                if(comments.length > 0) {
+                    comments.forEach(c => {
+                        body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1"><p class="text-slate-400 text-[10px]">Post: ${c.post}</p><p class="text-slate-300">💬 ${c.comment}</p></div>`;
+                    });
+                } else { body.innerHTML = `<p class="text-center text-slate-600">No comments found.</p>`; }
             } else {
                 title.innerText = "System Log Sub-Center";
                 body.innerHTML = `<p class="text-center text-slate-600">No active system traces detected.</p>`;
@@ -2558,7 +3006,10 @@
             const commitUpdates = (imgBase64) => {
                 const payload = { name: name, bio: bio, profession: prof };
                 if (imgBase64) payload.pfp = imgBase64;
-                update(ref(db, 'users/' + databaseState.currentUser.uid), payload).then(() => closeModal('subsetting-view-modal'));
+                update(ref(db, 'users/' + databaseState.currentUser.uid), payload).then(() => {
+                    closeModal('subsetting-view-modal');
+                    showSuccessToast('✅ Profile Updated!', 'Your profile has been updated successfully.');
+                });
             };
 
             if(fileInput.files && fileInput.files[0]) {
@@ -2570,8 +3021,19 @@
             }
         }
 
-        window.handleSubscriptionActivation = function() { update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { closeModal('subscription-modal'); openModal('premium-dashboard-modal'); }); }
-        window.executePremiumTweak = function(f, v) { const p = {}; if(f==='theme') p.premiumTheme=v; update(ref(db, 'users/' + databaseState.currentUser.uid), p); }
+        window.handleSubscriptionActivation = function() { 
+            update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { 
+                closeModal('subscription-modal'); 
+                openModal('premium-dashboard-modal');
+                showSuccessToast('🌟 Premium Activated!', 'You now have access to premium features.');
+            }); 
+        }
+        window.executePremiumTweak = function(f, v) { 
+            const p = {}; 
+            if(f==='theme') p.premiumTheme=v; 
+            update(ref(db, 'users/' + databaseState.currentUser.uid), p);
+            showSuccessToast('🎨 Theme Applied!', 'Your theme has been updated.');
+        }
 
         // Make functions globally available
         window.savePost = savePost;
