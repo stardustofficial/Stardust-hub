@@ -1877,14 +1877,14 @@
                     
                     if(reelDbKey) {
                         const myUID = databaseState.currentUser.uid;
+                        const likeRef = ref(db, `reels/${reelDbKey}/likes/${myUID}`);
                         const currentLikes = data[reelDbKey].likes || {};
                         const wasLiked = currentLikes[myUID];
                         
-                        const updatedLikes = {...currentLikes};
                         if(wasLiked) {
-                            delete updatedLikes[myUID];
+                            remove(likeRef);
                         } else {
-                            updatedLikes[myUID] = true;
+                            set(likeRef, true);
                             const reelOwner = data[reelDbKey].userId;
                             if (reelOwner && reelOwner !== myUID) {
                                 addNotification({
@@ -1896,7 +1896,6 @@
                                 });
                             }
                         }
-                        update(ref(db, `reels/${reelDbKey}`), { likes: updatedLikes });
                     }
                 }
             });
@@ -2754,6 +2753,49 @@
             openModal('full-screen-account-modal');
         }
 
+        // ==================== POST PUBLICATION LIKE - FIXED ====================
+        window.handlePublicationLikeToggle = function(postId) {
+            // First find the database key for this post
+            const pubRef = ref(db, 'publications');
+            get(pubRef).then((snap) => {
+                const data = snap.val();
+                if(data) {
+                    let dbKey = null;
+                    const keys = Object.keys(data);
+                    for(let k of keys) {
+                        if(data[k] && data[k].id === postId) {
+                            dbKey = k;
+                            break;
+                        }
+                    }
+                    
+                    if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const likeRef = ref(db, `publications/${dbKey}/likes/${myUID}`);
+                        const currentLikes = data[dbKey].likes || {};
+                        const wasLiked = currentLikes[myUID];
+                        
+                        if(wasLiked) {
+                            remove(likeRef);
+                        } else {
+                            set(likeRef, true);
+                            const postOwner = data[dbKey].authorUID;
+                            if (postOwner && postOwner !== myUID) {
+                                addNotification({
+                                    type: 'like',
+                                    message: `${databaseState.currentUser.name} liked your post ❤️`,
+                                    targetUserId: postOwner,
+                                    sourceUserId: myUID,
+                                    postId: postId
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // ==================== PROCESS PUBLICATION INIT ====================
         window.processPublicationInit = function() {
             const txt = document.getElementById('post-input-text').value.trim();
             const imgFile = document.getElementById('post-input-gallery-file').files[0];
@@ -2848,37 +2890,6 @@
                 `;
                 feed.appendChild(card);
             });
-        }
-
-        window.handlePublicationLikeToggle = function(postId) {
-            onValue(ref(db, 'publications'), (snap) => {
-                const data = snap.val();
-                if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
-                    if(dbKey) {
-                        const myUID = databaseState.currentUser.uid;
-                        const currentLikes = data[dbKey].likes || {};
-                        const wasLiked = currentLikes[myUID];
-                        
-                        if(wasLiked) {
-                            delete currentLikes[myUID];
-                        } else {
-                            currentLikes[myUID] = true;
-                            const postOwner = data[dbKey].authorUID;
-                            if (postOwner !== myUID) {
-                                addNotification({
-                                    type: 'like',
-                                    message: `${databaseState.currentUser.name} liked your post ❤️`,
-                                    targetUserId: postOwner,
-                                    sourceUserId: myUID,
-                                    postId: postId
-                                });
-                            }
-                        }
-                        update(ref(db, `publications/${dbKey}`), { likes: currentLikes });
-                    }
-                }
-            }, { onlyOnce: true });
         }
 
         window.openPublicationInspectionModal = function(postId) {
