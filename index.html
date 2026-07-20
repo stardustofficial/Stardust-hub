@@ -310,6 +310,40 @@
             border: 2px solid #0b1528;
         }
         .notification-badge.hidden { display: none; }
+        
+        /* Notification Dropdown - Fixed */
+        #notification-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 340px;
+            max-width: calc(100vw - 32px);
+            background: #1e293b;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            z-index: 60;
+            overflow: hidden;
+            max-height: 400px;
+            display: none;
+        }
+        #notification-dropdown:not(.hidden) {
+            display: block;
+        }
+        #notification-dropdown .notif-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #notification-dropdown .notif-list {
+            overflow-y: auto;
+            max-height: 320px;
+            padding: 8px;
+        }
+        #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
+        #notification-dropdown .notif-list::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
 
         /* Success Toast */
         .success-toast {
@@ -352,6 +386,70 @@
             max-height: 150px;
             object-fit: cover;
         }
+        .shared-media-preview .media-label {
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #94a3b8;
+            text-align: center;
+            background: #0f172a;
+        }
+
+        /* Profile Tabs - 3 tabs */
+        .profile-tab-btn {
+            transition: all 0.3s ease;
+        }
+        .profile-tab-btn.active {
+            background: #1e293b;
+            color: #06b6d4;
+        }
+        .profile-tab-btn:not(.active) {
+            color: #64748b;
+        }
+        .profile-tab-btn:not(.active):hover {
+            color: #94a3b8;
+        }
+
+        /* Full screen video player */
+        #full-screen-video-player {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #full-screen-video-player video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 12px;
+        }
+        #full-screen-video-player .close-video {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #334155;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Red dot for unread notifications */
+        .notif-unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .notif-unread-dot.hidden { display: none; }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -409,17 +507,17 @@
                     <div class="flex items-center gap-3">
                         <!-- Notification Button -->
                         <div class="relative">
-                            <button onclick="toggleElement('notification-dropdown')" class="relative p-2 bg-slate-800/50 rounded-full hover:bg-slate-700 transition border border-slate-700">
+                            <button onclick="toggleNotificationDropdown()" class="relative p-2 bg-slate-800/50 rounded-full hover:bg-slate-700 transition border border-slate-700">
                                 <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 <span id="notification-count-badge" class="notification-badge hidden">0</span>
                             </button>
-                            <!-- Notification Dropdown -->
-                            <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 max-h-96 bg-darkcard border border-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden">
-                                <div class="p-3 border-b border-slate-800 flex justify-between items-center">
+                            <!-- Notification Dropdown - Fixed -->
+                            <div id="notification-dropdown" class="hidden">
+                                <div class="notif-header">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifications</span>
-                                    <button onclick="clearAllNotifications()" class="text-[10px] text-slate-500 hover:text-slate-300">Clear All</button>
+                                    <button onclick="markAllNotificationsRead()" class="text-[10px] text-slate-500 hover:text-slate-300">Mark all read</button>
                                 </div>
-                                <div id="notification-list" class="overflow-y-auto max-h-72 custom-scrollbar p-2 space-y-2"></div>
+                                <div id="notification-list" class="notif-list"></div>
                             </div>
                         </div>
                         <!-- Plus Button -->
@@ -509,13 +607,18 @@
                     </div>
                 </div>
 
+                <!-- 3 Tabs: Posts | Reels | Friends -->
                 <div class="flex justify-between items-center bg-darkcard p-1 rounded-xl border border-slate-800/60 text-xs">
-                    <button onclick="toggleProfileView('posts')" id="prof-tab-posts" class="flex-1 py-2 rounded-lg font-bold bg-slate-800 text-cyan-400 transition">My Publications</button>
-                    <button onclick="toggleProfileView('friends')" id="prof-tab-friends" class="flex-1 py-2 rounded-lg font-bold text-slate-400 transition">Friends Network</button>
+                    <button onclick="toggleProfileView('posts')" id="prof-tab-posts" class="profile-tab-btn active flex-1 py-2 rounded-lg font-bold transition">📝 Posts</button>
+                    <button onclick="toggleProfileView('reels')" id="prof-tab-reels" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">🎬 Reels</button>
+                    <button onclick="toggleProfileView('friends')" id="prof-tab-friends" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">👥 Friends</button>
                 </div>
 
                 <div id="profile-posts-view-container" class="space-y-2">
                     <div id="profile-personal-posts" class="space-y-3"></div>
+                </div>
+                <div id="profile-reels-view-container" class="space-y-2 hidden">
+                    <div id="profile-personal-reels" class="space-y-3"></div>
                 </div>
                 <div id="profile-friends-view-container" class="space-y-2 hidden">
                     <div id="profile-friends-list" class="space-y-2"></div>
@@ -577,17 +680,14 @@
 
         <!-- Bottom Navigation - Audio Call Only -->
         <div id="call-bottom-nav" class="w-full flex justify-center items-center gap-6 pb-6 px-2">
-            <!-- Chat Button -->
             <button onclick="toggleCallChat()" class="call-bottom-btn text-white p-3.5 rounded-full transition w-12 h-12 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </button>
 
-            <!-- Minimize Button -->
             <button onclick="minimizeCallWindow()" class="call-bottom-btn text-white p-3.5 rounded-full transition w-12 h-12 flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3v3a2 2 0 01-2 2H3m18 0h-3a2 2 0 01-2-2V3m0 18v-3a2 2 0 012-2h3M3 16h3a2 2 0 012 2v3"></path></svg>
             </button>
 
-            <!-- End Call Button -->
             <button onclick="terminateCallSession()" class="call-end-btn text-white p-4 rounded-full transition w-16 h-16 flex items-center justify-center shadow-xl shadow-red-600/30">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.725-.94l-2.512-.628a1 1 0 00-.734.216l-1.68 1.68a15.093 15.093 0 01-6.728-6.728l1.68-1.68a1 1 0 00.216-.734l-.628-2.512A1 1 0 0010.28 3H5z"></path></svg>
             </button>
@@ -845,7 +945,7 @@
     <!-- SUCCESS TOAST -->
     <div id="success-toast" class="success-toast hidden">
         <div class="flex items-center gap-3">
-            <span class="text-2xl">✨</span>
+            <span class="text-2xl" id="toast-icon">✨</span>
             <div>
                 <p id="toast-title" class="font-bold text-sm">Success!</p>
                 <p id="toast-message" class="text-xs text-emerald-200">Your content has been uploaded successfully.</p>
@@ -928,6 +1028,11 @@
                 read: false
             };
             databaseState.notifications.unshift(notif);
+            
+            // Auto-delete notifications older than 7 days
+            const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            databaseState.notifications = databaseState.notifications.filter(n => n.timestamp > sevenDaysAgo);
+            
             // Keep only last 50 notifications
             if (databaseState.notifications.length > 50) {
                 databaseState.notifications = databaseState.notifications.slice(0, 50);
@@ -946,7 +1051,7 @@
             if (databaseState.notifications.length === 0) {
                 container.innerHTML = `
                     <div class="text-center text-slate-500 text-xs py-6">
-                        <span class="text-2xl block mb-2">🔔</span>
+                        <svg class="w-8 h-8 mx-auto mb-2 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                         No notifications yet
                     </div>
                 `;
@@ -955,7 +1060,7 @@
 
             databaseState.notifications.forEach(notif => {
                 const el = document.createElement('div');
-                el.className = `notification-item p-3 rounded-xl border ${notif.read ? 'bg-darkbg border-slate-800/50' : 'bg-slate-800/50 border-cyan-500/30'}`;
+                el.className = `notification-item p-3 rounded-xl border flex items-start gap-2 ${notif.read ? 'bg-darkbg border-slate-800/50' : 'bg-slate-800/50 border-cyan-500/30'}`;
                 
                 let icon = '📬';
                 let color = 'text-blue-400';
@@ -966,14 +1071,12 @@
                 else if (notif.type === 'reel_comment') { icon = '🎥'; color = 'text-purple-400'; }
                 
                 el.innerHTML = `
-                    <div class="flex items-start gap-2">
-                        <span class="text-lg">${icon}</span>
-                        <div class="flex-1">
-                            <p class="text-xs ${color}">${notif.message}</p>
-                            <p class="text-[9px] text-slate-500 mt-0.5">${new Date(notif.timestamp).toLocaleString()}</p>
-                        </div>
-                        ${!notif.read ? '<span class="w-2 h-2 bg-cyan-400 rounded-full mt-1"></span>' : ''}
+                    <span class="text-lg">${icon}</span>
+                    <div class="flex-1">
+                        <p class="text-xs ${color}">${notif.message}</p>
+                        <p class="text-[9px] text-slate-500 mt-0.5">${new Date(notif.timestamp).toLocaleString()}</p>
                     </div>
+                    <div class="notif-unread-dot ${notif.read ? 'hidden' : ''}"></div>
                 `;
                 container.appendChild(el);
             });
@@ -990,24 +1093,36 @@
             }
         }
 
-        window.clearAllNotifications = function() {
-            databaseState.notifications = [];
-            saveStateToHardware();
-            renderNotifications();
-            updateNotificationBadge();
-            document.getElementById('notification-dropdown').classList.add('hidden');
-        }
-
-        // Mark notifications as read when dropdown opens
-        document.addEventListener('click', function(e) {
+        window.toggleNotificationDropdown = function() {
             const dropdown = document.getElementById('notification-dropdown');
-            const btn = e.target.closest('#notification-dropdown') || e.target.closest('[onclick="toggleElement(\'notification-dropdown\')"]');
-            if (!btn && dropdown && !dropdown.classList.contains('hidden')) {
+            const isHidden = dropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                dropdown.classList.remove('hidden');
                 // Mark all as read when opened
                 databaseState.notifications.forEach(n => n.read = true);
                 saveStateToHardware();
                 renderNotifications();
                 updateNotificationBadge();
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        window.markAllNotificationsRead = function() {
+            databaseState.notifications.forEach(n => n.read = true);
+            saveStateToHardware();
+            renderNotifications();
+            updateNotificationBadge();
+        }
+
+        // Click outside to close notification dropdown
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('notification-dropdown');
+            const btn = e.target.closest('[onclick*="toggleNotificationDropdown"]') || 
+                       e.target.closest('#notification-dropdown');
+            if (!btn && dropdown && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
             }
         });
 
@@ -1025,13 +1140,13 @@
         }
 
         // ==================== SUCCESS TOAST ====================
-        function showSuccessToast(title, message) {
+        function showSuccessToast(title, message, icon = '✨') {
             const toast = document.getElementById('success-toast');
+            document.getElementById('toast-icon').textContent = icon;
             document.getElementById('toast-title').textContent = title;
             document.getElementById('toast-message').textContent = message;
             toast.classList.remove('hidden');
             
-            // Auto hide after 4 seconds
             if (window.toastTimeout) clearTimeout(window.toastTimeout);
             window.toastTimeout = setTimeout(() => {
                 toast.classList.add('hidden');
@@ -1042,7 +1157,7 @@
             const desc = document.getElementById('auth-screen-desc');
             if(view === 'signup') {
                 document.getElementById('login-form-container').classList.add('hidden');
-                document.getElementById('signup-form-container').class.classList.remove('hidden');
+                document.getElementById('signup-form-container').classList.remove('hidden');
                 desc.innerText = "Create Your Professional Stardust Node";
             } else {
                 document.getElementById('signup-form-container').classList.add('hidden');
@@ -1077,7 +1192,7 @@
                         saveStateToHardware();
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
-                        showSuccessToast('🚀 Welcome Aboard!', 'Your Stardust account has been created successfully.');
+                        showSuccessToast('Welcome Aboard!', 'Your Stardust account has been created successfully.', '🚀');
                     });
                 })
                 .catch((error) => {
@@ -1498,7 +1613,6 @@
 
         // ==================== REELS SYSTEM ====================
 
-        // Upload Reel to Cloudinary from Modal
         window.handleReelUpload = async function() {
             const fileInput = document.getElementById('reel-input-file');
             const caption = document.getElementById('reel-input-caption').value.trim();
@@ -1557,7 +1671,7 @@
                         hideUploadLoading();
                         document.getElementById('reel-input-file').value = '';
                         document.getElementById('reel-input-caption').value = '';
-                        showSuccessToast('🎬 Reel Uploaded!', 'Your reel has been published successfully.');
+                        showSuccessToast('Reel Uploaded!', 'Your reel has been published successfully.', '🎬');
                     });
                 } else {
                     hideUploadLoading();
@@ -1623,7 +1737,6 @@
                         <button onclick="toggleReelSave('${reel.id}')" class="hover:scale-110 transition">
                             <svg class="w-7 h-7" fill="${isSaved ? 'white' : 'none'}" stroke="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                         </button>
-                        <!-- Views Count -->
                         <div class="flex items-center gap-1 text-white/70 text-xs mt-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             <span>${viewsCount}</span>
@@ -1637,7 +1750,6 @@
             setupReelAutoPlay();
         }
 
-        // Track view count when reel is watched
         function trackReelView(reelId) {
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
@@ -1656,7 +1768,6 @@
             const container = document.getElementById('reels-feed');
             const videos = container.querySelectorAll('.reel-item video');
             
-            // Track views when reel is watched for more than 3 seconds
             let viewTimers = {};
             
             const observer = new IntersectionObserver((entries) => {
@@ -1667,8 +1778,6 @@
                     
                     if(entry.isIntersecting) {
                         video.play().catch(() => {});
-                        video.muted = false;
-                        // Start view timer
                         if (reelId && !viewTimers[reelId]) {
                             viewTimers[reelId] = setTimeout(() => {
                                 trackReelView(reelId);
@@ -1677,8 +1786,6 @@
                         }
                     } else {
                         video.pause();
-                        video.muted = true;
-                        // Clear view timer
                         if (reelId && viewTimers[reelId]) {
                             clearTimeout(viewTimers[reelId]);
                             viewTimers[reelId] = null;
@@ -1689,31 +1796,14 @@
 
             videos.forEach(video => observer.observe(video));
 
-            // Long press to pause
+            // Toggle play/pause on tap (single tap)
             videos.forEach(video => {
-                let longPressTimer = null;
-                
-                video.addEventListener('touchstart', (e) => {
-                    longPressTimer = setTimeout(() => {
-                        video.pause();
-                    }, 500);
-                });
-                
-                video.addEventListener('touchend', () => {
-                    if (longPressTimer) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
-                    }
-                    // Resume if paused
-                    if (video.paused && !video.ended) {
-                        video.play().catch(() => {});
-                    }
-                });
-                
-                video.addEventListener('touchmove', () => {
-                    if (longPressTimer) {
-                        clearTimeout(longPressTimer);
-                        longPressTimer = null;
+                video.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (this.paused) {
+                        this.play().catch(() => {});
+                    } else {
+                        this.pause();
                     }
                 });
             });
@@ -1734,7 +1824,6 @@
                             delete currentLikes[myUID];
                         } else {
                             currentLikes[myUID] = true;
-                            // Send notification to reel owner
                             const reelOwner = data[dbKey].userId;
                             if (reelOwner !== myUID) {
                                 addNotification({
@@ -1763,10 +1852,10 @@
                 
                 if(saved.includes(reelId)) {
                     saved = saved.filter(id => id !== reelId);
-                    showSuccessToast('📁 Removed', 'Reel removed from saved list.');
+                    showSuccessToast('Removed', 'Reel removed from saved list.', '📁');
                 } else {
                     saved.push(reelId);
-                    showSuccessToast('💾 Saved!', 'Reel saved to your collection.');
+                    showSuccessToast('Saved!', 'Reel saved to your collection.', '💾');
                 }
                 
                 update(userRef, { savedReels: saved }).then(() => {
@@ -1777,8 +1866,7 @@
             });
         };
 
-        // ==================== REEL COMMENTS WITH DELETE ====================
-        
+        // ==================== REEL COMMENTS ====================
         window.deleteReelComment = function(reelId, commentKey) {
             if(confirm('Are you sure you want to delete this comment?')) {
                 remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
@@ -1869,7 +1957,6 @@
                             closeModal('reel-comments-modal');
                             renderReelsFeed();
                             
-                            // Send notification to reel owner
                             if (reelOwner !== myUID) {
                                 addNotification({
                                     type: 'reel_comment',
@@ -1885,7 +1972,7 @@
             }, { onlyOnce: true });
         };
 
-        // ==================== REEL SHARE WITH FULL MEDIA ====================
+        // ==================== REEL SHARE ====================
         window.openReelShareModal = function(reelId) {
             databaseState.activeTargetSharePostID = reelId;
             const container = document.getElementById('reel-share-target-grid');
@@ -1923,7 +2010,6 @@
             const myUID = databaseState.currentUser.uid;
             const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
             
-            // Send full reel data with video URL and thumbnail
             const messagePayload = {
                 sender: myUID,
                 text: `🎬 Shared a reel: ${targetReel.caption || 'Check this out!'}`,
@@ -1937,7 +2023,7 @@
 
             push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
                 closeModal('reel-share-modal');
-                showSuccessToast('🎬 Reel Shared!', 'Reel sent to your friend successfully.');
+                showSuccessToast('Reel Shared!', 'Reel sent to your friend successfully.', '🎬');
             });
         };
 
@@ -1956,10 +2042,10 @@
                 
                 if(saved.includes(postId)) {
                     saved = saved.filter(id => id !== postId);
-                    showSuccessToast('📁 Removed', 'Post removed from saved list.');
+                    showSuccessToast('Removed', 'Post removed from saved list.', '📁');
                 } else {
                     saved.push(postId);
-                    showSuccessToast('💾 Saved!', 'Post saved to your collection.');
+                    showSuccessToast('Saved!', 'Post saved to your collection.', '💾');
                 }
                 
                 update(userRef, { savedPosts: saved }).then(() => {
@@ -1974,7 +2060,7 @@
             return databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(postId);
         }
 
-        // ==================== POST SHARE WITH FULL MEDIA ====================
+        // ==================== POST SHARE ====================
         window.executeShareTransmissionPacket = function(targetUID) {
             if(!databaseState.activeTargetSharePostID) return;
             const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
@@ -1995,8 +2081,28 @@
 
             push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
                 closeModal('forward-share-modal');
-                showSuccessToast('📝 Post Shared!', 'Post sent to your friend successfully.');
+                showSuccessToast('Post Shared!', 'Post sent to your friend successfully.', '📝');
             });
+        };
+
+        // ==================== FULL SCREEN MEDIA VIEWER ====================
+        window.openFullScreenMedia = function(url, type) {
+            if (type === 'image') {
+                document.getElementById('viewer-target-image').src = url;
+                openModal('full-screen-image-viewer');
+            } else if (type === 'video') {
+                const existing = document.getElementById('full-screen-video-player');
+                if (existing) existing.remove();
+                
+                const overlay = document.createElement('div');
+                overlay.id = 'full-screen-video-player';
+                overlay.className = 'fixed inset-0 bg-black/95 z-[90] flex flex-col justify-center items-center p-4';
+                overlay.innerHTML = `
+                    <button onclick="this.parentElement.remove()" class="absolute top-4 right-4 text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold">✕ Close</button>
+                    <video src="${url}" controls autoplay playsinline style="max-width: 100%; max-height: 80vh; border-radius: 12px;"></video>
+                `;
+                document.body.appendChild(overlay);
+            }
         };
 
         // ==================== LISTENERS ====================
@@ -2015,6 +2121,7 @@
                 databaseState.publications = loadedPubs.sort((a,b) => b.timestamp - a.timestamp);
                 renderEcosystemFeed();
                 renderPersonalPublications();
+                renderProfileReels();
             });
 
             onValue(ref(db, 'users'), (snap) => {
@@ -2050,7 +2157,6 @@
                 }
             });
 
-            // Reels Listener
             onValue(ref(db, 'reels'), (snap) => {
                 const data = snap.val();
                 let loadedReels = [];
@@ -2063,6 +2169,7 @@
                 }
                 databaseState.reels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
                 renderReelsFeed();
+                renderProfileReels();
             });
         }
 
@@ -2085,7 +2192,6 @@
                 document.body.className = "text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none " + databaseState.currentUser.premiumTheme;
             }
 
-            // Restore notifications
             if (databaseState.currentUser.notifications) {
                 databaseState.notifications = databaseState.currentUser.notifications;
                 renderNotifications();
@@ -2151,13 +2257,6 @@
         window.toggleElement = function(id) { 
             const el = document.getElementById(id);
             el.classList.toggle('hidden');
-            // If notification dropdown is opened, mark all as read
-            if (id === 'notification-dropdown' && !el.classList.contains('hidden')) {
-                databaseState.notifications.forEach(n => n.read = true);
-                saveStateToHardware();
-                renderNotifications();
-                updateNotificationBadge();
-            }
         }
         window.closeElement = function(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -2227,8 +2326,7 @@
                 updates[`friendships/bond_${myUID}_and_${senderUID}`] = 'confirmed';
                 updates[`friendships/bond_${senderUID}_and_${myUID}`] = 'confirmed';
                 update(ref(db), updates).then(() => {
-                    showSuccessToast('🤝 Connected!', 'Friend request accepted successfully.');
-                    // Send notification
+                    showSuccessToast('Connected!', 'Friend request accepted successfully.', '🤝');
                     addNotification({
                         type: 'friend_request',
                         message: `${databaseState.currentUser.name} accepted your friend request! 🤝`,
@@ -2238,7 +2336,7 @@
                 });
             } else {
                 set(ref(db, `friendships/${reqKey}`), null).then(() => {
-                    showSuccessToast('❌ Declined', 'Friend request denied.');
+                    showSuccessToast('Declined', 'Friend request denied.', '❌');
                 });
             }
         }
@@ -2353,13 +2451,12 @@
                     reactionsMarkup += `</div>`;
                 }
 
-                // Check for media in message
                 let mediaHtml = '';
                 if (message.mediaType === 'reel' && message.mediaUrl) {
                     mediaHtml = `
                         <div class="mt-2 rounded-lg overflow-hidden border border-slate-700 shared-media-preview" onclick="openFullScreenMedia('${message.mediaUrl}', 'video')">
                             <video src="${message.mediaUrl}" muted playsinline style="max-height: 120px; width: 100%; object-fit: cover;"></video>
-                            <div class="text-[9px] text-slate-400 p-1 text-center">🎬 Reel</div>
+                            <div class="media-label">🎬 Reel</div>
                         </div>
                     `;
                 } else if (message.mediaType === 'post' && message.mediaUrl) {
@@ -2380,27 +2477,6 @@
             });
             setTimeout(() => { stream.scrollTop = stream.scrollHeight; }, 50);
         }
-
-        window.openFullScreenMedia = function(url, type) {
-            const viewer = document.getElementById('full-screen-image-viewer');
-            if (type === 'image') {
-                document.getElementById('viewer-target-image').src = url;
-                viewer.classList.remove('hidden');
-            } else if (type === 'video') {
-                // Create a video player overlay
-                const existing = document.getElementById('full-screen-video-player');
-                if (existing) existing.remove();
-                
-                const overlay = document.createElement('div');
-                overlay.id = 'full-screen-video-player';
-                overlay.className = 'fixed inset-0 bg-black/95 z-[90] flex flex-col justify-center items-center p-4';
-                overlay.innerHTML = `
-                    <button onclick="this.parentElement.remove()" class="absolute top-4 right-4 text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold">✕ Close</button>
-                    <video src="${url}" controls autoplay playsinline style="max-width: 100%; max-height: 80vh; border-radius: 12px;"></video>
-                `;
-                document.body.appendChild(overlay);
-            }
-        };
 
         window.dispatchDirectMessage = function() {
             const field = document.getElementById('chat-input-field');
@@ -2501,9 +2577,8 @@
             const myUID = databaseState.currentUser.uid;
             const reqKey = `req_${myUID}_to_${targetUID}`;
             set(ref(db, `friendships/${reqKey}`), 'pending').then(() => {
-                showSuccessToast('📨 Request Sent!', 'Friend request sent successfully.');
+                showSuccessToast('Request Sent!', 'Friend request sent successfully.', '📨');
                 handleUnifiedSearch();
-                // Send notification to target
                 addNotification({
                     type: 'friend_request',
                     message: `${databaseState.currentUser.name} sent you a friend request! 🤝`,
@@ -2557,7 +2632,10 @@
                 specificPosts.forEach(post => {
                     const block = document.createElement('div');
                     block.className = "bg-darkcard p-3 rounded-xl border border-slate-800 text-xs";
-                    block.innerHTML = `<p class="text-slate-300 leading-relaxed">${post.text}</p>`;
+                    block.innerHTML = `
+                        <p class="text-slate-300 leading-relaxed">${post.text}</p>
+                        ${post.image ? `<div class="mt-2 rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
+                    `;
                     peerFeed.appendChild(block);
                 });
             } else {
@@ -2592,7 +2670,7 @@
                     document.getElementById('post-input-text').value = '';
                     document.getElementById('post-input-gallery-file').value = '';
                     hideUploadLoading();
-                    showSuccessToast('📝 Post Published!', 'Your post has been published successfully.');
+                    showSuccessToast('Post Published!', 'Your post has been published successfully.', '📝');
                 });
             };
 
@@ -2677,7 +2755,6 @@
                             delete currentLikes[myUID];
                         } else {
                             currentLikes[myUID] = true;
-                            // Send notification to post owner
                             const postOwner = data[dbKey].authorUID;
                             if (postOwner !== myUID) {
                                 addNotification({
@@ -2753,7 +2830,7 @@
                         push(ref(db, `publications/${dbKey}/comments`), payload).then(() => {
                             field.value = '';
                             closeModal('expanded-post-modal');
-                            showSuccessToast('💬 Commented!', 'Your comment has been posted.');
+                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
                             
                             if (postOwner !== myUID) {
                                 addNotification({
@@ -2799,6 +2876,8 @@
             openModal('forward-share-modal');
         }
 
+        // ==================== PROFILE RENDER FUNCTIONS ====================
+        
         function renderPersonalPublications() {
             const container = document.getElementById('profile-personal-posts');
             container.innerHTML = '';
@@ -2811,11 +2890,53 @@
 
             specific.forEach(post => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-1.5 text-xs";
+                card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs";
                 card.innerHTML = `
                     <p class="text-slate-300 leading-relaxed">${post.text}</p>
-                    ${post.image ? `<div class="rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
+                    ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
                     <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderProfileReels() {
+            const container = document.getElementById('profile-personal-reels');
+            container.innerHTML = '';
+            const specific = databaseState.reels.filter(r => r && r.userId === databaseState.currentUser.uid);
+            
+            if(specific.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No reels uploaded yet.</p>`;
+                return;
+            }
+
+            specific.forEach(reel => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs cursor-pointer";
+                card.onclick = () => {
+                    // Switch to reels tab and scroll to this reel
+                    switchTab('reels');
+                    setTimeout(() => {
+                        const reelsContainer = document.getElementById('reels-feed');
+                        const items = reelsContainer.querySelectorAll('.reel-item');
+                        const index = databaseState.reels.findIndex(r => r.id === reel.id);
+                        if (index >= 0 && items[index]) {
+                            items[index].scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 300);
+                };
+                card.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">🎬</span>
+                        <span class="font-bold text-slate-300">${reel.caption || 'Reel'}</span>
+                    </div>
+                    <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover"></video>
+                    <div class="flex items-center gap-4 text-[10px] text-slate-500">
+                        <span>❤️ ${reel.likes ? Object.keys(reel.likes).length : 0}</span>
+                        <span>💬 ${reel.comments ? Object.keys(reel.comments).length : 0}</span>
+                        <span>👁️ ${reel.views || 0}</span>
+                    </div>
+                    <span class="text-[8px] font-mono text-slate-600">${new Date(reel.createdAt).toLocaleString()}</span>
                 `;
                 container.appendChild(card);
             });
@@ -2852,22 +2973,33 @@
             }
         }
 
+        // ==================== PROFILE TAB SWITCHING ====================
         window.toggleProfileView = function(view) {
             const postsTab = document.getElementById('prof-tab-posts');
+            const reelsTab = document.getElementById('prof-tab-reels');
             const friendsTab = document.getElementById('prof-tab-friends');
             const postsContainer = document.getElementById('profile-posts-view-container');
+            const reelsContainer = document.getElementById('profile-reels-view-container');
             const friendsContainer = document.getElementById('profile-friends-view-container');
 
+            // Reset all tabs
+            [postsTab, reelsTab, friendsTab].forEach(tab => {
+                tab.classList.remove('active');
+            });
+            [postsContainer, reelsContainer, friendsContainer].forEach(container => {
+                container.classList.add('hidden');
+            });
+
             if(view === 'posts') {
-                postsTab.className = "flex-1 py-2 rounded-lg font-bold bg-slate-800 text-cyan-400 transition";
-                friendsTab.className = "flex-1 py-2 rounded-lg font-bold text-slate-400 transition";
+                postsTab.classList.add('active');
                 postsContainer.classList.remove('hidden');
-                friendsContainer.classList.add('hidden');
+            } else if(view === 'reels') {
+                reelsTab.classList.add('active');
+                reelsContainer.classList.remove('hidden');
+                renderProfileReels();
             } else {
-                friendsTab.className = "flex-1 py-2 rounded-lg font-bold bg-slate-800 text-cyan-400 transition";
-                postsTab.className = "flex-1 py-2 rounded-lg font-bold text-slate-400 transition";
+                friendsTab.classList.add('active');
                 friendsContainer.classList.remove('hidden');
-                postsContainer.classList.add('hidden');
             }
         }
 
@@ -2908,7 +3040,7 @@
 
             if(participants.length < 2) { alert("Please select participants to compile channel."); return; }
             
-            showSuccessToast('👥 Group Created!', 'Multiplex session initialized successfully.');
+            showSuccessToast('Group Created!', 'Multiplex session initialized successfully.', '👥');
             document.getElementById('group-name-input').value = '';
             closeModal('group-chat-modal');
         }
@@ -2942,7 +3074,12 @@
                 const liked = databaseState.publications.filter(p => p && p.likes && p.likes[databaseState.currentUser.uid] === true);
                 if(liked.length > 0) {
                     liked.forEach(p => { 
-                        body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">${p.text}${p.image ? ' 📷' : ''}</div>`; 
+                        body.innerHTML += `
+                            <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">
+                                <p>${p.text}</p>
+                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
+                            </div>
+                        `; 
                     });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No liked publications found.</p>`; }
             } else if(type === 'saved-posts') {
@@ -2953,7 +3090,7 @@
                         body.innerHTML += `
                             <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">
                                 <p>${p.text}</p>
-                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-32"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
+                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24 cursor-pointer" onclick="openImageViewer('${p.image}')"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
                             </div>
                         `; 
                     });
@@ -2966,7 +3103,7 @@
                         body.innerHTML += `
                             <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1 text-xs">
                                 <p>🎬 ${r.caption || 'Reel'}</p>
-                                <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover"></video>
+                                <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover cursor-pointer" onclick="openFullScreenMedia('${r.videoUrl}', 'video')"></video>
                                 <p class="text-[9px] text-slate-500 mt-0.5">By ${r.userName}</p>
                             </div>
                         `; 
@@ -2979,14 +3116,19 @@
                     if(p.comments) {
                         Object.values(p.comments).forEach(c => {
                             if(c.authorUID === databaseState.currentUser.uid) {
-                                comments.push({ post: p.text, comment: c.text, time: c.timestamp });
+                                comments.push({ post: p.text, comment: c.text, time: c.timestamp, postId: p.id });
                             }
                         });
                     }
                 });
                 if(comments.length > 0) {
                     comments.forEach(c => {
-                        body.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1"><p class="text-slate-400 text-[10px]">Post: ${c.post}</p><p class="text-slate-300">💬 ${c.comment}</p></div>`;
+                        body.innerHTML += `
+                            <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1">
+                                <p class="text-slate-400 text-[10px]">Post: ${c.post}</p>
+                                <p class="text-slate-300">💬 ${c.comment}</p>
+                            </div>
+                        `;
                     });
                 } else { body.innerHTML = `<p class="text-center text-slate-600">No comments found.</p>`; }
             } else {
@@ -3008,7 +3150,7 @@
                 if (imgBase64) payload.pfp = imgBase64;
                 update(ref(db, 'users/' + databaseState.currentUser.uid), payload).then(() => {
                     closeModal('subsetting-view-modal');
-                    showSuccessToast('✅ Profile Updated!', 'Your profile has been updated successfully.');
+                    showSuccessToast('Profile Updated!', 'Your profile has been updated successfully.', '✅');
                 });
             };
 
@@ -3025,14 +3167,14 @@
             update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { 
                 closeModal('subscription-modal'); 
                 openModal('premium-dashboard-modal');
-                showSuccessToast('🌟 Premium Activated!', 'You now have access to premium features.');
+                showSuccessToast('Premium Activated!', 'You now have access to premium features.', '🌟');
             }); 
         }
         window.executePremiumTweak = function(f, v) { 
             const p = {}; 
             if(f==='theme') p.premiumTheme=v; 
             update(ref(db, 'users/' + databaseState.currentUser.uid), p);
-            showSuccessToast('🎨 Theme Applied!', 'Your theme has been updated.');
+            showSuccessToast('Theme Applied!', 'Your theme has been updated.', '🎨');
         }
 
         // Make functions globally available
