@@ -246,6 +246,36 @@
         .post-tab-btn:not(.active):hover {
             color: #94a3b8;
         }
+
+        /* Upload Loading on Plus Button */
+        .upload-loading {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #06b6d4;
+            border-right-color: #06b6d4;
+            animation: spin 0.8s linear infinite;
+        }
+        .upload-loading.hidden {
+            display: none;
+        }
+        .plus-btn-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+        .plus-btn-wrapper .upload-loading {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #06b6d4;
+            border-right-color: #06b6d4;
+            animation: spin 0.8s linear infinite;
+        }
+        .plus-btn-wrapper .upload-loading.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -300,9 +330,12 @@
             <section id="home-screen" class="space-y-4">
                 <header class="py-4 bg-darkbg border-b border-slate-900/60 flex justify-between items-center mb-2">
                     <h1 class="text-xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">STARDUST</h1>
-                    <button onclick="openModal('post-modal')" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition shadow-lg shadow-blue-600/20">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                    </button>
+                    <div class="plus-btn-wrapper">
+                        <button onclick="openModal('post-modal')" id="main-plus-btn" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition shadow-lg shadow-blue-600/20">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        </button>
+                        <div id="upload-loading-spinner" class="upload-loading hidden"></div>
+                    </div>
                 </header>
                 <div id="posts-feed" class="space-y-4"></div>
             </section>
@@ -607,7 +640,7 @@
             <div id="post-content-area">
                 <textarea id="post-input-text" placeholder="Formulate structural context narrative..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
                 <div class="mb-4">
-                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Select Image Layer (Gallery)</label>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Select Image (Gallery)</label>
                     <input type="file" id="post-input-gallery-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
                 </div>
                 <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Deploy Production Stream</button>
@@ -749,7 +782,8 @@
             currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", savedPosts: [], savedReels: [] },
             publications: [], peers: [], friendships: {}, chatThreads: {}, activeTargetChatUID: null, activeContextMessageID: null, activeTargetSharePostID: null,
             reels: [], activeReelId: null,
-            longPressTimer: null
+            longPressTimer: null,
+            isUploading: false
         };
 
         // Call State
@@ -778,6 +812,19 @@
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
 
         document.getElementById('loading-screen').classList.remove('hidden');
+
+        // ==================== UPLOAD LOADING SPINNER ====================
+        function showUploadLoading() {
+            document.getElementById('upload-loading-spinner').classList.remove('hidden');
+            document.getElementById('main-plus-btn').classList.add('opacity-50');
+            databaseState.isUploading = true;
+        }
+
+        function hideUploadLoading() {
+            document.getElementById('upload-loading-spinner').classList.add('hidden');
+            document.getElementById('main-plus-btn').classList.remove('opacity-50');
+            databaseState.isUploading = false;
+        }
 
         window.switchAuthView = function(view) {
             const desc = document.getElementById('auth-screen-desc');
@@ -1247,11 +1294,14 @@
                 return;
             }
 
-            // Check if file is video
             if(!file.type.startsWith('video/')) {
                 alert("Please select a video file.");
                 return;
             }
+
+            // Show loading on plus button
+            showUploadLoading();
+            closeModal('post-modal');
 
             const formData = new FormData();
             formData.append('file', file);
@@ -1282,16 +1332,17 @@
                     };
 
                     push(ref(db, 'reels'), reelData).then(() => {
-                        alert('Reel uploaded successfully! 🎬');
+                        hideUploadLoading();
                         document.getElementById('reel-input-file').value = '';
                         document.getElementById('reel-input-caption').value = '';
-                        closeModal('post-modal');
                     });
                 } else {
+                    hideUploadLoading();
                     alert("Upload failed. Please try again.");
                 }
             } catch(error) {
                 console.error('Upload error:', error);
+                hideUploadLoading();
                 alert('Failed to upload reel. Please try again.');
             }
         };
@@ -1354,7 +1405,6 @@
                 container.appendChild(div);
             });
 
-            // Setup auto-play on scroll
             setupReelAutoPlay();
         }
 
@@ -1671,7 +1721,6 @@
             screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(tabId + '-screen').classList.remove('hidden');
             
-            // Fix for reels screen - remove padding
             if(tabId === 'reels') {
                 document.getElementById('reels-screen').classList.add('-mx-4', '-mt-3');
             } else {
@@ -1684,7 +1733,6 @@
                 btn.classList.add('text-slate-500');
             });
             
-            // Find clicked button
             const clickedBtn = event.currentTarget;
             if(tabId === 'reels') {
                 clickedBtn.classList.remove('text-slate-500');
@@ -2054,6 +2102,10 @@
             const imgFile = document.getElementById('post-input-gallery-file').files[0];
             if(!txt && !imgFile) return;
 
+            // Show loading on plus button
+            showUploadLoading();
+            closeModal('post-modal');
+
             const commitPostToFirebase = (base64Img) => {
                 const postNode = {
                     id: 'post_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
@@ -2070,7 +2122,7 @@
                 push(ref(db, 'publications'), postNode).then(() => {
                     document.getElementById('post-input-text').value = '';
                     document.getElementById('post-input-gallery-file').value = '';
-                    closeModal('post-modal');
+                    hideUploadLoading();
                 });
             };
 
