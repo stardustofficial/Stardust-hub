@@ -316,16 +316,17 @@
             position: absolute;
             right: 0;
             top: calc(100% + 8px);
-            width: 340px;
-            max-width: calc(100vw - 32px);
+            width: 330px;
+            max-width: calc(100vw - 24px);
             background: #1e293b;
-            border: 1px solid #1e293b;
+            border: 1px solid #334155;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             z-index: 60;
             overflow: hidden;
-            max-height: 400px;
+            max-height: 440px;
             display: none;
+            left: auto;
         }
         #notification-dropdown:not(.hidden) {
             display: block;
@@ -336,10 +337,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
         #notification-dropdown .notif-list {
             overflow-y: auto;
-            max-height: 320px;
+            max-height: 350px;
             padding: 8px;
         }
         #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
@@ -609,9 +611,18 @@
 
                 <!-- 3 Tabs: Posts | Reels | Friends -->
                 <div class="flex justify-between items-center bg-darkcard p-1 rounded-xl border border-slate-800/60 text-xs">
-                    <button onclick="toggleProfileView('posts')" id="prof-tab-posts" class="profile-tab-btn active flex-1 py-2 rounded-lg font-bold transition">📝 Posts</button>
-                    <button onclick="toggleProfileView('reels')" id="prof-tab-reels" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">🎬 Reels</button>
-                    <button onclick="toggleProfileView('friends')" id="prof-tab-friends" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">👥 Friends</button>
+                    <button onclick="toggleProfileView('posts')" id="prof-tab-posts" class="profile-tab-btn active flex-1 py-2 rounded-lg font-bold transition">
+                        <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Posts
+                    </button>
+                    <button onclick="toggleProfileView('reels')" id="prof-tab-reels" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">
+                        <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        Reels
+                    </button>
+                    <button onclick="toggleProfileView('friends')" id="prof-tab-friends" class="profile-tab-btn flex-1 py-2 rounded-lg font-bold transition">
+                        <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        Friends
+                    </button>
                 </div>
 
                 <div id="profile-posts-view-container" class="space-y-2">
@@ -826,8 +837,14 @@
             
             <!-- Tabs -->
             <div class="flex bg-slate-900/50 rounded-xl p-1 mb-4">
-                <button onclick="switchPostTab('post')" id="post-tab-post" class="post-tab-btn active flex-1 py-2 rounded-lg text-xs font-bold transition">📝 Post</button>
-                <button onclick="switchPostTab('reel')" id="post-tab-reel" class="post-tab-btn flex-1 py-2 rounded-lg text-xs font-bold transition">🎬 Reel</button>
+                <button onclick="switchPostTab('post')" id="post-tab-post" class="post-tab-btn active flex-1 py-2 rounded-lg text-xs font-bold transition">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Post
+                </button>
+                <button onclick="switchPostTab('reel')" id="post-tab-reel" class="post-tab-btn flex-1 py-2 rounded-lg text-xs font-bold transition">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Reel
+                </button>
             </div>
 
             <!-- Post Content -->
@@ -1714,7 +1731,7 @@
                 div.dataset.index = index;
 
                 div.innerHTML = `
-                    <video src="${reel.videoUrl}" playsinline preload="metadata"></video>
+                    <video src="${reel.videoUrl}" playsinline preload="metadata" loop></video>
                     <div class="reel-overlay">
                         <div class="flex items-center gap-3 mb-2">
                             <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover">
@@ -1795,18 +1812,6 @@
             }, { threshold: 0.6 });
 
             videos.forEach(video => observer.observe(video));
-
-            // Toggle play/pause on tap (single tap)
-            videos.forEach(video => {
-                video.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    if (this.paused) {
-                        this.play().catch(() => {});
-                    } else {
-                        this.pause();
-                    }
-                });
-            });
         }
 
         // Reel Like
@@ -2345,47 +2350,75 @@
             const container = document.getElementById('active-chats-list');
             container.innerHTML = '';
             const myUID = databaseState.currentUser.uid;
-            let channelRendered = false;
+            
+            // Collect all friends with their latest message timestamp
+            let chatList = [];
 
             databaseState.peers.forEach(peer => {
                 if(peer.uid === myUID) return;
                 
                 const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
                 if(isFriend) {
-                    channelRendered = true;
                     const threadKey = myUID < peer.uid ? `${myUID}_text_${peer.uid}` : `${peer.uid}_text_${myUID}`;
                     const messages = databaseState.chatThreads[threadKey];
                     let unseenCount = 0;
+                    let latestTimestamp = 0;
                     
                     if(messages) {
                         Object.values(messages).forEach(m => {
                             if(m.sender !== myUID && m.status !== 'seen') { unseenCount++; }
+                            if(m.timestamp > latestTimestamp) { latestTimestamp = m.timestamp; }
                         });
                     }
-
-                    const node = document.createElement('div');
-                    node.className = `p-3 rounded-xl border flex justify-between items-center transition cursor-pointer ${unseenCount > 0 ? 'bg-blue-950/30 border-blue-600/50 shadow-md shadow-blue-500/5' : 'bg-darkcard border-slate-800 hover:bg-slate-800/80'}`;
-                    node.onclick = () => openDirectCommunicationChannel(peer.uid);
-                    node.innerHTML = `
-                        <div class="flex items-center space-x-3">
-                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-9 h-9 rounded-full object-cover border border-slate-700">
-                            <div>
-                                <p class="font-bold flex items-center gap-1.5 ${unseenCount > 0 ? 'text-blue-400 font-extrabold' : 'text-slate-200'}">
-                                    <span>${peer.name}</span>
-                                    ${unseenCount > 0 ? '<span class="h-2 w-2 bg-blue-500 rounded-full animate-pulse"></span>' : ''}
-                                </p>
-                                <p class="text-[10px] text-slate-500 font-mono">@${peer.uid}</p>
-                            </div>
-                        </div>
-                        ${unseenCount > 0 ? `<span class="bg-blue-600 text-white text-[10px] font-bold rounded-full h-5 px-2 flex items-center justify-center">${unseenCount} New</span>` : `<svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`}
-                    `;
-                    container.appendChild(node);
+                    
+                    chatList.push({
+                        peer: peer,
+                        unseenCount: unseenCount,
+                        latestTimestamp: latestTimestamp,
+                        threadKey: threadKey
+                    });
                 }
             });
 
-            if(!channelRendered) {
+            // Sort by latest timestamp (most recent first)
+            chatList.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+
+            if(chatList.length === 0) {
                 container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">Establish peer network handshakes to deploy channels.</p>`;
+                return;
             }
+
+            chatList.forEach(({ peer, unseenCount, threadKey }) => {
+                const node = document.createElement('div');
+                node.className = `p-3 rounded-xl border flex justify-between items-center transition cursor-pointer ${unseenCount > 0 ? 'bg-blue-950/30 border-blue-600/50 shadow-md shadow-blue-500/5' : 'bg-darkcard border-slate-800 hover:bg-slate-800/80'}`;
+                node.onclick = () => openDirectCommunicationChannel(peer.uid);
+                
+                // Get last message preview
+                let lastMsg = '';
+                const messages = databaseState.chatThreads[threadKey];
+                if(messages) {
+                    const msgArray = Object.values(messages);
+                    if(msgArray.length > 0) {
+                        const last = msgArray[msgArray.length - 1];
+                        lastMsg = last.text ? (last.text.length > 30 ? last.text.substring(0, 30) + '...' : last.text) : '';
+                    }
+                }
+                
+                node.innerHTML = `
+                    <div class="flex items-center space-x-3 flex-1 min-w-0">
+                        <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-9 h-9 rounded-full object-cover border border-slate-700 flex-shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold flex items-center gap-1.5 ${unseenCount > 0 ? 'text-blue-400 font-extrabold' : 'text-slate-200'}">
+                                <span class="truncate">${peer.name}</span>
+                                ${unseenCount > 0 ? '<span class="h-2 w-2 bg-blue-500 rounded-full animate-pulse flex-shrink-0"></span>' : ''}
+                            </p>
+                            <p class="text-[10px] text-slate-500 truncate">${lastMsg || 'No messages yet'}</p>
+                        </div>
+                    </div>
+                    ${unseenCount > 0 ? `<span class="bg-blue-600 text-white text-[10px] font-bold rounded-full h-5 px-2 flex items-center justify-center flex-shrink-0 ml-2">${unseenCount}</span>` : ''}
+                `;
+                container.appendChild(node);
+            });
         }
 
         window.openDirectCommunicationChannel = function(targetUID) {
@@ -2914,7 +2947,6 @@
                 const card = document.createElement('div');
                 card.className = "bg-slate-900 border border-slate-800 p-3 rounded-xl space-y-2 text-xs cursor-pointer";
                 card.onclick = () => {
-                    // Switch to reels tab and scroll to this reel
                     switchTab('reels');
                     setTimeout(() => {
                         const reelsContainer = document.getElementById('reels-feed');
@@ -2927,7 +2959,7 @@
                 };
                 card.innerHTML = `
                     <div class="flex items-center gap-2">
-                        <span class="text-lg">🎬</span>
+                        <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span class="font-bold text-slate-300">${reel.caption || 'Reel'}</span>
                     </div>
                     <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover"></video>
@@ -2982,7 +3014,6 @@
             const reelsContainer = document.getElementById('profile-reels-view-container');
             const friendsContainer = document.getElementById('profile-friends-view-container');
 
-            // Reset all tabs
             [postsTab, reelsTab, friendsTab].forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -3102,7 +3133,10 @@
                     saved.forEach(r => { 
                         body.innerHTML += `
                             <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl mb-1 text-xs">
-                                <p>🎬 ${r.caption || 'Reel'}</p>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                    <span>${r.caption || 'Reel'}</span>
+                                </div>
                                 <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover cursor-pointer" onclick="openFullScreenMedia('${r.videoUrl}', 'video')"></video>
                                 <p class="text-[9px] text-slate-500 mt-0.5">By ${r.userName}</p>
                             </div>
