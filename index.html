@@ -231,6 +231,13 @@
             font-weight: bold;
             font-size: 12px;
         }
+        .reel-user-info {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .reel-user-info:hover {
+            opacity: 0.7;
+        }
 
         /* Post Modal Tabs */
         .post-tab-btn {
@@ -1006,7 +1013,9 @@
             reels: [], activeReelId: null,
             longPressTimer: null,
             isUploading: false,
-            notifications: []
+            notifications: [],
+            // Track which reels have had their view counted
+            viewedReels: {}
         };
 
         // Call State
@@ -1029,7 +1038,7 @@
         window.saveStateToHardware = function() { localStorage.setItem("STARDUST_CORE_DB_PROD", JSON.stringify(databaseState)); }
         window.recoverStateFromHardware = function() {
             const raw = localStorage.getItem("STARDUST_CORE_DB_PROD");
-            if (raw) { try { const parsed = JSON.parse(raw); if(parsed.currentUser) databaseState.currentUser = parsed.currentUser; if(parsed.notifications) databaseState.notifications = parsed.notifications; } catch(e){} }
+            if (raw) { try { const parsed = JSON.parse(raw); if(parsed.currentUser) databaseState.currentUser = parsed.currentUser; if(parsed.notifications) databaseState.notifications = parsed.notifications; if(parsed.viewedReels) databaseState.viewedReels = parsed.viewedReels; } catch(e){} }
         }
 
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
@@ -1200,6 +1209,7 @@
                     databaseState.currentUser.savedPosts = [];
                     databaseState.currentUser.savedReels = [];
                     databaseState.notifications = [];
+                    databaseState.viewedReels = {};
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
                         document.getElementById('loading-screen').classList.add('hidden');
                         document.getElementById('login-screen').classList.add('hidden');
@@ -1258,6 +1268,7 @@
                                 if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                                 if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
                                 if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
+                                if(!databaseState.viewedReels) databaseState.viewedReels = {};
                                 document.getElementById('loading-screen').classList.add('hidden');
                                 document.getElementById('login-screen').classList.add('hidden');
                                 document.getElementById('app-layout').classList.remove('hidden');
@@ -1288,6 +1299,7 @@
                             if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
                             if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
                             if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
+                            if(!databaseState.viewedReels) databaseState.viewedReels = {};
                             document.getElementById('loading-screen').classList.add('hidden');
                             document.getElementById('login-screen').classList.add('hidden');
                             document.getElementById('app-layout').classList.remove('hidden');
@@ -1701,8 +1713,14 @@
             }
         };
 
-        // Render Reels Feed
+        // Track if we're currently rendering to prevent loops
+        let isRenderingReels = false;
+
+        // Render Reels Feed - FIXED: no view tracking during render
         function renderReelsFeed() {
+            if (isRenderingReels) return;
+            isRenderingReels = true;
+            
             const container = document.getElementById('reels-feed');
             container.innerHTML = '';
 
@@ -1714,6 +1732,7 @@
                         <p class="text-xs mt-1">Tap the + button and select Reel to upload!</p>
                     </div>
                 `;
+                isRenderingReels = false;
                 return;
             }
 
@@ -1729,13 +1748,16 @@
                 const div = document.createElement('div');
                 div.className = 'reel-item';
                 div.dataset.index = index;
+                div.dataset.reelId = reel.id;
 
                 div.innerHTML = `
                     <video src="${reel.videoUrl}" playsinline preload="metadata" loop></video>
                     <div class="reel-overlay">
                         <div class="flex items-center gap-3 mb-2">
-                            <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover">
-                            <span class="font-bold text-sm">${reel.userName}</span>
+                            <div class="reel-user-info" onclick="goToUserProfile('${reel.userId}')">
+                                <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover">
+                            </div>
+                            <span class="font-bold text-sm reel-user-info" onclick="goToUserProfile('${reel.userId}')">${reel.userName}</span>
                         </div>
                         ${reel.caption ? `<p class="text-sm text-white/80">${reel.caption}</p>` : ''}
                     </div>
@@ -1764,10 +1786,23 @@
                 container.appendChild(div);
             });
 
-            setupReelAutoPlay();
+            // Setup auto-play after rendering
+            setTimeout(() => {
+                setupReelAutoPlay();
+                isRenderingReels = false;
+            }, 100);
         }
 
+        // Track view without triggering re-render
         function trackReelView(reelId) {
+            // Skip if already viewed
+            if (databaseState.viewedReels[reelId]) return;
+            
+            // Mark as viewed in memory
+            databaseState.viewedReels[reelId] = true;
+            saveStateToHardware();
+            
+            // Update Firebase without triggering re-render
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
@@ -1781,42 +1816,72 @@
             });
         }
 
+        let reelObserver = null;
+
         function setupReelAutoPlay() {
             const container = document.getElementById('reels-feed');
             const videos = container.querySelectorAll('.reel-item video');
             
-            let viewTimers = {};
+            // Cleanup old observer
+            if (reelObserver) {
+                reelObserver.disconnect();
+                reelObserver = null;
+            }
             
-            const observer = new IntersectionObserver((entries) => {
+            reelObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const video = entry.target;
                     const reelItem = video.closest('.reel-item');
-                    const reelId = reelItem ? databaseState.reels[parseInt(reelItem.dataset.index)]?.id : null;
+                    const reelId = reelItem ? reelItem.dataset.reelId : null;
                     
                     if(entry.isIntersecting) {
                         video.play().catch(() => {});
-                        if (reelId && !viewTimers[reelId]) {
-                            viewTimers[reelId] = setTimeout(() => {
-                                trackReelView(reelId);
-                                viewTimers[reelId] = null;
-                            }, 3000);
+                        // Track view only once per reel per session
+                        if (reelId && !databaseState.viewedReels[reelId]) {
+                            trackReelView(reelId);
                         }
                     } else {
                         video.pause();
-                        if (reelId && viewTimers[reelId]) {
-                            clearTimeout(viewTimers[reelId]);
-                            viewTimers[reelId] = null;
-                        }
                     }
                 });
             }, { threshold: 0.6 });
 
-            videos.forEach(video => observer.observe(video));
+            videos.forEach(video => reelObserver.observe(video));
         }
+
+        // ==================== GO TO USER PROFILE FROM REEL ====================
+        window.goToUserProfile = function(userId) {
+            if (userId === databaseState.currentUser.uid) {
+                // Go to own profile
+                switchTab('profile');
+                return;
+            }
+            
+            // Check if user exists in peers
+            const peer = databaseState.peers.find(p => p.uid === userId);
+            if (peer) {
+                displayPeerAccountProfile(userId);
+            } else {
+                // Fetch user data from Firebase
+                onValue(ref(db, 'users/' + userId), (snap) => {
+                    const userData = snap.val();
+                    if (userData) {
+                        // Add to peers list temporarily
+                        if (!databaseState.peers.find(p => p.uid === userId)) {
+                            databaseState.peers.push(userData);
+                        }
+                        displayPeerAccountProfile(userId);
+                    } else {
+                        alert("User not found.");
+                    }
+                }, { onlyOnce: true });
+            }
+        };
 
         // Reel Like
         window.toggleReelLike = function(reelId) {
-            onValue(ref(db, 'reels'), (snap) => {
+            const reelRef = ref(db, 'reels');
+            get(reelRef).then((snap) => {
                 const data = snap.val();
                 if(data) {
                     const dbKey = Object.keys(data).find(k => data[k] && data[k].id === reelId);
@@ -1843,7 +1908,7 @@
                         update(ref(db, `reels/${dbKey}`), { likes: currentLikes });
                     }
                 }
-            }, { onlyOnce: true });
+            });
         };
 
         // Reel Save
@@ -1960,7 +2025,6 @@
                         push(ref(db, `reels/${dbKey}/comments`), payload).then(() => {
                             field.value = '';
                             closeModal('reel-comments-modal');
-                            renderReelsFeed();
                             
                             if (reelOwner !== myUID) {
                                 addNotification({
@@ -2162,6 +2226,8 @@
                 }
             });
 
+            // Reels Listener - only update when data changes, but don't re-render if same data
+            let lastReelsData = '';
             onValue(ref(db, 'reels'), (snap) => {
                 const data = snap.val();
                 let loadedReels = [];
@@ -2172,9 +2238,18 @@
                         }
                     });
                 }
-                databaseState.reels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
-                renderReelsFeed();
-                renderProfileReels();
+                loadedReels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
+                
+                // Check if data actually changed
+                const newDataStr = JSON.stringify(loadedReels.map(r => r.id + r.likesCount + r.commentsCount + r.views));
+                if (newDataStr !== lastReelsData) {
+                    lastReelsData = newDataStr;
+                    databaseState.reels = loadedReels;
+                    renderReelsFeed();
+                    renderProfileReels();
+                } else {
+                    databaseState.reels = loadedReels;
+                }
             });
         }
 
@@ -2351,7 +2426,6 @@
             container.innerHTML = '';
             const myUID = databaseState.currentUser.uid;
             
-            // Collect all friends with their latest message timestamp
             let chatList = [];
 
             databaseState.peers.forEach(peer => {
@@ -2380,7 +2454,6 @@
                 }
             });
 
-            // Sort by latest timestamp (most recent first)
             chatList.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
 
             if(chatList.length === 0) {
@@ -2393,7 +2466,6 @@
                 node.className = `p-3 rounded-xl border flex justify-between items-center transition cursor-pointer ${unseenCount > 0 ? 'bg-blue-950/30 border-blue-600/50 shadow-md shadow-blue-500/5' : 'bg-darkcard border-slate-800 hover:bg-slate-800/80'}`;
                 node.onclick = () => openDirectCommunicationChannel(peer.uid);
                 
-                // Get last message preview
                 let lastMsg = '';
                 const messages = databaseState.chatThreads[threadKey];
                 if(messages) {
@@ -2654,7 +2726,14 @@
                 };
                 actionArea.appendChild(btn);
             } else {
-                actionArea.innerHTML = `<p class="text-[10px] text-slate-500 italic">Establish verified bond status network connection to unlock channel transfers.</p>`;
+                const sendBtn = document.createElement('button');
+                sendBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition";
+                sendBtn.innerText = "Send Friend Request";
+                sendBtn.onclick = () => {
+                    dispatchFriendHandshake(peer.uid);
+                    closeModal('full-screen-account-modal');
+                };
+                actionArea.appendChild(sendBtn);
             }
 
             const peerFeed = document.getElementById('peer-screen-posts-feed');
