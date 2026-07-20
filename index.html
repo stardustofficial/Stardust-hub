@@ -276,6 +276,14 @@
         .plus-btn-wrapper .upload-loading.hidden {
             display: none;
         }
+
+        .comment-delete-btn {
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .comment-delete-btn:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -751,7 +759,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue, push, update, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, update, get, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5ufTBjot8i-PJCBkJtUpc50jJcYmzMBQ",
@@ -1316,6 +1324,13 @@
 
                 const data = await response.json();
                 
+                if(data.error) {
+                    console.log('Cloudinary Error:', data.error);
+                    hideUploadLoading();
+                    alert('Upload failed: ' + data.error.message);
+                    return;
+                }
+                
                 if(data.secure_url) {
                     const reelData = {
                         id: 'reel_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
@@ -1335,6 +1350,7 @@
                         hideUploadLoading();
                         document.getElementById('reel-input-file').value = '';
                         document.getElementById('reel-input-caption').value = '';
+                        alert('Reel uploaded successfully! 🎬');
                     });
                 } else {
                     hideUploadLoading();
@@ -1343,7 +1359,7 @@
             } catch(error) {
                 console.error('Upload error:', error);
                 hideUploadLoading();
-                alert('Failed to upload reel. Please try again.');
+                alert('Failed to upload reel: ' + error.message);
             }
         };
 
@@ -1471,7 +1487,21 @@
             });
         };
 
-        // Reel Comments
+        // ==================== REEL COMMENTS WITH DELETE ====================
+        
+        // Delete Reel Comment
+        window.deleteReelComment = function(reelId, commentKey) {
+            if(confirm('Are you sure you want to delete this comment?')) {
+                remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
+                    // Refresh comments
+                    openReelComments(reelId);
+                }).catch((error) => {
+                    alert('Failed to delete comment: ' + error.message);
+                });
+            }
+        };
+
+        // Open Reel Comments with Delete Button
         window.openReelComments = function(reelId) {
             databaseState.activeReelId = reelId;
             const container = document.getElementById('reel-comments-container');
@@ -1481,11 +1511,46 @@
             if(!targetReel) return;
 
             if(targetReel.comments && Object.keys(targetReel.comments).length > 0) {
-                Object.values(targetReel.comments).forEach(c => {
-                    const el = document.createElement('div');
-                    el.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-0.5";
-                    el.innerHTML = `<p class="font-bold text-slate-400 text-xs">@${c.authorName}:</p><p class="text-slate-300 text-xs">${c.text}</p>`;
-                    container.appendChild(el);
+                // Find the database key for this reel
+                const reelRef = ref(db, 'reels');
+                get(reelRef).then((snap) => {
+                    const data = snap.val();
+                    let reelDbKey = null;
+                    if(data) {
+                        const keys = Object.keys(data);
+                        for(let k of keys) {
+                            if(data[k] && data[k].id === reelId) {
+                                reelDbKey = k;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(!reelDbKey) {
+                        container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">Error loading comments.</p>`;
+                        return;
+                    }
+
+                    Object.keys(targetReel.comments).forEach(commentKey => {
+                        const c = targetReel.comments[commentKey];
+                        const isOwner = c.authorUID === databaseState.currentUser.uid;
+                        
+                        const el = document.createElement('div');
+                        el.className = "bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-0.5 flex justify-between items-start";
+                        el.innerHTML = `
+                            <div>
+                                <p class="font-bold text-slate-400 text-xs">@${c.authorName}:</p>
+                                <p class="text-slate-300 text-xs">${c.text}</p>
+                            </div>
+                            ${isOwner ? `
+                                <button onclick="deleteReelComment('${reelDbKey}', '${commentKey}')" 
+                                    class="comment-delete-btn text-red-400 hover:text-red-300 p-1 rounded-lg text-xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            ` : ''}
+                        `;
+                        container.appendChild(el);
+                    });
                 });
             } else {
                 container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">No comments yet.</p>`;
@@ -1494,6 +1559,7 @@
             openModal('reel-comments-modal');
         };
 
+        // Add Reel Comment
         window.addReelComment = function() {
             const field = document.getElementById('reel-comment-input');
             const txt = field.value.trim();
