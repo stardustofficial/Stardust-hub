@@ -231,22 +231,21 @@
             font-weight: bold;
             font-size: 12px;
         }
-        .reel-upload-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            z-index: 30;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            padding: 14px;
-            border-radius: 50%;
-            box-shadow: 0 4px 20px rgba(245, 87, 108, 0.4);
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s;
+
+        /* Post Modal Tabs */
+        .post-tab-btn {
+            transition: all 0.3s ease;
         }
-        .reel-upload-btn:hover { transform: scale(1.05); }
-        .reel-upload-btn:active { transform: scale(0.95); }
-        .reel-upload-btn svg { width: 24px; height: 24px; fill: white; }
+        .post-tab-btn.active {
+            background: #1e293b;
+            color: #06b6d4;
+        }
+        .post-tab-btn:not(.active) {
+            color: #64748b;
+        }
+        .post-tab-btn:not(.active):hover {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body class="text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -343,12 +342,6 @@
                         Loading Reels...
                     </div>
                 </div>
-                
-                <!-- Upload Reel Button -->
-                <button class="reel-upload-btn" onclick="document.getElementById('reel-upload-input').click()">
-                    <svg viewBox="0 0 24 24"><path d="M19 10v7a2 2 0 01-2 2H7a2 2 0 01-2-2v-7m5 3V3m0 0l-3 3m3-3l3 3"/></svg>
-                </button>
-                <input type="file" id="reel-upload-input" accept="video/*" class="hidden" onchange="handleReelUpload(event)">
             </section>
 
             <section id="search-screen" class="hidden space-y-4 pt-2">
@@ -499,7 +492,7 @@
         </div>
     </div>
 
-    <!-- REST OF MODALS (Same as before) -->
+    <!-- REST OF MODALS -->
     <div id="full-screen-image-viewer" class="hidden fixed inset-0 bg-black/95 z-[90] flex flex-col justify-between items-center p-4">
         <div class="w-full flex justify-end">
             <button onclick="closeModal('full-screen-image-viewer')" class="text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs font-bold mt-2 mr-2">✕ Close</button>
@@ -596,18 +589,42 @@
         </div>
     </div>
 
+    <!-- POST MODAL WITH TABS -->
     <div id="post-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-darkcard w-full max-w-sm rounded-2xl border border-slate-800 p-5 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Compile Transmission Packet</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Create New</h3>
                 <button onclick="closeModal('post-modal')" class="text-slate-500 hover:text-white">✕</button>
             </div>
-            <textarea id="post-input-text" placeholder="Formulate structural context narrative..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
-            <div class="mb-4">
-                <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Select Image Layer (Gallery)</label>
-                <input type="file" id="post-input-gallery-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+            
+            <!-- Tabs -->
+            <div class="flex bg-slate-900/50 rounded-xl p-1 mb-4">
+                <button onclick="switchPostTab('post')" id="post-tab-post" class="post-tab-btn active flex-1 py-2 rounded-lg text-xs font-bold transition">📝 Post</button>
+                <button onclick="switchPostTab('reel')" id="post-tab-reel" class="post-tab-btn flex-1 py-2 rounded-lg text-xs font-bold transition">🎬 Reel</button>
             </div>
-            <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Deploy Production Stream</button>
+
+            <!-- Post Content -->
+            <div id="post-content-area">
+                <textarea id="post-input-text" placeholder="Formulate structural context narrative..." class="w-full h-28 p-3 border border-slate-800 bg-darkbg rounded-xl text-slate-200 text-xs focus:outline-none focus:border-slate-700 resize-none mb-3"></textarea>
+                <div class="mb-4">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Select Image Layer (Gallery)</label>
+                    <input type="file" id="post-input-gallery-file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                </div>
+                <button onclick="processPublicationInit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition">Deploy Production Stream</button>
+            </div>
+
+            <!-- Reel Content -->
+            <div id="reel-content-area" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Select Video (Gallery)</label>
+                    <input type="file" id="reel-input-file" accept="video/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Caption (Optional)</label>
+                    <input type="text" id="reel-input-caption" placeholder="Add a caption..." class="w-full px-3 py-2 bg-darkbg border border-slate-800 rounded-xl text-xs focus:outline-none focus:border-slate-700">
+                </div>
+                <button onclick="handleReelUpload()" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 py-2.5 rounded-xl text-xs font-bold transition text-white">Upload Reel</button>
+            </div>
         </div>
     </div>
 
@@ -1197,12 +1214,44 @@
             dragData.isDragging = false;
         }
 
+        // ==================== POST TAB SWITCHING ====================
+        window.switchPostTab = function(tab) {
+            const postTab = document.getElementById('post-tab-post');
+            const reelTab = document.getElementById('post-tab-reel');
+            const postArea = document.getElementById('post-content-area');
+            const reelArea = document.getElementById('reel-content-area');
+
+            if(tab === 'post') {
+                postTab.classList.add('active');
+                reelTab.classList.remove('active');
+                postArea.classList.remove('hidden');
+                reelArea.classList.add('hidden');
+            } else {
+                reelTab.classList.add('active');
+                postTab.classList.remove('active');
+                reelArea.classList.remove('hidden');
+                postArea.classList.add('hidden');
+            }
+        }
+
         // ==================== REELS SYSTEM ====================
 
-        // Upload Reel to Cloudinary
-        window.handleReelUpload = async function(event) {
-            const file = event.target.files[0];
-            if(!file) return;
+        // Upload Reel to Cloudinary from Modal
+        window.handleReelUpload = async function() {
+            const fileInput = document.getElementById('reel-input-file');
+            const caption = document.getElementById('reel-input-caption').value.trim();
+            const file = fileInput.files[0];
+            
+            if(!file) {
+                alert("Please select a video to upload.");
+                return;
+            }
+
+            // Check if file is video
+            if(!file.type.startsWith('video/')) {
+                alert("Please select a video file.");
+                return;
+            }
 
             const formData = new FormData();
             formData.append('file', file);
@@ -1225,7 +1274,7 @@
                         userAvatar: databaseState.currentUser.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
                         videoUrl: data.secure_url,
                         thumbnail: data.thumbnail_url || data.secure_url,
-                        caption: '',
+                        caption: caption || '',
                         likes: {},
                         comments: {},
                         savedBy: [],
@@ -1234,8 +1283,12 @@
 
                     push(ref(db, 'reels'), reelData).then(() => {
                         alert('Reel uploaded successfully! 🎬');
-                        document.getElementById('reel-upload-input').value = '';
+                        document.getElementById('reel-input-file').value = '';
+                        document.getElementById('reel-input-caption').value = '';
+                        closeModal('post-modal');
                     });
+                } else {
+                    alert("Upload failed. Please try again.");
                 }
             } catch(error) {
                 console.error('Upload error:', error);
@@ -1253,7 +1306,7 @@
                     <div class="flex flex-col items-center justify-center h-full text-slate-500 text-center p-8">
                         <svg class="w-16 h-16 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <p class="text-sm font-medium">No Reels Yet</p>
-                        <p class="text-xs mt-1">Tap the + button to upload your first reel!</p>
+                        <p class="text-xs mt-1">Tap the + button and select Reel to upload!</p>
                     </div>
                 `;
                 return;
@@ -1410,7 +1463,7 @@
                         push(ref(db, `reels/${dbKey}/comments`), payload).then(() => {
                             field.value = '';
                             closeModal('reel-comments-modal');
-                            alert("Comment added!");
+                            renderReelsFeed();
                         });
                     }
                 }
@@ -1499,10 +1552,6 @@
 
         function isPostSaved(postId) {
             return databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(postId);
-        }
-
-        function isReelSaved(reelId) {
-            return databaseState.currentUser.savedReels && databaseState.currentUser.savedReels.includes(reelId);
         }
 
         // ==================== LISTENERS ====================
