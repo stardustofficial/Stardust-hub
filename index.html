@@ -318,7 +318,7 @@
         }
         .notification-badge.hidden { display: none; }
         
-        /* Notification Dropdown - Fixed & Taller */
+        /* Notification Dropdown - FIXED: Taller */
         #notification-dropdown {
             position: absolute;
             right: 0;
@@ -331,7 +331,7 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             z-index: 60;
             overflow: hidden;
-            max-height: 520px;
+            max-height: 600px;
             display: none;
             left: auto;
         }
@@ -348,7 +348,7 @@
         }
         #notification-dropdown .notif-list {
             overflow-y: auto;
-            max-height: 430px;
+            max-height: 520px;
             padding: 8px;
         }
         #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
@@ -520,7 +520,7 @@
                                 <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 <span id="notification-count-badge" class="notification-badge hidden">0</span>
                             </button>
-                            <!-- Notification Dropdown - Fixed & Taller -->
+                            <!-- Notification Dropdown - FIXED: Taller -->
                             <div id="notification-dropdown" class="hidden">
                                 <div class="notif-header">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifications</span>
@@ -1862,12 +1862,10 @@
 
         // ==================== REEL LIKE - FIXED ====================
         window.toggleReelLike = function(reelId) {
-            // Find the reel in database
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
                 if(data) {
-                    // Find the correct database key for this reel
                     let reelDbKey = null;
                     const keys = Object.keys(data);
                     for(let k of keys) {
@@ -1882,10 +1880,11 @@
                         const currentLikes = data[reelDbKey].likes || {};
                         const wasLiked = currentLikes[myUID];
                         
+                        const updatedLikes = {...currentLikes};
                         if(wasLiked) {
-                            delete currentLikes[myUID];
+                            delete updatedLikes[myUID];
                         } else {
-                            currentLikes[myUID] = true;
+                            updatedLikes[myUID] = true;
                             const reelOwner = data[reelDbKey].userId;
                             if (reelOwner && reelOwner !== myUID) {
                                 addNotification({
@@ -1897,7 +1896,7 @@
                                 });
                             }
                         }
-                        update(ref(db, `reels/${reelDbKey}`), { likes: currentLikes });
+                        update(ref(db, `reels/${reelDbKey}`), { likes: updatedLikes });
                     }
                 }
             });
@@ -2218,7 +2217,7 @@
                 }
             });
 
-            // Reels Listener - FIXED: use likes object length for comparison
+            // Reels Listener - FIXED
             let lastReelsData = '';
             onValue(ref(db, 'reels'), (snap) => {
                 const data = snap.val();
@@ -2232,7 +2231,7 @@
                 }
                 loadedReels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
                 
-                // Create a proper hash for comparison using actual data
+                // Create a proper hash for comparison
                 const newDataStr = JSON.stringify(loadedReels.map(r => ({
                     id: r.id,
                     likesCount: r.likes ? Object.keys(r.likes).length : 0,
