@@ -175,14 +175,14 @@
 
         /* Reels Styles */
         .reels-container {
-            height: calc(100vh - 120px);
+            height: calc(100vh - 110px);
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             scroll-behavior: smooth;
         }
         .reels-container::-webkit-scrollbar { display: none; }
         .reel-item {
-            height: calc(100vh - 120px);
+            height: calc(100vh - 110px);
             scroll-snap-align: start;
             position: relative;
             background: #000;
@@ -520,7 +520,7 @@
                                 <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 <span id="notification-count-badge" class="notification-badge hidden">0</span>
                             </button>
-                            <!-- Notification Dropdown - FIXED: Taller -->
+                            <!-- Notification Dropdown -->
                             <div id="notification-dropdown" class="hidden">
                                 <div class="notif-header">
                                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Notifications</span>
@@ -1014,7 +1014,9 @@
             longPressTimer: null,
             isUploading: false,
             notifications: [],
-            viewedReels: {}
+            viewedReels: {},
+            // Track view timers to prevent multiple counts
+            viewTimers: {}
         };
 
         // Call State
@@ -1044,26 +1046,53 @@
 
         document.getElementById('loading-screen').classList.remove('hidden');
 
-        // ==================== NOTIFICATION SYSTEM ====================
+        // ==================== NOTIFICATION SYSTEM - FIXED ====================
+        // Store notifications in Firebase under the user's node for persistence
         function addNotification(notification) {
+            const myUID = databaseState.currentUser.uid;
             const notif = {
                 id: 'notif_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
                 ...notification,
                 timestamp: Date.now(),
                 read: false
             };
+            
+            // Store in local state
             databaseState.notifications.unshift(notif);
             
-            const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-            databaseState.notifications = databaseState.notifications.filter(n => n.timestamp > sevenDaysAgo);
+            // Store in Firebase for persistence and cross-device sync
+            const notifRef = ref(db, `users/${myUID}/notifications`);
+            get(notifRef).then((snap) => {
+                const existing = snap.val() || [];
+                // Keep only last 50
+                const updated = [notif, ...existing].slice(0, 50);
+                // Auto-delete notifications older than 7 days
+                const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+                const filtered = updated.filter(n => n.timestamp > sevenDaysAgo);
+                set(notifRef, filtered);
+            });
             
-            if (databaseState.notifications.length > 50) {
-                databaseState.notifications = databaseState.notifications.slice(0, 50);
-            }
             saveStateToHardware();
             renderNotifications();
             updateNotificationBadge();
             return notif;
+        }
+
+        // Load notifications from Firebase on login
+        function loadNotificationsFromFirebase() {
+            const myUID = databaseState.currentUser.uid;
+            if (!myUID) return;
+            
+            const notifRef = ref(db, `users/${myUID}/notifications`);
+            onValue(notifRef, (snap) => {
+                const data = snap.val();
+                if (data && Array.isArray(data)) {
+                    databaseState.notifications = data;
+                    renderNotifications();
+                    updateNotificationBadge();
+                    saveStateToHardware();
+                }
+            });
         }
 
         function renderNotifications() {
@@ -1122,7 +1151,13 @@
             
             if (isHidden) {
                 dropdown.classList.remove('hidden');
+                // Mark all as read when opened
                 databaseState.notifications.forEach(n => n.read = true);
+                // Update Firebase
+                const myUID = databaseState.currentUser.uid;
+                if (myUID) {
+                    set(ref(db, `users/${myUID}/notifications`), databaseState.notifications);
+                }
                 saveStateToHardware();
                 renderNotifications();
                 updateNotificationBadge();
@@ -1133,11 +1168,16 @@
 
         window.markAllNotificationsRead = function() {
             databaseState.notifications.forEach(n => n.read = true);
+            const myUID = databaseState.currentUser.uid;
+            if (myUID) {
+                set(ref(db, `users/${myUID}/notifications`), databaseState.notifications);
+            }
             saveStateToHardware();
             renderNotifications();
             updateNotificationBadge();
         }
 
+        // Click outside to close notification dropdown
         document.addEventListener('click', function(e) {
             const dropdown = document.getElementById('notification-dropdown');
             const btn = e.target.closest('[onclick*="toggleNotificationDropdown"]') || 
@@ -1211,6 +1251,7 @@
                         document.getElementById('app-layout').classList.remove('hidden');
                         listenToGlobalSyncChannels(assignedUID);
                         initializePeerConnectionNode(assignedUID);
+                        loadNotificationsFromFirebase();
                         saveStateToHardware();
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
@@ -1269,6 +1310,7 @@
                                 document.getElementById('app-layout').classList.remove('hidden');
                                 listenToGlobalSyncChannels(mappedNode.uid);
                                 initializePeerConnectionNode(mappedNode.uid);
+                                loadNotificationsFromFirebase();
                                 saveStateToHardware();
                             }
                         }
@@ -1300,6 +1342,7 @@
                             document.getElementById('app-layout').classList.remove('hidden');
                             listenToGlobalSyncChannels(mappedNode.uid);
                             initializePeerConnectionNode(mappedNode.uid);
+                            loadNotificationsFromFirebase();
                             saveStateToHardware();
                         }
                     }
@@ -1785,12 +1828,17 @@
             }, 100);
         }
 
+        // ==================== VIEWS TRACKING - FIXED ====================
+        // Track views after 5 seconds without restarting video
         function trackReelView(reelId) {
+            // Skip if already viewed in this session
             if (databaseState.viewedReels[reelId]) return;
             
+            // Mark as viewed in memory (so it won't count again)
             databaseState.viewedReels[reelId] = true;
             saveStateToHardware();
             
+            // Update Firebase views count
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
@@ -1805,15 +1853,23 @@
         }
 
         let reelObserver = null;
+        let viewTimers = {};
 
         function setupReelAutoPlay() {
             const container = document.getElementById('reels-feed');
             const videos = container.querySelectorAll('.reel-item video');
             
+            // Cleanup old observer and timers
             if (reelObserver) {
                 reelObserver.disconnect();
                 reelObserver = null;
             }
+            
+            // Clear any pending timers
+            Object.keys(viewTimers).forEach(key => {
+                clearTimeout(viewTimers[key]);
+                delete viewTimers[key];
+            });
             
             reelObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1822,12 +1878,25 @@
                     const reelId = reelItem ? reelItem.dataset.reelId : null;
                     
                     if(entry.isIntersecting) {
+                        // Play video when in view
                         video.play().catch(() => {});
-                        if (reelId && !databaseState.viewedReels[reelId]) {
-                            trackReelView(reelId);
+                        
+                        // Start timer for view count after 5 seconds
+                        if (reelId && !databaseState.viewedReels[reelId] && !viewTimers[reelId]) {
+                            viewTimers[reelId] = setTimeout(() => {
+                                trackReelView(reelId);
+                                delete viewTimers[reelId];
+                            }, 5000); // 5 seconds
                         }
                     } else {
+                        // Pause video when out of view
                         video.pause();
+                        
+                        // Clear timer if user scrolls away before 5 seconds
+                        if (reelId && viewTimers[reelId]) {
+                            clearTimeout(viewTimers[reelId]);
+                            delete viewTimers[reelId];
+                        }
                     }
                 });
             }, { threshold: 0.6 });
@@ -2216,7 +2285,7 @@
                 }
             });
 
-            // Reels Listener - FIXED
+            // Reels Listener
             let lastReelsData = '';
             onValue(ref(db, 'reels'), (snap) => {
                 const data = snap.val();
@@ -2230,7 +2299,6 @@
                 }
                 loadedReels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
                 
-                // Create a proper hash for comparison
                 const newDataStr = JSON.stringify(loadedReels.map(r => ({
                     id: r.id,
                     likesCount: r.likes ? Object.keys(r.likes).length : 0,
@@ -2755,7 +2823,6 @@
 
         // ==================== POST PUBLICATION LIKE - FIXED ====================
         window.handlePublicationLikeToggle = function(postId) {
-            // First find the database key for this post
             const pubRef = ref(db, 'publications');
             get(pubRef).then((snap) => {
                 const data = snap.val();
