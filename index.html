@@ -980,7 +980,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue, push, update, get, remove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, update, get, remove, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC5ufTBjot8i-PJCBkJtUpc50jJcYmzMBQ",
@@ -1047,9 +1047,14 @@
         document.getElementById('loading-screen').classList.remove('hidden');
 
         // ==================== NOTIFICATION SYSTEM - FIXED ====================
-        // Store notifications in Firebase under the user's node for persistence
+        // Store notifications in Firebase under the target user's node for persistence
         function addNotification(notification) {
-            const myUID = databaseState.currentUser.uid;
+            const targetUID = notification.targetUserId;
+            if (!targetUID) {
+                console.warn('Notification missing targetUserId:', notification);
+                return;
+            }
+            
             const notif = {
                 id: 'notif_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
                 ...notification,
@@ -1057,11 +1062,13 @@
                 read: false
             };
             
-            // Store in local state
-            databaseState.notifications.unshift(notif);
+            // Store in local state only if target is current user
+            if (targetUID === databaseState.currentUser.uid) {
+                databaseState.notifications.unshift(notif);
+            }
             
-            // Store in Firebase for persistence and cross-device sync
-            const notifRef = ref(db, `users/${myUID}/notifications`);
+            // Store in Firebase under target user's notifications
+            const notifRef = ref(db, `users/${targetUID}/notifications`);
             get(notifRef).then((snap) => {
                 const existing = snap.val() || [];
                 // Keep only last 50
@@ -1070,11 +1077,13 @@
                 const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
                 const filtered = updated.filter(n => n.timestamp > sevenDaysAgo);
                 set(notifRef, filtered);
-            });
+            }).catch(err => console.warn('Failed to save notification:', err));
             
             saveStateToHardware();
-            renderNotifications();
-            updateNotificationBadge();
+            if (targetUID === databaseState.currentUser.uid) {
+                renderNotifications();
+                updateNotificationBadge();
+            }
             return notif;
         }
 
@@ -1731,6 +1740,7 @@
                         comments: {},
                         savedBy: [],
                         views: 0,
+                        viewedUsers: {},
                         createdAt: Date.now()
                     };
 
@@ -1829,26 +1839,72 @@
         }
 
         // ==================== VIEWS TRACKING - FIXED ====================
-        // Track views after 5 seconds without restarting video
+        // Track views using Firebase transaction with viewedUsers check
         function trackReelView(reelId) {
             // Skip if already viewed in this session
             if (databaseState.viewedReels[reelId]) return;
             
-            // Mark as viewed in memory (so it won't count again)
-            databaseState.viewedReels[reelId] = true;
-            saveStateToHardware();
+            const myUID = databaseState.currentUser.uid;
             
-            // Update Firebase views count
+            // First, find the database key for this reel
             const reelRef = ref(db, 'reels');
             get(reelRef).then((snap) => {
                 const data = snap.val();
-                if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === reelId);
-                    if(dbKey) {
-                        const currentViews = data[dbKey].views || 0;
-                        update(ref(db, `reels/${dbKey}`), { views: currentViews + 1 });
+                if (!data) return;
+                
+                let dbKey = null;
+                const keys = Object.keys(data);
+                for (let k of keys) {
+                    if (data[k] && data[k].id === reelId) {
+                        dbKey = k;
+                        break;
                     }
                 }
+                
+                if (!dbKey) return;
+                
+                // Check if user already viewed this reel
+                const viewedUsers = data[dbKey].viewedUsers || {};
+                if (viewedUsers[myUID]) {
+                    // User already viewed this reel
+                    databaseState.viewedReels[reelId] = true;
+                    saveStateToHardware();
+                    return;
+                }
+                
+                // Use transaction to safely increment views and mark user as viewed
+                const viewsRef = ref(db, `reels/${dbKey}`);
+                runTransaction(viewsRef, (current) => {
+                    if (current === null) return current;
+                    
+                    // Ensure viewedUsers exists
+                    if (!current.viewedUsers) current.viewedUsers = {};
+                    
+                    // If user already viewed, don't increment
+                    if (current.viewedUsers[myUID]) {
+                        return current;
+                    }
+                    
+                    // Mark user as viewed and increment views
+                    current.viewedUsers[myUID] = true;
+                    current.views = (current.views || 0) + 1;
+                    
+                    return current;
+                }).then((result) => {
+                    if (result.committed) {
+                        databaseState.viewedReels[reelId] = true;
+                        saveStateToHardware();
+                        // Update local reel data
+                        const localReel = databaseState.reels.find(r => r.id === reelId);
+                        if (localReel) {
+                            if (!localReel.viewedUsers) localReel.viewedUsers = {};
+                            localReel.viewedUsers[myUID] = true;
+                            localReel.views = (localReel.views || 0) + 1;
+                        }
+                    }
+                }).catch(err => {
+                    console.warn('View tracking transaction failed:', err);
+                });
             });
         }
 
