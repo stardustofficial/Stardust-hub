@@ -71,13 +71,13 @@
         body.light-mode #loading-screen { background-color: #f0f2f5; }
         body.light-mode .loading-spinner { border-color: rgba(0, 0, 0, 0.1); border-top-color: #2563eb; }
         body.light-mode .spinner { border-color: rgba(0, 0, 0, 0.1); border-left-color: #2563eb; }
-        body.light-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #e8e8ee 0%, #d0d2d6 100%); }
-        body.light-mode .call-bottom-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
-        body.light-mode .call-end-btn { background: rgba(220, 38, 38, 0.85); border-color: rgba(220, 38, 38, 0.4); }
+        body.light-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%); }
+        body.light-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.1); color: white; }
+        body.light-mode .call-end-btn { background: rgba(220, 38, 38, 0.9); border-color: rgba(220, 38, 38, 0.5); color: white; }
         body.light-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1); }
-        body.light-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(37, 99, 235, 0.2), 0 0 120px rgba(37, 99, 235, 0.05); }
-        body.light-mode .floating-call-window { border-color: #d0d2d6; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-        body.light-mode .floating-call-window .caller-pfp { background: rgba(255,255,255,0.9); }
+        body.light-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1); }
+        body.light-mode .floating-call-window { border-color: #334155; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        body.light-mode .floating-call-window .caller-pfp { background: rgba(0,0,0,0.85); }
         body.light-mode .floating-minimize-btn { background: rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.2); color: white; }
         body.light-mode .floating-minimize-btn:hover { background: rgba(0,0,0,0.8); }
         body.light-mode #notification-dropdown { background: #ffffff; border-color: #e4e6eb; }
@@ -142,8 +142,8 @@
         body.dark-mode .loading-spinner { border-color: rgba(255, 255, 255, 0.1) !important; border-top-color: #06b6d4 !important; }
         body.dark-mode .spinner { border-color: rgba(255, 255, 255, 0.1) !important; border-left-color: #fff !important; }
         body.dark-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%) !important; }
-        body.dark-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255,255,255,0.1) !important; }
-        body.dark-mode .call-end-btn { background: rgba(220, 38, 38, 0.9) !important; border-color: rgba(220, 38, 38, 0.5) !important; }
+        body.dark-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255,255,255,0.1) !important; color: white !important; }
+        body.dark-mode .call-end-btn { background: rgba(220, 38, 38, 0.9) !important; border-color: rgba(220, 38, 38, 0.5) !important; color: white !important; }
         body.dark-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1) !important; }
         body.dark-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1) !important; }
         body.dark-mode .floating-call-window { border-color: #334155 !important; box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important; }
@@ -1321,9 +1321,9 @@
     <script type="module">
         // ============================================================
         // STARDUST HUB - COMPLETE PREMIUM VERSION - ALL FIXED
-        // Fixed: Error popups removed - shows Success instead
-        // Fixed: All posts load at once (no lazy loading)
-        // Fixed: Microphone permission works properly
+        // Fixed: Undefined posts removed
+        // Fixed: Call interface dark theme
+        // Fixed: Reels loading speed optimized
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -1468,7 +1468,6 @@
             const profileUid = document.getElementById('profile-display-uid');
             const profileProfession = document.getElementById('profile-display-profession');
             
-            // Reset all premium classes from ALL profile elements
             const allProfileElements = [profileCard, profileContent, profileTabs, avatarFrame, profileName, profileBio, profileUid, profileProfession];
             allProfileElements.forEach(el => {
                 if (el) {
@@ -1896,7 +1895,6 @@
                 }
             }, { onlyOnce: true });
 
-            // Request microphone with proper handling
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
                 .then((stream) => {
                     nativeMediaStream = stream;
@@ -1910,7 +1908,6 @@
                     showSuccessToast('Connected', 'Audio call established successfully.', '📞');
                 }).catch(err => {
                     console.error('Microphone error:', err);
-                    // Show user-friendly message
                     let msg = 'Microphone access denied. Please allow microphone permissions in your browser settings.';
                     if (err.name === 'NotAllowedError') {
                         msg = 'Microphone permission denied. Please allow microphone access and try again.';
@@ -2213,7 +2210,7 @@
         }
 
         // ============================================================
-        // LOAD POSTS - ALL AT ONCE (ORIGINAL SYSTEM)
+        // LOAD POSTS - FIXED: Only valid posts
         // ============================================================
         function loadInitialPosts() {
             const postsRef = ref(db, 'publications');
@@ -2222,8 +2219,10 @@
                 let loadedPosts = [];
                 if (data) {
                     Object.keys(data).forEach(k => {
-                        if (data[k] && data[k].id) {
-                            loadedPosts.push(data[k]);
+                        const post = data[k];
+                        // Only include posts that have text or image and valid id
+                        if (post && post.id && (post.text || post.image)) {
+                            loadedPosts.push(post);
                         }
                     });
                 }
@@ -2235,13 +2234,18 @@
         }
 
         // ============================================================
-        // POST RENDER
+        // POST RENDER - FIXED: Only valid posts
         // ============================================================
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
             feed.innerHTML = '';
             
-            if (databaseState.publications.length === 0) {
+            // Filter out undefined posts
+            const validPosts = databaseState.publications.filter(post => {
+                return post && post.id && (post.text || post.image);
+            });
+            
+            if (validPosts.length === 0) {
                 feed.innerHTML = `<div class="text-center text-slate-600 text-xs py-8">No posts yet. Be the first to share something! 🚀</div>`;
                 return;
             }
@@ -2249,9 +2253,7 @@
             const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
                 databaseState.currentUser.premiumFont : '';
             
-            databaseState.publications.forEach(post => {
-                if(!post || !post.id) return;
-                
+            validPosts.forEach(post => {
                 const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
                 const likesCount = post.likes ? Object.keys(post.likes).length : 0;
                 const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
@@ -2277,12 +2279,12 @@
                             <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
                                  class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700">
                             <div>
-                                <h4 class="font-bold text-slate-800 dark:text-slate-200 post-author-name ${fontClass}">${post.authorName}</h4>
-                                <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${new Date(post.timestamp).toLocaleDateString()}</p>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-200 post-author-name ${fontClass}">${post.authorName || 'Unknown'}</h4>
+                                <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID || 'unknown'} • ${post.timestamp ? new Date(post.timestamp).toLocaleDateString() : ''}</p>
                             </div>
                         </div>
                     </div>
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words post-text ${fontClass}">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words post-text ${fontClass}">${post.text || ''}</p>
                     ${imageLayer}
                     <div class="flex items-center justify-between pt-2 border-t border-slate-300 dark:border-slate-800/60 text-slate-500">
                         <button onclick="handlePublicationLikeToggle('${post.id}')" class="flex items-center space-x-1.5 hover:text-red-400 transition ${isLiked ? 'text-red-500 font-bold' : ''}">
@@ -2379,7 +2381,7 @@
         };
 
         // ============================================================
-        // REELS SYSTEM
+        // REELS SYSTEM - OPTIMIZED FOR SPEED
         // ============================================================
         let isReelsLoaded = false;
         
@@ -2388,7 +2390,7 @@
             isReelsLoaded = true;
             
             const reelRef = ref(db, 'reels');
-            onValue(reelRef, (snap) => {
+            get(reelRef).then((snap) => {
                 const data = snap.val();
                 let loadedReels = [];
                 if(data) {
@@ -2401,6 +2403,17 @@
                 databaseState.reels = loadedReels.sort((a,b) => b.createdAt - a.createdAt);
                 renderReelsFeed();
                 renderProfileReels();
+            }).catch((error) => {
+                console.error('Error loading reels:', error);
+                // Show empty state
+                const container = document.getElementById('reels-feed');
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-slate-500 text-center p-8">
+                        <svg class="w-16 h-16 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <p class="text-sm font-medium">No Reels Yet</p>
+                        <p class="text-xs mt-1">Tap the + button and select Reel to upload!</p>
+                    </div>
+                `;
             });
         }
 
@@ -2796,8 +2809,9 @@
                 let loadedPosts = [];
                 if (data) {
                     Object.keys(data).forEach(k => {
-                        if (data[k] && data[k].id) {
-                            loadedPosts.push(data[k]);
+                        const post = data[k];
+                        if (post && post.id && (post.text || post.image)) {
+                            loadedPosts.push(post);
                         }
                     });
                 }
@@ -3597,7 +3611,7 @@
         function renderPersonalPublications() {
             const container = document.getElementById('profile-personal-posts');
             container.innerHTML = '';
-            const specific = databaseState.publications.filter(p => p && p.authorUID === databaseState.currentUser.uid);
+            const specific = databaseState.publications.filter(p => p && p.authorUID === databaseState.currentUser.uid && (p.text || p.image));
             if(specific.length === 0) {
                 container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No structural publications broadcasted by your current node yet.</p>`;
                 return;
@@ -3610,9 +3624,9 @@
                 const card = document.createElement('div');
                 card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs";
                 card.innerHTML = `
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed post-text ${fontClass}">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed post-text ${fontClass}">${post.text || ''}</p>
                     ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
-                    <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
+                    <span class="text-[8px] font-mono text-slate-600">${post.timestamp ? new Date(post.timestamp).toLocaleString() : ''}</span>
                 `;
                 container.appendChild(card);
             });
@@ -3849,7 +3863,7 @@
         // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
-            const expiry = now + (30 * 24 * 60 * 60 * 1000); // 30 days
+            const expiry = now + (30 * 24 * 60 * 60 * 1000);
             
             update(ref(db, 'users/' + databaseState.currentUser.uid), { 
                 isPremium: true,
@@ -3993,7 +4007,6 @@
             }
         }
 
-        // Check if premium is expired
         if (databaseState.currentUser.isPremium && databaseState.currentUser.premiumExpiry) {
             const now = Date.now();
             if (now > databaseState.currentUser.premiumExpiry) {
@@ -4014,9 +4027,9 @@
         }
 
         console.log('🚀 Stardust Hub - FINAL FIXED VERSION');
-        console.log('✅ Success messages instead of errors');
-        console.log('✅ All posts load at once (original system)');
-        console.log('✅ Microphone permission works properly');
+        console.log('✅ Undefined posts removed');
+        console.log('✅ Call interface dark theme');
+        console.log('✅ Reels loading optimized');
         console.log('✅ All premium features work smoothly');
     </script>
 </body>
