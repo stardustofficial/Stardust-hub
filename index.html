@@ -235,7 +235,7 @@
             box-shadow: 0 0 30px rgba(239, 68, 68, 0.3) !important;
         }
 
-        /* ===== PREMIUM FRAMES - Professional ===== */
+        /* ===== PREMIUM FRAMES ===== */
         .premium-frame-glow {
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(124, 58, 237, 0.2) !important;
             border: 3px solid rgba(124, 58, 237, 0.6) !important;
@@ -1323,6 +1323,8 @@
         // STARDUST HUB - COMPLETE PREMIUM VERSION
         // Features: Light/Dark Mode, 10 Premium Themes, 9 Frames, 9 Fonts
         // Fixed: Posts loading, Subscription persistence, Full profile theme
+        // Fixed: Posts load automatically without needing to upload first
+        // Fixed: No error popups on subscription/theme selection
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -2174,7 +2176,7 @@
             const txt = document.getElementById('post-input-text').value.trim();
             const imgFile = document.getElementById('post-input-gallery-file').files[0];
             if(!txt && !imgFile) {
-                alert("Please add some text or an image.");
+                showSuccessToast('Info', 'Please add some text or an image.', '📝');
                 return;
             }
 
@@ -2203,7 +2205,7 @@
                 }).catch((err) => {
                     console.error('Error publishing post:', err);
                     hideUploadLoading();
-                    alert('Failed to publish post: ' + err.message);
+                    showSuccessToast('Error', 'Failed to publish post. Please try again.', '❌');
                 });
             };
 
@@ -2212,7 +2214,7 @@
                 reader.onload = (e) => commitPostToFirebase(e.target.result);
                 reader.onerror = () => {
                     hideUploadLoading();
-                    alert('Failed to read image file.');
+                    showSuccessToast('Error', 'Failed to read image file.', '❌');
                 };
                 reader.readAsDataURL(imgFile);
             } else {
@@ -2271,11 +2273,14 @@
         }
 
         async function loadInitialPosts() {
+            // First, show cached posts if available
             const cached = await getCachedPosts();
             if (cached.length > 0) {
                 databaseState.publications = cached;
                 renderEcosystemFeed();
             }
+            
+            // Then fetch fresh from Firebase
             fetchMorePosts(true);
         }
 
@@ -2312,6 +2317,7 @@
                     databaseState.publications = [...databaseState.publications, ...uniqueNew];
                 }
                 
+                // Cache the posts
                 cachePosts(databaseState.publications);
                 
                 if (databaseState.publications.length > 0) {
@@ -2358,7 +2364,7 @@
             feed.innerHTML = '';
             
             if (databaseState.publications.length === 0) {
-                feed.innerHTML = `<div class="text-center text-slate-600 text-xs py-8">No structural communications active inside matrix core.</div>`;
+                feed.innerHTML = `<div class="text-center text-slate-600 text-xs py-8">No posts yet. Be the first to share something! 🚀</div>`;
                 return;
             }
 
@@ -2698,7 +2704,7 @@
                         }
                         displayPeerAccountProfile(userId);
                     } else {
-                        alert("User not found.");
+                        showSuccessToast('Error', 'User not found.', '❌');
                     }
                 }, { onlyOnce: true });
             }
@@ -2771,11 +2777,11 @@
             const caption = document.getElementById('reel-input-caption').value.trim();
             const file = fileInput.files[0];
             if(!file) {
-                alert("Please select a video to upload.");
+                showSuccessToast('Info', 'Please select a video to upload.', '📹');
                 return;
             }
             if(!file.type.startsWith('video/')) {
-                alert("Please select a video file.");
+                showSuccessToast('Error', 'Please select a video file.', '❌');
                 return;
             }
 
@@ -2797,7 +2803,7 @@
                 if(data.error) {
                     console.log('Cloudinary Error:', data.error);
                     hideUploadLoading();
-                    alert('Upload failed: ' + data.error.message);
+                    showSuccessToast('Error', 'Upload failed: ' + data.error.message, '❌');
                     return;
                 }
                 
@@ -2827,12 +2833,12 @@
                     });
                 } else {
                     hideUploadLoading();
-                    alert("Upload failed. Please try again.");
+                    showSuccessToast('Error', 'Upload failed. Please try again.', '❌');
                 }
             } catch(error) {
                 console.error('Upload error:', error);
                 hideUploadLoading();
-                alert('Failed to upload reel: ' + error.message);
+                showSuccessToast('Error', 'Failed to upload reel: ' + error.message, '❌');
             }
         };
 
@@ -2926,7 +2932,7 @@
                         });
                     }
                     newPosts.sort((a, b) => b.timestamp - a.timestamp);
-                    if (newPosts.length > databaseState.publications.length) {
+                    if (newPosts.length !== databaseState.publications.length) {
                         fetchMorePosts(true);
                     }
                 }
@@ -3255,7 +3261,7 @@
         window.executeClipboardCopy = function() {
             if(!databaseState.activeContextMessageID) return;
             navigator.clipboard.writeText(databaseState.activeContextMessageID.txt).then(() => {
-                alert("Context data copied to environment clipboard.");
+                showSuccessToast('Copied!', 'Context data copied to clipboard.', '📋');
                 document.getElementById('message-context-panel').classList.add('hidden');
             });
         }
@@ -3624,7 +3630,7 @@
                 remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
                     openReelComments(databaseState.activeReelId);
                 }).catch((error) => {
-                    alert('Failed to delete comment: ' + error.message);
+                    showSuccessToast('Error', 'Failed to delete comment.', '❌');
                 });
             }
         };
@@ -3712,6 +3718,7 @@
                                     reelId: databaseState.activeReelId
                                 });
                             }
+                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
                         });
                     }
                 }
@@ -3972,7 +3979,7 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS - Subscription Persistence
+        // PREMIUM FUNCTIONS - Subscription Persistence - NO ERRORS
         // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
@@ -3989,9 +3996,10 @@
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
                 showSuccessToast('Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
-            }).catch(err => {
+            }).catch((err) => {
                 console.error('Subscription activation failed:', err);
-                alert('Failed to activate subscription. Please try again.');
+                // Silent fail - just show toast
+                showSuccessToast('Error', 'Could not activate premium. Please try again.', '❌');
             });
         }
 
@@ -4013,9 +4021,10 @@
                 
                 saveStateToHardware();
                 showSuccessToast('Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
-            }).catch(err => {
+            }).catch((err) => {
                 console.error('Premium tweak failed:', err);
-                alert('Failed to apply setting. Please try again.');
+                // Silent fail - just show toast
+                showSuccessToast('Error', 'Failed to apply setting. Please try again.', '❌');
             });
         }
 
@@ -4119,7 +4128,7 @@
         if (databaseState.currentUser.isPremium && databaseState.currentUser.premiumExpiry) {
             const now = Date.now();
             if (now > databaseState.currentUser.premiumExpiry) {
-                // Premium expired
+                // Premium expired - silent update
                 update(ref(db, 'users/' + databaseState.currentUser.uid), { 
                     isPremium: false,
                     premiumTheme: '',
@@ -4136,9 +4145,10 @@
             }
         }
 
-        console.log('🚀 Stardust Hub - Premium Edition');
+        console.log('🚀 Stardust Hub - Premium Edition - FINAL FIXED');
         console.log('✨ Features: 10 Themes, 9 Frames, 9 Fonts, Premium Glow');
-        console.log('✅ Fixed: Posts loading, Subscription persistence, Full profile theme');
+        console.log('✅ Fixed: Posts load automatically without uploading first');
+        console.log('✅ Fixed: No error popups on subscription/theme selection');
         console.log('🌓 Dark Mode: Fully working');
     </script>
 </body>
