@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stardust Hub - Social media</title>
+    <title>Stardust Hub - Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script>
@@ -25,7 +25,7 @@
         }
     </script>
     <style>
-        /* ===== BASE STYLES ===== */
+        /* ===== BASE ===== */
         * { box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -33,7 +33,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        /* ===== LIGHT MODE (DEFAULT) ===== */
+        /* ===== LIGHT MODE ===== */
         body.light-mode {
             background-color: #f0f2f5;
             color: #1a1a2e;
@@ -50,7 +50,6 @@
         body.light-mode .text-slate-600 { color: #a0a0b8; }
         body.light-mode .bg-slate-800 { background-color: #e8e8ee; }
         body.light-mode .bg-slate-900 { background-color: #f5f5f8; }
-        body.light-mode .bg-slate-800\/60 { background-color: rgba(232, 232, 238, 0.6); }
         body.light-mode .bg-darkcard\/95 { background-color: rgba(255, 255, 255, 0.95); }
         body.light-mode .bg-darkcard\/50 { background-color: rgba(255, 255, 255, 0.5); }
         body.light-mode .bg-slate-800\/50 { background-color: rgba(232, 232, 238, 0.5); }
@@ -58,54 +57,34 @@
         body.light-mode .hover\:bg-slate-700:hover { background-color: #c8c8d0; }
         body.light-mode .hover\:bg-slate-800:hover { background-color: #dddde4; }
         body.light-mode .bg-darkbg\/95 { background-color: rgba(240, 242, 245, 0.95); }
-        body.light-mode .bg-darkbg { background-color: #f0f2f5; }
-        body.light-mode .bg-darkcard\/60 { background-color: rgba(255, 255, 255, 0.6); }
-        body.light-mode .bg-black\/80 { background-color: rgba(0, 0, 0, 0.75); }
-        body.light-mode .bg-black\/85 { background-color: rgba(0, 0, 0, 0.8); }
-        body.light-mode .bg-black\/90 { background-color: rgba(0, 0, 0, 0.85); }
-        body.light-mode .bg-black\/95 { background-color: rgba(0, 0, 0, 0.92); }
-        body.light-mode .bg-black\/98 { background-color: rgba(0, 0, 0, 0.96); }
-        body.light-mode .border-slate-700 { border-color: #d8d8e0; }
-        body.light-mode .border-slate-700\/50 { border-color: rgba(216, 216, 224, 0.5); }
-        body.light-mode .border-slate-800\/80 { border-color: rgba(228, 230, 235, 0.8); }
-        body.light-mode .shadow-lg { box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
-        body.light-mode .shadow-2xl { box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
-        body.light-mode .shadow-md { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
         body.light-mode .bg-slate-800\/60 { background-color: rgba(232, 232, 238, 0.6); }
         body.light-mode .bg-slate-800\/30 { background-color: rgba(232, 232, 238, 0.3); }
-        body.light-mode .bg-red-950\/40 { background-color: rgba(220, 38, 38, 0.08); }
-        body.light-mode .border-red-900\/40 { border-color: rgba(220, 38, 38, 0.15); }
-        body.light-mode .bg-slate-900\/50 { background-color: rgba(245, 245, 248, 0.5); }
-        body.light-mode .bg-slate-800\/20 { background-color: rgba(232, 232, 238, 0.2); }
-        body.light-mode .bg-blue-950\/30 { background-color: rgba(37, 99, 235, 0.08); }
-        body.light-mode .border-blue-600\/50 { border-color: rgba(37, 99, 235, 0.25); }
-        body.light-mode .bg-darkbg { background-color: #f0f2f5; }
         body.light-mode .bg-slate-800\/40 { background-color: rgba(232, 232, 238, 0.4); }
         body.light-mode .bg-slate-800\/20 { background-color: rgba(232, 232, 238, 0.2); }
         body.light-mode .bg-slate-700\/30 { background-color: rgba(208, 208, 216, 0.3); }
+        body.light-mode .bg-blue-950\/30 { background-color: rgba(37, 99, 235, 0.08); }
+        body.light-mode .border-blue-600\/50 { border-color: rgba(37, 99, 235, 0.25); }
+        body.light-mode .bg-slate-900\/50 { background-color: rgba(245, 245, 248, 0.5); }
+        body.light-mode .bg-slate-800\/20 { background-color: rgba(232, 232, 238, 0.2); }
+        body.light-mode .bg-red-950\/40 { background-color: rgba(220, 38, 38, 0.08); }
+        body.light-mode .border-red-900\/40 { border-color: rgba(220, 38, 38, 0.15); }
         body.light-mode #loading-screen { background-color: #f0f2f5; }
-        body.light-mode .spinner { border-color: rgba(0, 0, 0, 0.1); border-left-color: #2563eb; }
         body.light-mode .loading-spinner { border-color: rgba(0, 0, 0, 0.1); border-top-color: #2563eb; }
+        body.light-mode .spinner { border-color: rgba(0, 0, 0, 0.1); border-left-color: #2563eb; }
         body.light-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #e8e8ee 0%, #d0d2d6 100%); }
-        body.light-mode .floating-call-window { border-color: #d0d2d6; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-        body.light-mode .floating-call-window .caller-pfp { background: rgba(255,255,255,0.9); }
         body.light-mode .call-bottom-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
         body.light-mode .call-end-btn { background: rgba(220, 38, 38, 0.85); border-color: rgba(220, 38, 38, 0.4); }
         body.light-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1); }
         body.light-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(37, 99, 235, 0.2), 0 0 120px rgba(37, 99, 235, 0.05); }
-        body.light-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857); }
-        body.light-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.1) 100%); }
-        body.light-mode .reel-actions button { color: white; }
-        body.light-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+        body.light-mode .floating-call-window { border-color: #d0d2d6; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        body.light-mode .floating-call-window .caller-pfp { background: rgba(255,255,255,0.9); }
         body.light-mode .floating-minimize-btn { background: rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.2); color: white; }
         body.light-mode .floating-minimize-btn:hover { background: rgba(0,0,0,0.8); }
-        body.light-mode .notification-badge { border-color: #f0f2f5; }
-        body.light-mode #notification-dropdown { background: #ffffff; border-color: #e4e6eb; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        body.light-mode #notification-dropdown { background: #ffffff; border-color: #e4e6eb; }
         body.light-mode #notification-dropdown .notif-header { border-bottom-color: #e4e6eb; }
-        body.light-mode .notif-unread-dot { background: #ef4444; }
+        body.light-mode .notification-badge { border-color: #f0f2f5; }
         body.light-mode .notification-item.bg-darkbg { background-color: #f8f8fa; }
         body.light-mode .notification-item.bg-slate-800\/50 { background-color: rgba(232, 232, 238, 0.5); }
-        body.light-mode .notification-item.border-cyan-500\/30 { border-color: rgba(6, 182, 212, 0.2); }
         body.light-mode .post-tab-btn.active { background: #e8e8ee; color: #2563eb; }
         body.light-mode .post-tab-btn:not(.active) { color: #6b6b8a; }
         body.light-mode .post-tab-btn:not(.active):hover { color: #3d3d5c; }
@@ -113,16 +92,21 @@
         body.light-mode .profile-tab-btn:not(.active) { color: #6b6b8a; }
         body.light-mode .profile-tab-btn:not(.active):hover { color: #3d3d5c; }
         body.light-mode .shared-media-preview .media-label { background: #f5f5f8; color: #6b6b8a; }
-        body.light-mode .comment-delete-btn { opacity: 0.5; }
-        body.light-mode .comment-delete-btn:hover { opacity: 1; }
-        body.light-mode #full-screen-video-player { background: rgba(0,0,0,0.95); }
-        body.light-mode #full-screen-video-player .close-video { background: rgba(255,255,255,0.9); border-color: #d0d2d6; color: #1a1a2e; }
+        body.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #c0c0cc; }
+        body.light-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857); border-color: #34d399; }
+        body.light-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.1) 100%); }
+        body.light-mode .reel-actions button { color: white; }
+        body.light-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
         body.light-mode .theme-soft-cyan { background-image: linear-gradient(135deg, #f0f9ff 70%, #e0f2fe 100%) !important; border-color: #06b6d4 !important; }
         body.light-mode .theme-soft-pink { background-image: linear-gradient(135deg, #fdf2f8 70%, #fce7f3 100%) !important; border-color: #f43f5e !important; }
         body.light-mode .theme-soft-purple { background-image: linear-gradient(135deg, #f3e8ff 70%, #e9d5ff 100%) !important; border-color: #a855f7 !important; }
         body.light-mode .theme-soft-emerald { background-image: linear-gradient(135deg, #ecfdf5 70%, #d1fae5 100%) !important; border-color: #10b981 !important; }
+        body.light-mode .theme-galaxy { background-image: linear-gradient(135deg, #1a0a2e 70%, #2d1b69 100%) !important; border-color: #7c3aed !important; color: #e0d7ff !important; }
+        body.light-mode .theme-sunset { background-image: linear-gradient(135deg, #1a0a0a 70%, #4a1a0a 100%) !important; border-color: #f97316 !important; color: #ffedd5 !important; }
+        body.light-mode .theme-ocean { background-image: linear-gradient(135deg, #0a1628 70%, #0a2a4a 100%) !important; border-color: #0ea5e9 !important; color: #dbeafe !important; }
+        body.light-mode .theme-forest { background-image: linear-gradient(135deg, #0a1a0a 70%, #0a3a0a 100%) !important; border-color: #22c55e !important; color: #dcfce7 !important; }
 
-        /* ===== DARK MODE OVERRIDES ===== */
+        /* ===== DARK MODE - Original Dark Blue Theme ===== */
         body.dark-mode {
             background-color: #0b1528;
             color: #f1f5f9;
@@ -139,7 +123,6 @@
         body.dark-mode .text-slate-600 { color: #475569; }
         body.dark-mode .bg-slate-800 { background-color: #1e293b; }
         body.dark-mode .bg-slate-900 { background-color: #0f172a; }
-        body.dark-mode .bg-slate-800\/60 { background-color: rgba(30, 41, 59, 0.6); }
         body.dark-mode .bg-darkcard\/95 { background-color: rgba(30, 41, 59, 0.95); }
         body.dark-mode .bg-darkcard\/50 { background-color: rgba(30, 41, 59, 0.5); }
         body.dark-mode .bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5); }
@@ -147,51 +130,33 @@
         body.dark-mode .hover\:bg-slate-700:hover { background-color: #334155; }
         body.dark-mode .hover\:bg-slate-800:hover { background-color: #1e293b; }
         body.dark-mode .bg-darkbg\/95 { background-color: rgba(11, 21, 40, 0.95); }
-        body.dark-mode .bg-darkcard\/60 { background-color: rgba(30, 41, 59, 0.6); }
-        body.dark-mode .bg-black\/80 { background-color: rgba(0, 0, 0, 0.8); }
-        body.dark-mode .bg-black\/85 { background-color: rgba(0, 0, 0, 0.85); }
-        body.dark-mode .bg-black\/90 { background-color: rgba(0, 0, 0, 0.9); }
-        body.dark-mode .bg-black\/95 { background-color: rgba(0, 0, 0, 0.95); }
-        body.dark-mode .bg-black\/98 { background-color: rgba(0, 0, 0, 0.98); }
-        body.dark-mode .border-slate-700 { border-color: #334155; }
-        body.dark-mode .border-slate-700\/50 { border-color: rgba(51, 65, 85, 0.5); }
-        body.dark-mode .border-slate-800\/80 { border-color: rgba(30, 41, 59, 0.8); }
-        body.dark-mode .shadow-lg { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        body.dark-mode .shadow-2xl { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        body.dark-mode .shadow-md { box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         body.dark-mode .bg-slate-800\/60 { background-color: rgba(30, 41, 59, 0.6); }
         body.dark-mode .bg-slate-800\/30 { background-color: rgba(30, 41, 59, 0.3); }
-        body.dark-mode .bg-red-950\/40 { background-color: rgba(127, 29, 29, 0.4); }
-        body.dark-mode .border-red-900\/40 { border-color: rgba(127, 29, 29, 0.4); }
-        body.dark-mode .bg-slate-900\/50 { background-color: rgba(15, 23, 42, 0.5); }
+        body.dark-mode .bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.4); }
         body.dark-mode .bg-slate-800\/20 { background-color: rgba(30, 41, 59, 0.2); }
+        body.dark-mode .bg-slate-700\/30 { background-color: rgba(51, 65, 85, 0.3); }
         body.dark-mode .bg-blue-950\/30 { background-color: rgba(30, 58, 138, 0.3); }
         body.dark-mode .border-blue-600\/50 { border-color: rgba(37, 99, 235, 0.5); }
-        body.dark-mode .bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.4); }
-        body.dark-mode .bg-slate-700\/30 { background-color: rgba(51, 65, 85, 0.3); }
+        body.dark-mode .bg-slate-900\/50 { background-color: rgba(15, 23, 42, 0.5); }
+        body.dark-mode .bg-red-950\/40 { background-color: rgba(127, 29, 29, 0.4); }
+        body.dark-mode .border-red-900\/40 { border-color: rgba(127, 29, 29, 0.4); }
         body.dark-mode #loading-screen { background-color: #0b1528; }
-        body.dark-mode .spinner { border-color: rgba(255, 255, 255, 0.1); border-left-color: #fff; }
         body.dark-mode .loading-spinner { border-color: rgba(255, 255, 255, 0.1); border-top-color: #06b6d4; }
+        body.dark-mode .spinner { border-color: rgba(255, 255, 255, 0.1); border-left-color: #fff; }
         body.dark-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%); }
-        body.dark-mode .floating-call-window { border-color: #334155; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
-        body.dark-mode .floating-call-window .caller-pfp { background: rgba(0,0,0,0.85); }
         body.dark-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.1); }
         body.dark-mode .call-end-btn { background: rgba(220, 38, 38, 0.9); border-color: rgba(220, 38, 38, 0.5); }
         body.dark-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1); }
         body.dark-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1); }
-        body.dark-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857); border-color: #34d399; }
-        body.dark-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.2) 100%); }
-        body.dark-mode .reel-actions button { color: white; }
-        body.dark-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+        body.dark-mode .floating-call-window { border-color: #334155; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        body.dark-mode .floating-call-window .caller-pfp { background: rgba(0,0,0,0.85); }
         body.dark-mode .floating-minimize-btn { background: rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.2); color: white; }
         body.dark-mode .floating-minimize-btn:hover { background: rgba(0,0,0,0.8); }
-        body.dark-mode .notification-badge { border-color: #0b1528; }
-        body.dark-mode #notification-dropdown { background: #1e293b; border-color: #334155; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        body.dark-mode #notification-dropdown { background: #1e293b; border-color: #334155; }
         body.dark-mode #notification-dropdown .notif-header { border-bottom-color: #334155; }
-        body.dark-mode .notif-unread-dot { background: #ef4444; }
+        body.dark-mode .notification-badge { border-color: #0b1528; }
         body.dark-mode .notification-item.bg-darkbg { background-color: #0b1528; }
         body.dark-mode .notification-item.bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5); }
-        body.dark-mode .notification-item.border-cyan-500\/30 { border-color: rgba(6, 182, 212, 0.3); }
         body.dark-mode .post-tab-btn.active { background: #1e293b; color: #06b6d4; }
         body.dark-mode .post-tab-btn:not(.active) { color: #64748b; }
         body.dark-mode .post-tab-btn:not(.active):hover { color: #94a3b8; }
@@ -199,19 +164,144 @@
         body.dark-mode .profile-tab-btn:not(.active) { color: #64748b; }
         body.dark-mode .profile-tab-btn:not(.active):hover { color: #94a3b8; }
         body.dark-mode .shared-media-preview .media-label { background: #0f172a; color: #94a3b8; }
-        body.dark-mode .comment-delete-btn { opacity: 0.5; }
-        body.dark-mode .comment-delete-btn:hover { opacity: 1; }
-        body.dark-mode #full-screen-video-player { background: rgba(0,0,0,0.95); }
-        body.dark-mode #full-screen-video-player .close-video { background: rgba(30, 41, 59, 0.9); border-color: #334155; color: white; }
+        body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+        body.dark-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857); border-color: #34d399; }
+        body.dark-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.2) 100%); }
+        body.dark-mode .reel-actions button { color: white; }
+        body.dark-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
         body.dark-mode .theme-soft-cyan { background-image: linear-gradient(135deg, #0b1528 70%, #083344 100%) !important; border-color: #06b6d4 !important; }
         body.dark-mode .theme-soft-pink { background-image: linear-gradient(135deg, #0b1528 70%, #4c0519 100%) !important; border-color: #f43f5e !important; }
         body.dark-mode .theme-soft-purple { background-image: linear-gradient(135deg, #0b1528 70%, #3b0764 100%) !important; border-color: #a855f7 !important; }
         body.dark-mode .theme-soft-emerald { background-image: linear-gradient(135deg, #0b1528 70%, #022c22 100%) !important; border-color: #10b981 !important; }
+        body.dark-mode .theme-galaxy { background-image: linear-gradient(135deg, #0b1528 70%, #1a0a3e 100%) !important; border-color: #7c3aed !important; }
+        body.dark-mode .theme-sunset { background-image: linear-gradient(135deg, #0b1528 70%, #3a1a0a 100%) !important; border-color: #f97316 !important; }
+        body.dark-mode .theme-ocean { background-image: linear-gradient(135deg, #0b1528 70%, #0a2a4a 100%) !important; border-color: #0ea5e9 !important; }
+        body.dark-mode .theme-forest { background-image: linear-gradient(135deg, #0b1528 70%, #0a2a0a 100%) !important; border-color: #22c55e !important; }
+
+        /* ===== PREMIUM THEMES WITH GLOW ===== */
+        .premium-theme-galaxy {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #1a0a3e;
+            --theme-border: #7c3aed;
+            --theme-text: #e0d7ff;
+            --theme-glow: 0 0 30px rgba(124, 58, 237, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-sunset {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #3a1a0a;
+            --theme-border: #f97316;
+            --theme-text: #ffedd5;
+            --theme-glow: 0 0 30px rgba(249, 115, 22, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-ocean {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #0a2a4a;
+            --theme-border: #0ea5e9;
+            --theme-text: #dbeafe;
+            --theme-glow: 0 0 30px rgba(14, 165, 233, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-forest {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #0a2a0a;
+            --theme-border: #22c55e;
+            --theme-text: #dcfce7;
+            --theme-glow: 0 0 30px rgba(34, 197, 94, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-rose {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #4a0a1a;
+            --theme-border: #ec4899;
+            --theme-text: #fce7f3;
+            --theme-glow: 0 0 30px rgba(236, 72, 153, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-gold {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #2a1a0a;
+            --theme-border: #f59e0b;
+            --theme-text: #fef3c7;
+            --theme-glow: 0 0 30px rgba(245, 158, 11, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+        .premium-theme-ice {
+            --theme-bg-start: #0b1528;
+            --theme-bg-end: #0a2a3a;
+            --theme-border: #67e8f9;
+            --theme-text: #cffafe;
+            --theme-glow: 0 0 30px rgba(103, 232, 249, 0.3);
+            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
+            border-color: var(--theme-border) !important;
+            color: var(--theme-text) !important;
+            box-shadow: var(--theme-glow) !important;
+        }
+
+        /* ===== PREMIUM FRAMES ===== */
+        .premium-frame-glow {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 60px rgba(124, 58, 237, 0.2) !important;
+            border: 2px solid rgba(124, 58, 237, 0.5) !important;
+        }
+        .premium-frame-rainbow {
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2), 0 0 40px rgba(0, 255, 0, 0.2), 0 0 60px rgba(0, 0, 255, 0.2) !important;
+            border: 2px solid transparent !important;
+            background-image: linear-gradient(white, white), linear-gradient(to right, red, orange, yellow, green, blue, purple) !important;
+            background-origin: padding-box, border-box !important;
+            background-clip: padding-box, border-box !important;
+        }
+        .premium-frame-gold {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4) !important;
+            border: 2px solid #f59e0b !important;
+        }
+        .premium-frame-cyan {
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.4) !important;
+            border: 2px solid #06b6d4 !important;
+        }
+        .premium-frame-pink {
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4) !important;
+            border: 2px solid #ec4899 !important;
+        }
+        .premium-frame-purple {
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important;
+            border: 2px solid #a855f7 !important;
+        }
+        .premium-frame-emerald {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4) !important;
+            border: 2px solid #10b981 !important;
+        }
+
+        /* ===== PREMIUM FONTS ===== */
+        .premium-font-elegant { font-family: 'Georgia', serif !important; }
+        .premium-font-modern { font-family: 'Helvetica Neue', sans-serif !important; }
+        .premium-font-bold { font-family: 'Impact', sans-serif !important; letter-spacing: 0.5px !important; }
+        .premium-font-cursive { font-family: 'Brush Script MT', cursive !important; }
+        .premium-font-mono { font-family: 'Courier New', monospace !important; }
+        .premium-font-neon { font-family: 'Arial Black', sans-serif !important; text-shadow: 0 0 10px rgba(6, 182, 212, 0.5) !important; }
+        .premium-font-soft { font-family: 'Segoe UI', sans-serif !important; font-weight: 300 !important; }
 
         /* ===== CUSTOM SCROLLBAR ===== */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        body.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #c0c0cc; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { border-radius: 10px; }
 
         /* ===== SPINNER ===== */
         .spinner {
@@ -222,7 +312,6 @@
             border-left-color: #fff;
             animation: spin 0.8s linear infinite;
         }
-        body.light-mode .spinner { border-color: rgba(0, 0, 0, 0.1); border-left-color: #2563eb; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* ===== FLOATING CALL WINDOW ===== */
@@ -396,8 +485,6 @@
             padding: 8px;
         }
         #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
-        #notification-dropdown .notif-list::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
-        body.light-mode #notification-dropdown .notif-list::-webkit-scrollbar-thumb { background: #c0c0cc; }
         .notif-unread-dot {
             width: 8px;
             height: 8px;
@@ -452,28 +539,16 @@
         }
 
         /* ===== PROFILE TABS ===== */
-        .profile-tab-btn {
-            transition: all 0.3s ease;
-        }
-        .profile-tab-btn.active {
-            background: #1e293b;
-            color: #06b6d4;
-        }
+        .profile-tab-btn { transition: all 0.3s ease; }
+        .profile-tab-btn.active { background: #1e293b; color: #06b6d4; }
         .profile-tab-btn:not(.active) { color: #64748b; }
         .profile-tab-btn:not(.active):hover { color: #94a3b8; }
-        body.light-mode .profile-tab-btn.active { background: #e8e8ee; color: #2563eb; }
 
         /* ===== POST TABS ===== */
-        .post-tab-btn {
-            transition: all 0.3s ease;
-        }
-        .post-tab-btn.active {
-            background: #1e293b;
-            color: #06b6d4;
-        }
+        .post-tab-btn { transition: all 0.3s ease; }
+        .post-tab-btn.active { background: #1e293b; color: #06b6d4; }
         .post-tab-btn:not(.active) { color: #64748b; }
         .post-tab-btn:not(.active):hover { color: #94a3b8; }
-        body.light-mode .post-tab-btn.active { background: #e8e8ee; color: #2563eb; }
 
         /* ===== FULL SCREEN VIDEO ===== */
         #full-screen-video-player {
@@ -518,8 +593,6 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #06b6d4;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin-bottom: 20px;
@@ -532,9 +605,7 @@
         .call-pfp-ring {
             box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1);
         }
-        .call-status-pulse {
-            animation: pulseGlow 2s ease-in-out infinite;
-        }
+        .call-status-pulse { animation: pulseGlow 2s ease-in-out infinite; }
         @keyframes pulseGlow {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
@@ -579,10 +650,7 @@
         .plus-btn-wrapper .upload-loading.hidden { display: none; }
 
         /* ===== COMMENT DELETE ===== */
-        .comment-delete-btn {
-            opacity: 0.5;
-            transition: opacity 0.2s;
-        }
+        .comment-delete-btn { opacity: 0.5; transition: opacity 0.2s; }
         .comment-delete-btn:hover { opacity: 1; }
 
         /* ===== MISC ===== */
@@ -598,7 +666,7 @@
             100% { opacity: 0; transform: translateY(-150px) scale(1.3); }
         }
 
-        /* ===== LOADING SHIMMER ===== */
+        /* ===== SHIMMER ===== */
         .shimmer {
             background: linear-gradient(90deg, #e8e8ee 25%, #f0f0f5 50%, #e8e8ee 75%);
             background-size: 200% 100%;
@@ -611,6 +679,50 @@
         body.dark-mode .shimmer {
             background: linear-gradient(90deg, #1e293b 25%, #2a3a4a 50%, #1e293b 75%);
             background-size: 200% 100%;
+        }
+
+        /* ===== PREMIUM PROFILE GLOW ===== */
+        .premium-profile-glow {
+            animation: premiumGlow 3s ease-in-out infinite;
+        }
+        @keyframes premiumGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.2), 0 0 60px rgba(124, 58, 237, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.4), 0 0 100px rgba(124, 58, 237, 0.2); }
+        }
+        .premium-profile-glow.gold { animation: premiumGlowGold 3s ease-in-out infinite; }
+        @keyframes premiumGlowGold {
+            0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 60px rgba(245, 158, 11, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.4), 0 0 100px rgba(245, 158, 11, 0.2); }
+        }
+        .premium-profile-glow.cyan { animation: premiumGlowCyan 3s ease-in-out infinite; }
+        @keyframes premiumGlowCyan {
+            0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.4), 0 0 100px rgba(6, 182, 212, 0.2); }
+        }
+        .premium-profile-glow.pink { animation: premiumGlowPink 3s ease-in-out infinite; }
+        @keyframes premiumGlowPink {
+            0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.2), 0 0 60px rgba(236, 72, 153, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.4), 0 0 100px rgba(236, 72, 153, 0.2); }
+        }
+        .premium-profile-glow.purple { animation: premiumGlowPurple 3s ease-in-out infinite; }
+        @keyframes premiumGlowPurple {
+            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), 0 0 60px rgba(168, 85, 247, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.4), 0 0 100px rgba(168, 85, 247, 0.2); }
+        }
+        .premium-profile-glow.emerald { animation: premiumGlowEmerald 3s ease-in-out infinite; }
+        @keyframes premiumGlowEmerald {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), 0 0 60px rgba(16, 185, 129, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.4), 0 0 100px rgba(16, 185, 129, 0.2); }
+        }
+        .premium-profile-glow.rose { animation: premiumGlowRose 3s ease-in-out infinite; }
+        @keyframes premiumGlowRose {
+            0%, 100% { box-shadow: 0 0 20px rgba(244, 63, 94, 0.2), 0 0 60px rgba(244, 63, 94, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(244, 63, 94, 0.4), 0 0 100px rgba(244, 63, 94, 0.2); }
+        }
+        .premium-profile-glow.orange { animation: premiumGlowOrange 3s ease-in-out infinite; }
+        @keyframes premiumGlowOrange {
+            0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.2), 0 0 60px rgba(249, 115, 22, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.4), 0 0 100px rgba(249, 115, 22, 0.2); }
         }
     </style>
 </head>
@@ -692,7 +804,6 @@
                     </div>
                 </header>
                 <div id="posts-feed" class="space-y-4"></div>
-                <!-- Infinite Scroll Sentinel -->
                 <div id="feed-sentinel" class="h-10 flex items-center justify-center">
                     <div id="feed-loader" class="spinner hidden"></div>
                     <p id="feed-end-msg" class="text-xs text-slate-500 hidden">You've reached the end</p>
@@ -765,7 +876,7 @@
                     </button>
                     
                     <div class="flex flex-col items-center text-center">
-                        <div class="w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3">
+                        <div class="w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3" id="profile-avatar-frame">
                             <img id="profile-display-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" class="w-full h-full object-cover rounded-full">
                         </div>
                         <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1">
@@ -913,8 +1024,10 @@
                 <span class="text-xs font-black uppercase tracking-widest text-slate-500">Peer Node Inspection</span>
                 <button onclick="closeModal('full-screen-account-modal')" class="text-slate-400 bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition">Back</button>
             </div>
-            <div class="bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl">
-                <img id="peer-screen-avatar" src="" class="w-24 h-24 rounded-full object-cover border-2 border-slate-300 dark:border-slate-700 mx-auto mb-4">
+            <div id="peer-profile-card" class="bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300">
+                <div id="peer-avatar-frame" class="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700">
+                    <img id="peer-screen-avatar" src="" class="w-full h-full rounded-full object-cover">
+                </div>
                 <h2 id="peer-screen-name" class="text-xl font-black text-slate-800 dark:text-slate-100">User Handle</h2>
                 <p id="peer-screen-uid" class="text-xs text-slate-500 font-mono mt-0.5">@000000</p>
                 <span id="peer-screen-profession" class="text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full mt-3 border border-slate-300 dark:border-slate-700 inline-block"></span>
@@ -975,7 +1088,6 @@
                 <button onclick="closeModal('settings-hub-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
             <div class="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar pr-1">
-                <!-- DARK MODE TOGGLE -->
                 <div class="bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 p-3 rounded-xl flex justify-between items-center">
                     <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">🌓 Dark Mode</span>
                     <div class="relative inline-flex items-center cursor-pointer" onclick="toggleTheme()">
@@ -1097,30 +1209,89 @@
         </div>
     </div>
 
-    <!-- Subscription Modal -->
+    <!-- Subscription Modal with Premium Features -->
     <div id="subscription-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 shadow-2xl text-center">
-            <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 tracking-wide">Premium Matrix Workspace</h3>
-            <p class="text-xs text-slate-500 mt-1">Acquire VIP premium customization statuses instantly</p>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 tracking-wide">✨ Premium Matrix</h3>
+                <button onclick="closeModal('subscription-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Unlock 7 premium themes, frames, fonts & glowing profiles!</p>
+            
+            <div class="mt-4 grid grid-cols-2 gap-2 text-[10px]">
+                <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                    <span class="block font-bold">🎨 7 Themes</span>
+                    <span class="text-slate-500">Premium colors</span>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                    <span class="block font-bold">🖼️ 7 Frames</span>
+                    <span class="text-slate-500">Glowing avatars</span>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                    <span class="block font-bold">✍️ 7 Fonts</span>
+                    <span class="text-slate-500">Stylish captions</span>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                    <span class="block font-bold">✨ Glow</span>
+                    <span class="text-slate-500">Discord-like shine</span>
+                </div>
+            </div>
+            
             <div class="flex gap-2 mt-4">
                 <button onclick="closeModal('subscription-modal')" class="flex-1 bg-slate-200 dark:bg-slate-800 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400">Dismiss</button>
-                <button onclick="handleSubscriptionActivation()" class="flex-1 bg-gradient-to-r from-blue-600 to-cyan-500 py-2.5 rounded-xl text-xs font-black text-white">Initialize Setup</button>
+                <button onclick="handleSubscriptionActivation()" class="flex-1 bg-gradient-to-r from-amber-500 to-yellow-500 py-2.5 rounded-xl text-xs font-black text-white shadow-lg">⚡ Activate Premium</button>
             </div>
         </div>
     </div>
 
     <!-- Premium Dashboard -->
     <div id="premium-dashboard-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-5 shadow-2xl">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-5 shadow-2xl max-h-[80vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-500">Premium Architecture Modifiers</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-amber-500">✨ Premium Dashboard</h3>
                 <button onclick="closeModal('premium-dashboard-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <button onclick="executePremiumTweak('theme', 'theme-soft-cyan')" class="bg-slate-200 dark:bg-slate-800 border border-cyan-500/30 p-2.5 rounded-xl font-medium text-cyan-600 dark:text-cyan-400">Soft Cyan</button>
-                <button onclick="executePremiumTweak('theme', 'theme-soft-pink')" class="bg-slate-200 dark:bg-slate-800 border border-pink-500/30 p-2.5 rounded-xl font-medium text-pink-600 dark:text-pink-400">Soft Pink</button>
-                <button onclick="executePremiumTweak('theme', 'theme-soft-purple')" class="bg-slate-200 dark:bg-slate-800 border border-purple-500/30 p-2.5 rounded-xl font-medium text-purple-600 dark:text-purple-400">Soft Purple</button>
-                <button onclick="executePremiumTweak('theme', 'theme-soft-emerald')" class="bg-slate-200 dark:bg-slate-800 border border-emerald-500/30 p-2.5 rounded-xl font-medium text-emerald-600 dark:text-emerald-400">Soft Emerald</button>
+            
+            <!-- 7 Themes -->
+            <div class="mb-4">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">🎨 Premium Themes</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-galaxy')" class="bg-slate-800/50 border border-purple-500/50 p-2.5 rounded-xl font-medium text-purple-300 hover:bg-slate-700 transition">🌌 Galaxy</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-sunset')" class="bg-slate-800/50 border border-orange-500/50 p-2.5 rounded-xl font-medium text-orange-300 hover:bg-slate-700 transition">🌅 Sunset</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-ocean')" class="bg-slate-800/50 border border-blue-500/50 p-2.5 rounded-xl font-medium text-blue-300 hover:bg-slate-700 transition">🌊 Ocean</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-forest')" class="bg-slate-800/50 border border-green-500/50 p-2.5 rounded-xl font-medium text-green-300 hover:bg-slate-700 transition">🌿 Forest</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-rose')" class="bg-slate-800/50 border border-pink-500/50 p-2.5 rounded-xl font-medium text-pink-300 hover:bg-slate-700 transition">🌹 Rose</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-gold')" class="bg-slate-800/50 border border-amber-500/50 p-2.5 rounded-xl font-medium text-amber-300 hover:bg-slate-700 transition">⭐ Gold</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-ice')" class="bg-slate-800/50 border border-cyan-500/50 p-2.5 rounded-xl font-medium text-cyan-300 hover:bg-slate-700 transition col-span-2">❄️ Ice</button>
+                </div>
+            </div>
+            
+            <!-- 7 Frames -->
+            <div class="mb-4">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">🖼️ Premium Frames</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-glow')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">✨ Glow</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-rainbow')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🌈 Rainbow</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-gold')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">⭐ Gold</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-cyan')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">💠 Cyan</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-pink')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🌸 Pink</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-purple')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🟣 Purple</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-emerald')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2">💚 Emerald</button>
+                </div>
+            </div>
+            
+            <!-- 7 Fonts -->
+            <div>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">✍️ Premium Fonts</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="executePremiumTweak('font', 'premium-font-elegant')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Georgia, serif;">Elegant</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-modern')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Helvetica Neue, sans-serif;">Modern</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-bold')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Impact, sans-serif; letter-spacing: 0.5px;">Bold</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-cursive')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Brush Script MT, cursive;">Cursive</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-mono')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Courier New, monospace;">Mono</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-neon')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Arial Black, sans-serif;">Neon</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-soft')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2" style="font-family: Segoe UI, sans-serif; font-weight: 300;">Soft</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1153,9 +1324,8 @@
 
     <script type="module">
         // ============================================================
-        // STARDUST HUB - OPTIMIZED VERSION
-        // Features: Light Mode Default, Dark Mode Toggle, Pagination,
-        // Lazy Loading, Cache System, On-Demand Screen Loading
+        // STARDUST HUB - COMPLETE VERSION
+        // Features: Light/Dark Mode, 7 Premium Themes, 7 Frames, 7 Fonts
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -1188,7 +1358,7 @@
         
         // ===== DATABASE STATE =====
         let databaseState = {
-            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", savedPosts: [], savedReels: [] },
+            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", premiumFrame: "", premiumFont: "", savedPosts: [], savedReels: [] },
             publications: [], peers: [], friendships: {}, chatThreads: {}, activeTargetChatUID: null, activeContextMessageID: null, activeTargetSharePostID: null,
             reels: [], activeReelId: null,
             longPressTimer: null,
@@ -1196,7 +1366,6 @@
             notifications: [],
             viewedReels: {},
             viewTimers: {},
-            // Pagination state
             lastPostKey: null,
             hasMorePosts: true,
             isLoadingPosts: false,
@@ -1250,7 +1419,6 @@
             applyTheme(newTheme);
         }
 
-        // Apply stored theme on load
         applyTheme(getStoredTheme());
 
         // ===== SAVE STATE =====
@@ -1291,6 +1459,78 @@
             document.getElementById('upload-loading-spinner').classList.add('hidden');
             document.getElementById('main-plus-btn').classList.remove('opacity-50');
             databaseState.isUploading = false;
+        }
+
+        // ============================================================
+        // PREMIUM FUNCTIONS
+        // ============================================================
+        function applyPremiumSettings(user) {
+            if (!user) return;
+            
+            const profileCard = document.getElementById('profile-card');
+            const avatarFrame = document.getElementById('profile-avatar-frame');
+            const profileName = document.getElementById('profile-display-name');
+            const profileBio = document.getElementById('profile-display-bio');
+            
+            // Reset all premium classes
+            profileCard.className = 'bg-lightcard dark:bg-darkcard p-5 rounded-2xl border border-lightborder dark:border-slate-800 relative transition-all duration-300';
+            avatarFrame.className = 'w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3';
+            profileName.className = 'text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1';
+            profileBio.className = 'text-xs text-slate-600 dark:text-slate-400 mt-3 max-w-xs leading-relaxed';
+            
+            // Apply premium theme if user has one
+            if (user.isPremium && user.premiumTheme) {
+                profileCard.classList.add(user.premiumTheme);
+                // Also apply to peer profile view
+                const peerCard = document.getElementById('peer-profile-card');
+                if (peerCard) {
+                    peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
+                    peerCard.classList.add(user.premiumTheme);
+                }
+            }
+            
+            // Apply premium frame
+            if (user.isPremium && user.premiumFrame) {
+                avatarFrame.classList.add(user.premiumFrame);
+                // Also apply to peer avatar
+                const peerFrame = document.getElementById('peer-avatar-frame');
+                if (peerFrame) {
+                    peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
+                    peerFrame.classList.add(user.premiumFrame);
+                }
+            }
+            
+            // Apply premium font
+            if (user.isPremium && user.premiumFont) {
+                profileName.classList.add(user.premiumFont);
+                profileBio.classList.add(user.premiumFont);
+                // Apply to all captions in posts and reels
+                document.querySelectorAll('.post-caption, .reel-caption').forEach(el => {
+                    el.classList.add(user.premiumFont);
+                });
+            }
+            
+            // Apply profile glow for premium users
+            if (user.isPremium) {
+                const glowClass = user.premiumTheme ? 
+                    user.premiumTheme.replace('premium-theme-', '') : 'purple';
+                const glowMap = {
+                    'galaxy': 'purple',
+                    'sunset': 'orange',
+                    'ocean': 'cyan',
+                    'forest': 'emerald',
+                    'rose': 'pink',
+                    'gold': 'gold',
+                    'ice': 'cyan'
+                };
+                const glowColor = glowMap[glowClass] || 'purple';
+                profileCard.classList.add('premium-profile-glow', glowColor);
+                // Also apply to peer profile
+                const peerCard = document.getElementById('peer-profile-card');
+                if (peerCard) {
+                    peerCard.classList.add('premium-profile-glow', glowColor);
+                }
+            }
         }
 
         // ============================================================
@@ -1464,6 +1704,10 @@
                     databaseState.currentUser.name = "Node_" + assignedUID;
                     databaseState.currentUser.savedPosts = [];
                     databaseState.currentUser.savedReels = [];
+                    databaseState.currentUser.isPremium = false;
+                    databaseState.currentUser.premiumTheme = '';
+                    databaseState.currentUser.premiumFrame = '';
+                    databaseState.currentUser.premiumFont = '';
                     databaseState.notifications = [];
                     databaseState.viewedReels = {};
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
@@ -1473,6 +1717,7 @@
                         listenToGlobalSyncChannels(assignedUID);
                         initializePeerConnectionNode(assignedUID);
                         loadNotificationsFromFirebase();
+                        loadInitialPosts();
                         saveStateToHardware();
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
@@ -1532,9 +1777,12 @@
                                 listenToGlobalSyncChannels(mappedNode.uid);
                                 initializePeerConnectionNode(mappedNode.uid);
                                 loadNotificationsFromFirebase();
-                                // Load initial posts after login
                                 loadInitialPosts();
                                 saveStateToHardware();
+                                // Apply premium settings if user is premium
+                                if (mappedNode.isPremium) {
+                                    applyPremiumSettings(mappedNode);
+                                }
                             }
                         }
                         document.getElementById('btn-text-login').classList.remove('hidden');
@@ -1568,6 +1816,9 @@
                             loadNotificationsFromFirebase();
                             loadInitialPosts();
                             saveStateToHardware();
+                            if (mappedNode.isPremium) {
+                                applyPremiumSettings(mappedNode);
+                            }
                         }
                     }
                 }, { onlyOnce: true });
@@ -1611,7 +1862,7 @@
         }
 
         // ============================================================
-        // CALL FUNCTIONS (simplified - same as original)
+        // CALL FUNCTIONS
         // ============================================================
         window.initializeVoiceCallBroadcast = function() {
             if(!databaseState.activeTargetChatUID) {
@@ -1893,7 +2144,10 @@
         window.processPublicationInit = function() {
             const txt = document.getElementById('post-input-text').value.trim();
             const imgFile = document.getElementById('post-input-gallery-file').files[0];
-            if(!txt && !imgFile) return;
+            if(!txt && !imgFile) {
+                alert("Please add some text or an image.");
+                return;
+            }
 
             showUploadLoading();
             closeModal('post-modal');
@@ -1916,12 +2170,22 @@
                     document.getElementById('post-input-gallery-file').value = '';
                     hideUploadLoading();
                     showSuccessToast('Post Published!', 'Your post has been published successfully.', '📝');
+                    // Refresh posts
+                    loadInitialPosts();
+                }).catch((err) => {
+                    console.error('Error publishing post:', err);
+                    hideUploadLoading();
+                    alert('Failed to publish post: ' + err.message);
                 });
             };
 
             if(imgFile) {
                 const reader = new FileReader();
                 reader.onload = (e) => commitPostToFirebase(e.target.result);
+                reader.onerror = () => {
+                    hideUploadLoading();
+                    alert('Failed to read image file.');
+                };
                 reader.readAsDataURL(imgFile);
             } else {
                 commitPostToFirebase(null);
@@ -1929,7 +2193,7 @@
         }
 
         // ============================================================
-        // PAGINATION & INFINITE SCROLL - OPTIMIZED
+        // PAGINATION & INFINITE SCROLL
         // ============================================================
         const POSTS_PER_PAGE = 10;
         let lastVisibleKey = null;
@@ -1937,7 +2201,6 @@
         let hasMorePosts = true;
         let allPostsLoaded = false;
 
-        // IndexedDB Cache
         async function openDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open('StardustCache', 1);
@@ -1979,20 +2242,15 @@
             }
         }
 
-        // Load initial posts - show cache first, then fetch fresh
         async function loadInitialPosts() {
-            // First, try to show cached posts
+            // First, show cached posts
             const cached = await getCachedPosts();
             if (cached.length > 0) {
                 databaseState.publications = cached;
                 renderEcosystemFeed();
-                // If cache has enough posts, mark as loaded
-                if (cached.length >= POSTS_PER_PAGE) {
-                    lastVisibleKey = cached[cached.length - 1]?.id || null;
-                }
             }
 
-            // Then fetch fresh from Firebase
+            // Fetch fresh from Firebase
             fetchMorePosts(true);
         }
 
@@ -2006,19 +2264,7 @@
             if (loader) loader.classList.remove('hidden');
             
             const postsRef = ref(db, 'publications');
-            let q;
-            
-            if (reset) {
-                // Reset pagination - fetch first batch
-                q = query(postsRef, orderByChild('timestamp'), limitToLast(POSTS_PER_PAGE));
-            } else if (lastVisibleKey) {
-                // Fetch next batch
-                q = query(postsRef, orderByChild('timestamp'), limitToLast(POSTS_PER_PAGE));
-                // Note: Firebase doesn't support startAfter with limitToLast easily,
-                // so we'll filter client-side for now
-            } else {
-                q = query(postsRef, orderByChild('timestamp'), limitToLast(POSTS_PER_PAGE));
-            }
+            const q = query(postsRef, orderByChild('timestamp'), limitToLast(POSTS_PER_PAGE));
             
             get(q).then((snapshot) => {
                 const data = snapshot.val();
@@ -2031,28 +2277,22 @@
                     });
                 }
                 
-                // Sort by timestamp descending (newest first)
                 newPosts.sort((a, b) => b.timestamp - a.timestamp);
                 
                 if (reset) {
-                    // Replace all posts
                     databaseState.publications = newPosts;
                 } else {
-                    // Merge: avoid duplicates
                     const existingIds = new Set(databaseState.publications.map(p => p.id));
                     const uniqueNew = newPosts.filter(p => !existingIds.has(p.id));
                     databaseState.publications = [...databaseState.publications, ...uniqueNew];
                 }
                 
-                // Cache the posts
                 cachePosts(databaseState.publications);
                 
-                // Update last visible key
                 if (databaseState.publications.length > 0) {
                     lastVisibleKey = databaseState.publications[databaseState.publications.length - 1]?.id || null;
                 }
                 
-                // Check if we have more posts
                 hasMorePosts = newPosts.length >= POSTS_PER_PAGE;
                 if (!hasMorePosts) {
                     allPostsLoaded = true;
@@ -2072,7 +2312,6 @@
             });
         }
 
-        // Setup Intersection Observer for infinite scroll
         function setupInfiniteScroll() {
             const sentinel = document.getElementById('feed-sentinel');
             if (!sentinel) return;
@@ -2087,7 +2326,7 @@
         }
 
         // ============================================================
-        // POST RENDER - With Lazy Loading
+        // POST RENDER
         // ============================================================
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
@@ -2098,7 +2337,6 @@
                 return;
             }
 
-            // Show only first page initially, rest will be loaded via infinite scroll
             const displayPosts = databaseState.publications;
             
             displayPosts.forEach(post => {
@@ -2125,6 +2363,10 @@
                     `;
                 }
 
+                // Apply premium font if user has one
+                const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                    databaseState.currentUser.premiumFont : '';
+
                 card.innerHTML = `
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
@@ -2132,12 +2374,12 @@
                                  class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700"
                                  loading="lazy">
                             <div>
-                                <h4 class="font-bold text-slate-800 dark:text-slate-200">${post.authorName}</h4>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-200 ${fontClass}">${post.authorName}</h4>
                                 <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${new Date(post.timestamp).toLocaleDateString()}</p>
                             </div>
                         </div>
                     </div>
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words ${fontClass}">${post.text}</p>
                     ${imageLayer}
                     <div class="flex items-center justify-between pt-2 border-t border-slate-300 dark:border-slate-800/60 text-slate-500">
                         <button onclick="handlePublicationLikeToggle('${post.id}')" class="flex items-center space-x-1.5 hover:text-red-400 transition ${isLiked ? 'text-red-500 font-bold' : ''}">
@@ -2159,12 +2401,11 @@
                 feed.appendChild(card);
             });
             
-            // Setup infinite scroll after rendering
             setupInfiniteScroll();
         }
 
         // ============================================================
-        // LIKE TOGGLE - Optimized
+        // LIKE TOGGLE
         // ============================================================
         window.handlePublicationLikeToggle = function(postId) {
             const pubRef = ref(db, 'publications');
@@ -2237,12 +2478,7 @@
         };
 
         // ============================================================
-        // OTHER FUNCTIONS (simplified)
-        // ============================================================
-        // ... (rest of functions are similar to original but optimized)
-
-        // ============================================================
-        // REELS SYSTEM - On-Demand Loading
+        // REELS SYSTEM
         // ============================================================
         let isReelsLoaded = false;
         
@@ -2295,6 +2531,10 @@
                 div.dataset.index = index;
                 div.dataset.reelId = reel.id;
 
+                // Apply premium font if user has one
+                const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                    databaseState.currentUser.premiumFont : '';
+
                 div.innerHTML = `
                     <video src="${reel.videoUrl}" playsinline preload="metadata" loop loading="lazy"></video>
                     <div class="reel-overlay">
@@ -2302,9 +2542,9 @@
                             <div class="reel-user-info" onclick="goToUserProfile('${reel.userId}')">
                                 <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover" loading="lazy">
                             </div>
-                            <span class="font-bold text-sm reel-user-info" onclick="goToUserProfile('${reel.userId}')">${reel.userName}</span>
+                            <span class="font-bold text-sm reel-user-info ${fontClass}" onclick="goToUserProfile('${reel.userId}')">${reel.userName}</span>
                         </div>
-                        ${reel.caption ? `<p class="text-sm text-white/80">${reel.caption}</p>` : ''}
+                        ${reel.caption ? `<p class="text-sm text-white/80 ${fontClass}">${reel.caption}</p>` : ''}
                     </div>
                     <div class="reel-actions">
                         <button onclick="toggleReelLike('${reel.id}')" class="hover:scale-110 transition">
@@ -2502,14 +2742,86 @@
         };
 
         // ============================================================
-        // NAVIGATION - On-Demand Screen Loading
+        // REEL UPLOAD
+        // ============================================================
+        window.handleReelUpload = async function() {
+            const fileInput = document.getElementById('reel-input-file');
+            const caption = document.getElementById('reel-input-caption').value.trim();
+            const file = fileInput.files[0];
+            if(!file) {
+                alert("Please select a video to upload.");
+                return;
+            }
+            if(!file.type.startsWith('video/')) {
+                alert("Please select a video file.");
+                return;
+            }
+
+            showUploadLoading();
+            closeModal('post-modal');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY.uploadPreset);
+            formData.append('resource_type', 'video');
+
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/video/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if(data.error) {
+                    console.log('Cloudinary Error:', data.error);
+                    hideUploadLoading();
+                    alert('Upload failed: ' + data.error.message);
+                    return;
+                }
+                
+                if(data.secure_url) {
+                    const reelData = {
+                        id: 'reel_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                        userId: databaseState.currentUser.uid,
+                        userName: databaseState.currentUser.name,
+                        userAvatar: databaseState.currentUser.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+                        videoUrl: data.secure_url,
+                        thumbnail: data.thumbnail_url || data.secure_url,
+                        caption: caption || '',
+                        likes: {},
+                        comments: {},
+                        savedBy: [],
+                        views: 0,
+                        viewedUsers: {},
+                        createdAt: Date.now()
+                    };
+
+                    push(ref(db, 'reels'), reelData).then(() => {
+                        hideUploadLoading();
+                        document.getElementById('reel-input-file').value = '';
+                        document.getElementById('reel-input-caption').value = '';
+                        showSuccessToast('Reel Uploaded!', 'Your reel has been published successfully.', '🎬');
+                        loadReelsOnDemand();
+                    });
+                } else {
+                    hideUploadLoading();
+                    alert("Upload failed. Please try again.");
+                }
+            } catch(error) {
+                console.error('Upload error:', error);
+                hideUploadLoading();
+                alert('Failed to upload reel: ' + error.message);
+            }
+        };
+
+        // ============================================================
+        // NAVIGATION
         // ============================================================
         window.switchTab = function(tabId) {
             const screens = ['home-screen', 'chat-screen', 'reels-screen', 'search-screen', 'profile-screen'];
             screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById(tabId + '-screen').classList.remove('hidden');
             
-            // Load content on-demand
             if (tabId === 'reels') {
                 document.getElementById('reels-screen').classList.add('-mx-4', '-mt-3');
                 loadReelsOnDemand();
@@ -2526,6 +2838,10 @@
                 syncProfileCardInterface();
                 renderPersonalPublications();
                 renderProfileFriendsNetwork();
+                // Apply premium settings
+                if (databaseState.currentUser.isPremium) {
+                    applyPremiumSettings(databaseState.currentUser);
+                }
             }
             
             const navButtons = document.querySelectorAll('nav button');
@@ -2550,34 +2866,37 @@
         // SYNC FUNCTIONS
         // ============================================================
         function syncProfileCardInterface() {
-            document.getElementById('profile-display-name').innerText = databaseState.currentUser.name;
-            document.getElementById('profile-display-uid').innerText = '@' + databaseState.currentUser.uid;
-            document.getElementById('profile-display-bio').innerText = databaseState.currentUser.bio || 'Node status fully configured.';
-            if(databaseState.currentUser.pfp) {
-                document.getElementById('profile-display-avatar').src = databaseState.currentUser.pfp;
+            const user = databaseState.currentUser;
+            document.getElementById('profile-display-name').innerText = user.name;
+            document.getElementById('profile-display-uid').innerText = '@' + user.uid;
+            document.getElementById('profile-display-bio').innerText = user.bio || 'Node status fully configured.';
+            if(user.pfp) {
+                document.getElementById('profile-display-avatar').src = user.pfp;
             }
             const profBadge = document.getElementById('profile-display-profession');
-            if(databaseState.currentUser.profession) {
-                profBadge.innerText = databaseState.currentUser.profession;
+            if(user.profession) {
+                profBadge.innerText = user.profession;
                 profBadge.classList.remove('hidden');
             } else {
                 profBadge.classList.add('hidden');
             }
-            if (databaseState.currentUser.notifications) {
-                databaseState.notifications = databaseState.currentUser.notifications;
+            if(user.notifications) {
+                databaseState.notifications = user.notifications;
                 renderNotifications();
                 updateNotificationBadge();
+            }
+            
+            // Apply premium settings if user is premium
+            if (user.isPremium) {
+                applyPremiumSettings(user);
             }
         }
 
         function listenToGlobalSyncChannels(myUID) {
-            // Only listen to publications with pagination
-            // We use a separate listener for real-time updates
+            // Publications
             const pubRef = ref(db, 'publications');
             onValue(pubRef, (snap) => {
-                // Only update if we're not in the middle of a pagination fetch
                 if (!isLoadingMore) {
-                    // Check if we need to refresh
                     const data = snap.val();
                     let newPosts = [];
                     if (data) {
@@ -2588,9 +2907,7 @@
                         });
                     }
                     newPosts.sort((a, b) => b.timestamp - a.timestamp);
-                    // If there are new posts, refresh
                     if (newPosts.length > databaseState.publications.length) {
-                        // Just reload the page
                         fetchMorePosts(true);
                     }
                 }
@@ -2606,6 +2923,9 @@
                     if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
                     if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
                     syncProfileCardInterface();
+                    if (databaseState.currentUser.isPremium) {
+                        applyPremiumSettings(databaseState.currentUser);
+                    }
                 }
                 renderEcosystemIncomingRequests();
                 renderEcosystemActiveChats();
@@ -2631,9 +2951,6 @@
                     renderCallChatMessages();
                 }
             });
-
-            // Reels - only load when needed
-            // We'll load on-demand in the switchTab function
         }
 
         function evaluateGlobalUnseenPackets() {
@@ -3021,6 +3338,33 @@
                 prof.classList.add('hidden');
             }
 
+            // Apply premium settings if peer is premium
+            const peerCard = document.getElementById('peer-profile-card');
+            const peerFrame = document.getElementById('peer-avatar-frame');
+            if (peer.isPremium) {
+                if (peer.premiumTheme) {
+                    peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
+                    peerCard.classList.add(peer.premiumTheme);
+                }
+                if (peer.premiumFrame) {
+                    peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
+                    peerFrame.classList.add(peer.premiumFrame);
+                }
+                // Add glow
+                const glowColor = peer.premiumTheme ? 
+                    peer.premiumTheme.replace('premium-theme-', '') : 'purple';
+                const glowMap = {
+                    'galaxy': 'purple',
+                    'sunset': 'orange',
+                    'ocean': 'cyan',
+                    'forest': 'emerald',
+                    'rose': 'pink',
+                    'gold': 'gold',
+                    'ice': 'cyan'
+                };
+                peerCard.classList.add('premium-profile-glow', glowMap[glowColor] || 'purple');
+            }
+
             const myUID = databaseState.currentUser.uid;
             const actionArea = document.getElementById('peer-screen-action-container');
             actionArea.innerHTML = '';
@@ -3355,80 +3699,6 @@
         };
 
         // ============================================================
-        // REEL UPLOAD
-        // ============================================================
-        window.handleReelUpload = async function() {
-            const fileInput = document.getElementById('reel-input-file');
-            const caption = document.getElementById('reel-input-caption').value.trim();
-            const file = fileInput.files[0];
-            if(!file) {
-                alert("Please select a video to upload.");
-                return;
-            }
-            if(!file.type.startsWith('video/')) {
-                alert("Please select a video file.");
-                return;
-            }
-
-            showUploadLoading();
-            closeModal('post-modal');
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY.uploadPreset);
-            formData.append('resource_type', 'video');
-
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/video/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-                if(data.error) {
-                    console.log('Cloudinary Error:', data.error);
-                    hideUploadLoading();
-                    alert('Upload failed: ' + data.error.message);
-                    return;
-                }
-                
-                if(data.secure_url) {
-                    const reelData = {
-                        id: 'reel_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-                        userId: databaseState.currentUser.uid,
-                        userName: databaseState.currentUser.name,
-                        userAvatar: databaseState.currentUser.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
-                        videoUrl: data.secure_url,
-                        thumbnail: data.thumbnail_url || data.secure_url,
-                        caption: caption || '',
-                        likes: {},
-                        comments: {},
-                        savedBy: [],
-                        views: 0,
-                        viewedUsers: {},
-                        createdAt: Date.now()
-                    };
-
-                    push(ref(db, 'reels'), reelData).then(() => {
-                        hideUploadLoading();
-                        document.getElementById('reel-input-file').value = '';
-                        document.getElementById('reel-input-caption').value = '';
-                        showSuccessToast('Reel Uploaded!', 'Your reel has been published successfully.', '🎬');
-                        // Reload reels
-                        loadReelsOnDemand();
-                    });
-                } else {
-                    hideUploadLoading();
-                    alert("Upload failed. Please try again.");
-                }
-            } catch(error) {
-                console.error('Upload error:', error);
-                hideUploadLoading();
-                alert('Failed to upload reel: ' + error.message);
-            }
-        };
-
-        // ============================================================
         // PROFILE FUNCTIONS
         // ============================================================
         function renderPersonalPublications() {
@@ -3440,11 +3710,14 @@
                 return;
             }
 
+            const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                databaseState.currentUser.premiumFont : '';
+
             specific.forEach(post => {
                 const card = document.createElement('div');
                 card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs";
                 card.innerHTML = `
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed ${fontClass}">${post.text}</p>
                     ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
                     <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
                 `;
@@ -3460,6 +3733,9 @@
                 container.innerHTML = `<p class="text-[11px] text-slate-600 text-center py-4">No reels uploaded yet.</p>`;
                 return;
             }
+
+            const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                databaseState.currentUser.premiumFont : '';
 
             specific.forEach(reel => {
                 const card = document.createElement('div');
@@ -3478,7 +3754,7 @@
                 card.innerHTML = `
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <span class="font-bold text-slate-700 dark:text-slate-300">${reel.caption || 'Reel'}</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300 ${fontClass}">${reel.caption || 'Reel'}</span>
                     </div>
                     <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover" loading="lazy"></video>
                     <div class="flex items-center gap-4 text-[10px] text-slate-500">
@@ -3676,6 +3952,44 @@
         }
 
         // ============================================================
+        // PREMIUM FUNCTIONS
+        // ============================================================
+        window.handleSubscriptionActivation = function() { 
+            update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { 
+                closeModal('subscription-modal'); 
+                openModal('premium-dashboard-modal');
+                databaseState.currentUser.isPremium = true;
+                applyPremiumSettings(databaseState.currentUser);
+                saveStateToHardware();
+                showSuccessToast('Premium Activated!', 'You now have access to all premium features!', '🌟');
+            }); 
+        }
+
+        window.executePremiumTweak = function(type, value) {
+            const updates = {};
+            if (type === 'theme') updates.premiumTheme = value;
+            else if (type === 'frame') updates.premiumFrame = value;
+            else if (type === 'font') updates.premiumFont = value;
+            
+            update(ref(db, 'users/' + databaseState.currentUser.uid), updates).then(() => {
+                // Update local state
+                if (type === 'theme') databaseState.currentUser.premiumTheme = value;
+                else if (type === 'frame') databaseState.currentUser.premiumFrame = value;
+                else if (type === 'font') databaseState.currentUser.premiumFont = value;
+                
+                // Apply changes immediately
+                applyPremiumSettings(databaseState.currentUser);
+                // Also refresh posts to show font changes
+                renderEcosystemFeed();
+                renderPersonalPublications();
+                renderProfileReels();
+                
+                saveStateToHardware();
+                showSuccessToast('Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
+            });
+        }
+
+        // ============================================================
         // GROUP CHAT
         // ============================================================
         window.openGroupCreationModal = function() {
@@ -3715,24 +4029,6 @@
             showSuccessToast('Group Created!', 'Multiplex session initialized successfully.', '👥');
             document.getElementById('group-name-input').value = '';
             closeModal('group-chat-modal');
-        }
-
-        // ============================================================
-        // PREMIUM
-        // ============================================================
-        window.handleSubscriptionActivation = function() { 
-            update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { 
-                closeModal('subscription-modal'); 
-                openModal('premium-dashboard-modal');
-                showSuccessToast('Premium Activated!', 'You now have access to premium features.', '🌟');
-            }); 
-        }
-
-        window.executePremiumTweak = function(f, v) { 
-            const p = {}; 
-            if(f==='theme') p.premiumTheme=v; 
-            update(ref(db, 'users/' + databaseState.currentUser.uid), p);
-            showSuccessToast('Theme Applied!', 'Your theme has been updated.', '🎨');
         }
 
         // ============================================================
@@ -3777,11 +4073,9 @@
         // ============================================================
         recoverStateFromHardware();
         
-        // Apply theme from stored preference
         const storedTheme = getStoredTheme();
         applyTheme(storedTheme);
         
-        // Set toggle checkbox state
         const checkbox = document.getElementById('theme-toggle-checkbox');
         if (checkbox) {
             checkbox.checked = storedTheme === 'dark';
@@ -3791,8 +4085,8 @@
             }
         }
 
-        console.log('🚀 Stardust Hub Optimized - Light Mode Default');
-        console.log('📦 Features: Light/Dark Mode, Pagination, Lazy Loading, Cache, On-Demand Loading');
+        console.log('🚀 Stardust Hub - Premium Edition');
+        console.log('✨ Features: 7 Themes, 7 Frames, 7 Fonts, Premium Glow');
     </script>
 </body>
 </html>
