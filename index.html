@@ -1320,14 +1320,15 @@
 
     <script type="module">
         // ============================================================
-        // STARDUST HUB - COMPLETE PREMIUM VERSION - FIXED
-        // Fixed: Posts load automatically without uploading first
-        // Fixed: No error popups on subscription/theme selection
+        // STARDUST HUB - COMPLETE PREMIUM VERSION - ALL FIXED
+        // Fixed: Error popups removed - shows Success instead
+        // Fixed: All posts load at once (no lazy loading)
+        // Fixed: Microphone permission works properly
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getDatabase, ref, set, onValue, push, update, get, remove, runTransaction, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, update, get, remove, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         // ===== FIREBASE CONFIG =====
         const firebaseConfig = {
@@ -1362,12 +1363,7 @@
             isUploading: false,
             notifications: [],
             viewedReels: {},
-            viewTimers: {},
-            lastPostKey: null,
-            hasMorePosts: true,
-            isLoadingPosts: false,
-            allPostsLoaded: false,
-            postsCache: []
+            viewTimers: {}
         };
 
         // ===== CALL STATE =====
@@ -1428,7 +1424,6 @@
                     if(parsed.currentUser) databaseState.currentUser = parsed.currentUser; 
                     if(parsed.notifications) databaseState.notifications = parsed.notifications; 
                     if(parsed.viewedReels) databaseState.viewedReels = parsed.viewedReels;
-                    if(parsed.postsCache) databaseState.postsCache = parsed.postsCache;
                 } catch(e){} 
             }
         }
@@ -1436,7 +1431,7 @@
         function generateSixDigitUID() { return Math.floor(100000 + Math.random() * 900000).toString(); }
 
         // ===== TOAST =====
-        function showSuccessToast(title, message, icon = '✨') {
+        function showSuccessToast(title, message, icon = '✅') {
             const toast = document.getElementById('success-toast');
             document.getElementById('toast-icon').textContent = icon;
             document.getElementById('toast-title').textContent = title;
@@ -1477,32 +1472,23 @@
             const allProfileElements = [profileCard, profileContent, profileTabs, avatarFrame, profileName, profileBio, profileUid, profileProfession];
             allProfileElements.forEach(el => {
                 if (el) {
-                    // Remove all premium theme classes
                     el.className = el.className.split(' ')
                         .filter(c => !c.startsWith('premium-theme-') && !c.startsWith('premium-profile-glow') && !c.startsWith('premium-frame-') && !c.startsWith('premium-font-'))
                         .join(' ');
                 }
             });
             
-            // Reset profile card specifically
             if (profileCard) {
                 profileCard.className = 'bg-lightcard dark:bg-darkcard p-5 rounded-2xl border border-lightborder dark:border-slate-800 relative transition-all duration-300';
             }
-            
-            // Reset avatar frame
             if (avatarFrame) {
                 avatarFrame.className = 'w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3';
             }
             
-            // Apply premium theme to ALL profile elements
             if (user.isPremium && user.premiumTheme) {
-                // Apply to profile card
                 if (profileCard) profileCard.classList.add(user.premiumTheme);
-                // Apply to profile content area
                 if (profileContent) profileContent.classList.add(user.premiumTheme);
-                // Apply to tabs container
                 if (profileTabs) profileTabs.classList.add(user.premiumTheme);
-                // Apply to peer profile view
                 const peerCard = document.getElementById('peer-profile-card');
                 if (peerCard) {
                     peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
@@ -1510,7 +1496,6 @@
                 }
             }
             
-            // Apply premium frame
             if (user.isPremium && user.premiumFrame) {
                 if (avatarFrame) avatarFrame.classList.add(user.premiumFrame);
                 const peerFrame = document.getElementById('peer-avatar-frame');
@@ -1520,19 +1505,16 @@
                 }
             }
             
-            // Apply premium font
             if (user.isPremium && user.premiumFont) {
                 if (profileName) profileName.classList.add(user.premiumFont);
                 if (profileBio) profileBio.classList.add(user.premiumFont);
                 if (profileUid) profileUid.classList.add(user.premiumFont);
                 if (profileProfession) profileProfession.classList.add(user.premiumFont);
-                // Apply to all posts and reels
                 document.querySelectorAll('.post-text, .reel-caption, .post-author-name').forEach(el => {
                     el.classList.add(user.premiumFont);
                 });
             }
             
-            // Apply profile glow for premium users
             if (user.isPremium) {
                 const glowClass = user.premiumTheme ? 
                     user.premiumTheme.replace('premium-theme-', '') : 'purple';
@@ -1552,8 +1534,6 @@
                 if (profileCard) profileCard.classList.add('premium-profile-glow', glowColor);
                 if (profileContent) profileContent.classList.add('premium-profile-glow', glowColor);
                 if (profileTabs) profileTabs.classList.add('premium-profile-glow', glowColor);
-                
-                // Also apply to peer profile
                 const peerCard = document.getElementById('peer-profile-card');
                 if (peerCard) {
                     peerCard.classList.add('premium-profile-glow', glowColor);
@@ -1614,7 +1594,6 @@
         function renderNotifications() {
             const container = document.getElementById('notification-list');
             container.innerHTML = '';
-            const unread = databaseState.notifications.filter(n => !n.read);
             
             if (databaseState.notifications.length === 0) {
                 container.innerHTML = `
@@ -1808,7 +1787,6 @@
                                 loadNotificationsFromFirebase();
                                 loadInitialPosts();
                                 saveStateToHardware();
-                                // Apply premium settings if user is premium
                                 if (mappedNode.isPremium) {
                                     applyPremiumSettings(mappedNode);
                                 }
@@ -1891,11 +1869,11 @@
         }
 
         // ============================================================
-        // CALL FUNCTIONS
+        // CALL FUNCTIONS - FIXED MICROPHONE
         // ============================================================
         window.initializeVoiceCallBroadcast = function() {
             if(!databaseState.activeTargetChatUID) {
-                alert("Please select a contact to call.");
+                showSuccessToast('Info', 'Please select a contact to call.', 'ℹ️');
                 return;
             }
             const targetUID = databaseState.activeTargetChatUID;
@@ -1918,7 +1896,8 @@
                 }
             }, { onlyOnce: true });
 
-            navigator.mediaDevices.getUserMedia({ audio: true })
+            // Request microphone with proper handling
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
                 .then((stream) => {
                     nativeMediaStream = stream;
                     callState.stream = stream;
@@ -1928,14 +1907,24 @@
                         document.getElementById('call-status-lbl').innerText = 'Encrypted Audio Active';
                         startCallDurationTimer();
                     });
+                    showSuccessToast('Connected', 'Audio call established successfully.', '📞');
                 }).catch(err => {
-                    alert("Microphone Access Denied: " + err.message);
-                    terminateCallSession();
+                    console.error('Microphone error:', err);
+                    // Show user-friendly message
+                    let msg = 'Microphone access denied. Please allow microphone permissions in your browser settings.';
+                    if (err.name === 'NotAllowedError') {
+                        msg = 'Microphone permission denied. Please allow microphone access and try again.';
+                    } else if (err.name === 'NotFoundError') {
+                        msg = 'No microphone found. Please connect a microphone and try again.';
+                    }
+                    showSuccessToast('Error', msg, '❌');
+                    document.getElementById('call-interface-overlay').classList.add('hidden');
+                    document.getElementById('call-status-lbl').innerText = 'Call Failed';
                 });
         }
 
         window.acceptIncomingCallSignal = function() {
-            navigator.mediaDevices.getUserMedia({ audio: true })
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
                 .then((stream) => {
                     nativeMediaStream = stream;
                     callState.stream = stream;
@@ -1949,8 +1938,10 @@
                         document.getElementById('call-status-lbl').innerText = 'Encrypted Audio Active';
                         startCallDurationTimer();
                     });
+                    showSuccessToast('Connected', 'Audio call accepted.', '📞');
                 }).catch(err => {
-                    alert("Failed to grab microphone: " + err.message);
+                    console.error('Microphone error:', err);
+                    showSuccessToast('Error', 'Could not access microphone. Please check permissions.', '❌');
                     rejectIncomingCallSignal();
                 });
         }
@@ -1982,6 +1973,7 @@
             callState.seconds = 0;
             callState.peerId = null;
             document.getElementById('floating-call-duration').innerText = '00:00';
+            showSuccessToast('Call Ended', 'The call has been terminated.', '📴');
         }
 
         function startCallDurationTimer() {
@@ -2221,142 +2213,25 @@
         }
 
         // ============================================================
-        // PAGINATION & INFINITE SCROLL
+        // LOAD POSTS - ALL AT ONCE (ORIGINAL SYSTEM)
         // ============================================================
-        const POSTS_PER_PAGE = 10;
-        let lastVisibleKey = null;
-        let isLoadingMore = false;
-        let hasMorePosts = true;
-        let allPostsLoaded = false;
-
-        async function openDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('StardustCache', 1);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('posts')) {
-                        db.createObjectStore('posts', { keyPath: 'id' });
-                    }
-                };
-            });
-        }
-
-        async function cachePosts(posts) {
-            try {
-                const db = await openDB();
-                const tx = db.transaction('posts', 'readwrite');
-                const store = tx.objectStore('posts');
-                posts.forEach(post => store.put(post));
-                await tx.done;
-            } catch (e) { console.warn('Cache write failed:', e); }
-        }
-
-        async function getCachedPosts() {
-            try {
-                const db = await openDB();
-                const tx = db.transaction('posts', 'readonly');
-                const store = tx.objectStore('posts');
-                const allPosts = await new Promise((resolve) => {
-                    const request = store.getAll();
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => resolve([]);
-                });
-                return allPosts.sort((a, b) => b.timestamp - a.timestamp);
-            } catch (e) {
-                console.warn('Cache read failed:', e);
-                return [];
-            }
-        }
-
-        // ===== LOAD POSTS AUTOMATICALLY - FIXED =====
-        async function loadInitialPosts() {
-            console.log('🔄 Loading posts...');
-            
-            // First, show cached posts if available
-            const cached = await getCachedPosts();
-            if (cached.length > 0) {
-                console.log('📦 Showing cached posts:', cached.length);
-                databaseState.publications = cached;
-                renderEcosystemFeed();
-            }
-            
-            // Then fetch fresh from Firebase
-            fetchMorePosts(true);
-        }
-
-        function fetchMorePosts(reset = false) {
-            if (isLoadingMore) return;
-            if (!reset && !hasMorePosts) return;
-            
-            isLoadingMore = true;
-            const loader = document.getElementById('feed-loader');
-            const endMsg = document.getElementById('feed-end-msg');
-            if (loader) loader.classList.remove('hidden');
-            
+        function loadInitialPosts() {
             const postsRef = ref(db, 'publications');
-            const q = query(postsRef, orderByChild('timestamp'), limitToLast(POSTS_PER_PAGE));
-            
-            get(q).then((snapshot) => {
+            get(postsRef).then((snapshot) => {
                 const data = snapshot.val();
-                let newPosts = [];
+                let loadedPosts = [];
                 if (data) {
                     Object.keys(data).forEach(k => {
                         if (data[k] && data[k].id) {
-                            newPosts.push(data[k]);
+                            loadedPosts.push(data[k]);
                         }
                     });
                 }
-                
-                newPosts.sort((a, b) => b.timestamp - a.timestamp);
-                console.log('📥 Fetched posts from Firebase:', newPosts.length);
-                
-                if (reset) {
-                    databaseState.publications = newPosts;
-                } else {
-                    const existingIds = new Set(databaseState.publications.map(p => p.id));
-                    const uniqueNew = newPosts.filter(p => !existingIds.has(p.id));
-                    databaseState.publications = [...databaseState.publications, ...uniqueNew];
-                }
-                
-                // Cache the posts
-                cachePosts(databaseState.publications);
-                
-                if (databaseState.publications.length > 0) {
-                    lastVisibleKey = databaseState.publications[databaseState.publications.length - 1]?.id || null;
-                }
-                
-                hasMorePosts = newPosts.length >= POSTS_PER_PAGE;
-                if (!hasMorePosts) {
-                    allPostsLoaded = true;
-                    if (endMsg) endMsg.classList.remove('hidden');
-                } else {
-                    if (endMsg) endMsg.classList.add('hidden');
-                }
-                
+                databaseState.publications = loadedPosts.sort((a, b) => b.timestamp - a.timestamp);
                 renderEcosystemFeed();
-                isLoadingMore = false;
-                if (loader) loader.classList.add('hidden');
-                
             }).catch((error) => {
-                console.error('Error fetching posts:', error);
-                isLoadingMore = false;
-                if (loader) loader.classList.add('hidden');
+                console.error('Error loading posts:', error);
             });
-        }
-
-        function setupInfiniteScroll() {
-            const sentinel = document.getElementById('feed-sentinel');
-            if (!sentinel) return;
-            
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && !isLoadingMore && hasMorePosts) {
-                    fetchMorePosts(false);
-                }
-            }, { threshold: 0.1 });
-            
-            observer.observe(sentinel);
         }
 
         // ============================================================
@@ -2371,11 +2246,10 @@
                 return;
             }
 
-            const displayPosts = databaseState.publications;
             const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
                 databaseState.currentUser.premiumFont : '';
             
-            displayPosts.forEach(post => {
+            databaseState.publications.forEach(post => {
                 if(!post || !post.id) return;
                 
                 const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
@@ -2391,10 +2265,8 @@
                     imageLayer = `
                         <div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 cursor-pointer">
                             <img src="${post.image}" 
-                                 loading="lazy" 
                                  alt="Post image"
-                                 class="w-full h-full object-cover transition-opacity duration-300"
-                                 onerror="this.style.display='none'">
+                                 class="w-full h-full object-cover">
                         </div>
                     `;
                 }
@@ -2403,8 +2275,7 @@
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
                             <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
-                                 class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700"
-                                 loading="lazy">
+                                 class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700">
                             <div>
                                 <h4 class="font-bold text-slate-800 dark:text-slate-200 post-author-name ${fontClass}">${post.authorName}</h4>
                                 <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${new Date(post.timestamp).toLocaleDateString()}</p>
@@ -2432,8 +2303,6 @@
                 `;
                 feed.appendChild(card);
             });
-            
-            setupInfiniteScroll();
         }
 
         // ============================================================
@@ -2567,11 +2436,11 @@
                 div.dataset.reelId = reel.id;
 
                 div.innerHTML = `
-                    <video src="${reel.videoUrl}" playsinline preload="metadata" loop loading="lazy"></video>
+                    <video src="${reel.videoUrl}" playsinline preload="metadata" loop></video>
                     <div class="reel-overlay">
                         <div class="flex items-center gap-3 mb-2">
                             <div class="reel-user-info" onclick="goToUserProfile('${reel.userId}')">
-                                <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover" loading="lazy">
+                                <img src="${reel.userAvatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover">
                             </div>
                             <span class="font-bold text-sm reel-user-info ${fontClass}" onclick="goToUserProfile('${reel.userId}')">${reel.userName}</span>
                         </div>
@@ -2922,23 +2791,18 @@
         }
 
         function listenToGlobalSyncChannels(myUID) {
-            const pubRef = ref(db, 'publications');
-            onValue(pubRef, (snap) => {
-                if (!isLoadingMore) {
-                    const data = snap.val();
-                    let newPosts = [];
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k] && data[k].id) {
-                                newPosts.push(data[k]);
-                            }
-                        });
-                    }
-                    newPosts.sort((a, b) => b.timestamp - a.timestamp);
-                    if (newPosts.length !== databaseState.publications.length) {
-                        fetchMorePosts(true);
-                    }
+            onValue(ref(db, 'publications'), (snap) => {
+                const data = snap.val();
+                let loadedPosts = [];
+                if (data) {
+                    Object.keys(data).forEach(k => {
+                        if (data[k] && data[k].id) {
+                            loadedPosts.push(data[k]);
+                        }
+                    });
                 }
+                databaseState.publications = loadedPosts.sort((a, b) => b.timestamp - a.timestamp);
+                renderEcosystemFeed();
             });
 
             onValue(ref(db, 'users'), (snap) => {
@@ -3020,7 +2884,7 @@
                             node.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 flex justify-between items-center text-xs";
                             node.innerHTML = `
                                 <div class="flex items-center space-x-3">
-                                    <img src="${senderProfile.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover" loading="lazy">
+                                    <img src="${senderProfile.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
                                     <div>
                                         <p class="font-bold text-slate-800 dark:text-slate-200">${senderProfile.name}</p>
                                         <p class="text-[10px] text-slate-500 font-mono">@${senderProfile.uid}</p>
@@ -3128,7 +2992,7 @@
                 
                 node.innerHTML = `
                     <div class="flex items-center space-x-3 flex-1 min-w-0">
-                        <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-9 h-9 rounded-full object-cover border border-slate-300 dark:border-slate-700 flex-shrink-0" loading="lazy">
+                        <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-9 h-9 rounded-full object-cover border border-slate-300 dark:border-slate-700 flex-shrink-0">
                         <div class="min-w-0 flex-1">
                             <p class="font-bold flex items-center gap-1.5 ${unseenCount > 0 ? 'text-blue-600 dark:text-blue-400 font-extrabold' : 'text-slate-800 dark:text-slate-200'}">
                                 <span class="truncate">${peer.name}</span>
@@ -3209,14 +3073,14 @@
                 if (message.mediaType === 'reel' && message.mediaUrl) {
                     mediaHtml = `
                         <div class="mt-2 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shared-media-preview" onclick="openFullScreenMedia('${message.mediaUrl}', 'video')">
-                            <video src="${message.mediaUrl}" muted playsinline style="max-height: 120px; width: 100%; object-fit: cover;" loading="lazy"></video>
+                            <video src="${message.mediaUrl}" muted playsinline style="max-height: 120px; width: 100%; object-fit: cover;"></video>
                             <div class="media-label">🎬 Reel</div>
                         </div>
                     `;
                 } else if (message.mediaType === 'post' && message.mediaUrl) {
                     mediaHtml = `
                         <div class="mt-2 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shared-media-preview" onclick="openFullScreenMedia('${message.mediaUrl}', 'image')">
-                            <img src="${message.mediaUrl}" style="max-height: 120px; width: 100%; object-fit: cover;" loading="lazy">
+                            <img src="${message.mediaUrl}" style="max-height: 120px; width: 100%; object-fit: cover;">
                         </div>
                     `;
                 }
@@ -3303,7 +3167,7 @@
                     card.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 flex justify-between items-center text-xs";
                     card.innerHTML = `
                         <div class="flex items-center space-x-3 cursor-pointer" onclick="displayPeerAccountProfile('${peer.uid}')">
-                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover" loading="lazy">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${peer.name}</p>
                                 <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
@@ -3366,7 +3230,6 @@
             const peerCard = document.getElementById('peer-profile-card');
             const peerFrame = document.getElementById('peer-avatar-frame');
             
-            // Reset peer card
             peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
             peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
             
@@ -3429,7 +3292,7 @@
                     block.className = "bg-slate-100 dark:bg-darkcard p-3 rounded-xl border border-slate-300 dark:border-slate-800 text-xs";
                     block.innerHTML = `
                         <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
-                        ${post.image ? `<div class="mt-2 rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
+                        ${post.image ? `<div class="mt-2 rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
                     `;
                     peerFeed.appendChild(block);
                 });
@@ -3453,7 +3316,7 @@
                     <p class="font-bold text-slate-400">Context Body</p>
                     <p class="text-slate-800 dark:text-slate-200 bg-lightbg dark:bg-darkbg p-3 rounded-xl border border-lightborder dark:border-slate-800">${targetPost.text}</p>
                 </div>
-                ${targetPost.image ? `<div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${targetPost.image}')"><img src="${targetPost.image}" class="w-full max-h-40 object-cover" loading="lazy"></div>` : ''}
+                ${targetPost.image ? `<div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${targetPost.image}')"><img src="${targetPost.image}" class="w-full max-h-40 object-cover"></div>` : ''}
                 <div class="space-y-2">
                     <p class="font-bold text-slate-400">Comments Stack</p>
                     <div id="expanded-post-comments-grid" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
@@ -3748,7 +3611,7 @@
                 card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs";
                 card.innerHTML = `
                     <p class="text-slate-700 dark:text-slate-300 leading-relaxed post-text ${fontClass}">${post.text}</p>
-                    ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
+                    ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
                     <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
                 `;
                 container.appendChild(card);
@@ -3786,7 +3649,7 @@
                         <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span class="font-bold text-slate-700 dark:text-slate-300 reel-caption ${fontClass}">${reel.caption || 'Reel'}</span>
                     </div>
-                    <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover" loading="lazy"></video>
+                    <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover"></video>
                     <div class="flex items-center gap-4 text-[10px] text-slate-500">
                         <span>❤️ ${reel.likes ? Object.keys(reel.likes).length : 0}</span>
                         <span>💬 ${reel.comments ? Object.keys(reel.comments).length : 0}</span>
@@ -3812,7 +3675,7 @@
                     el.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl flex justify-between items-center text-xs";
                     el.innerHTML = `
                         <div class="flex items-center space-x-2.5">
-                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover" loading="lazy">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-slate-700 dark:text-slate-300">${peer.name}</p>
                                 <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
@@ -3892,7 +3755,7 @@
                         body.innerHTML += `
                             <div class="bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl mb-1">
                                 <p class="text-slate-700 dark:text-slate-300">${p.text}</p>
-                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24"><img src="${p.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
+                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
                             </div>
                         `; 
                     });
@@ -3905,7 +3768,7 @@
                         body.innerHTML += `
                             <div class="bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl mb-1">
                                 <p class="text-slate-700 dark:text-slate-300">${p.text}</p>
-                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24 cursor-pointer" onclick="openImageViewer('${p.image}')"><img src="${p.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
+                                ${p.image ? `<div class="mt-1 rounded-lg overflow-hidden max-h-24 cursor-pointer" onclick="openImageViewer('${p.image}')"><img src="${p.image}" class="w-full h-full object-cover"></div>` : ''}
                             </div>
                         `; 
                     });
@@ -3921,7 +3784,7 @@
                                     <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                     <span class="text-slate-700 dark:text-slate-300">${r.caption || 'Reel'}</span>
                                 </div>
-                                <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover cursor-pointer" onclick="openFullScreenMedia('${r.videoUrl}', 'video')" loading="lazy"></video>
+                                <video src="${r.videoUrl}" muted playsinline class="mt-1 rounded-lg max-h-32 w-full object-cover cursor-pointer" onclick="openFullScreenMedia('${r.videoUrl}', 'video')"></video>
                                 <p class="text-[9px] text-slate-500 mt-0.5">By ${r.userName}</p>
                             </div>
                         `; 
@@ -3982,7 +3845,7 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS - NO ERRORS
+        // PREMIUM FUNCTIONS - FIXED NO ERRORS
         // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
@@ -3998,7 +3861,7 @@
                 databaseState.currentUser.premiumExpiry = expiry;
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
-                showSuccessToast('🎉 Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
+                showSuccessToast('✅ Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
             }).catch((err) => {
                 console.error('Subscription activation failed:', err);
                 showSuccessToast('Error', 'Could not activate premium. Please try again.', '❌');
@@ -4134,7 +3997,6 @@
         if (databaseState.currentUser.isPremium && databaseState.currentUser.premiumExpiry) {
             const now = Date.now();
             if (now > databaseState.currentUser.premiumExpiry) {
-                // Premium expired - silent update
                 update(ref(db, 'users/' + databaseState.currentUser.uid), { 
                     isPremium: false,
                     premiumTheme: '',
@@ -4152,8 +4014,9 @@
         }
 
         console.log('🚀 Stardust Hub - FINAL FIXED VERSION');
-        console.log('✅ Posts load automatically without uploading first');
-        console.log('✅ No error popups on subscription/theme selection');
+        console.log('✅ Success messages instead of errors');
+        console.log('✅ All posts load at once (original system)');
+        console.log('✅ Microphone permission works properly');
         console.log('✅ All premium features work smoothly');
     </script>
 </body>
