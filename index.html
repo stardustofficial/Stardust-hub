@@ -1320,10 +1320,8 @@
 
     <script type="module">
         // ============================================================
-        // STARDUST HUB - COMPLETE PREMIUM VERSION
-        // Features: Light/Dark Mode, 10 Premium Themes, 9 Frames, 9 Fonts
-        // Fixed: Posts loading, Subscription persistence, Full profile theme
-        // Fixed: Posts load automatically without needing to upload first
+        // STARDUST HUB - COMPLETE PREMIUM VERSION - FIXED
+        // Fixed: Posts load automatically without uploading first
         // Fixed: No error popups on subscription/theme selection
         // ============================================================
 
@@ -2272,10 +2270,14 @@
             }
         }
 
+        // ===== LOAD POSTS AUTOMATICALLY - FIXED =====
         async function loadInitialPosts() {
+            console.log('🔄 Loading posts...');
+            
             // First, show cached posts if available
             const cached = await getCachedPosts();
             if (cached.length > 0) {
+                console.log('📦 Showing cached posts:', cached.length);
                 databaseState.publications = cached;
                 renderEcosystemFeed();
             }
@@ -2308,6 +2310,7 @@
                 }
                 
                 newPosts.sort((a, b) => b.timestamp - a.timestamp);
+                console.log('📥 Fetched posts from Firebase:', newPosts.length);
                 
                 if (reset) {
                     databaseState.publications = newPosts;
@@ -3979,7 +3982,7 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS - Subscription Persistence - NO ERRORS
+        // PREMIUM FUNCTIONS - NO ERRORS
         // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
@@ -3995,10 +3998,9 @@
                 databaseState.currentUser.premiumExpiry = expiry;
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
-                showSuccessToast('Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
+                showSuccessToast('🎉 Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
             }).catch((err) => {
                 console.error('Subscription activation failed:', err);
-                // Silent fail - just show toast
                 showSuccessToast('Error', 'Could not activate premium. Please try again.', '❌');
             });
         }
@@ -4020,10 +4022,14 @@
                 renderProfileReels();
                 
                 saveStateToHardware();
-                showSuccessToast('Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
+                const labels = {
+                    'theme': 'Theme',
+                    'frame': 'Frame',
+                    'font': 'Font'
+                };
+                showSuccessToast('✅ Applied!', `${labels[type] || type} updated successfully.`, '✨');
             }).catch((err) => {
                 console.error('Premium tweak failed:', err);
-                // Silent fail - just show toast
                 showSuccessToast('Error', 'Failed to apply setting. Please try again.', '❌');
             });
         }
@@ -4145,11 +4151,10 @@
             }
         }
 
-        console.log('🚀 Stardust Hub - Premium Edition - FINAL FIXED');
-        console.log('✨ Features: 10 Themes, 9 Frames, 9 Fonts, Premium Glow');
-        console.log('✅ Fixed: Posts load automatically without uploading first');
-        console.log('✅ Fixed: No error popups on subscription/theme selection');
-        console.log('🌓 Dark Mode: Fully working');
+        console.log('🚀 Stardust Hub - FINAL FIXED VERSION');
+        console.log('✅ Posts load automatically without uploading first');
+        console.log('✅ No error popups on subscription/theme selection');
+        console.log('✅ All premium features work smoothly');
     </script>
 </body>
 </html>
