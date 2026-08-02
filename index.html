@@ -711,6 +711,21 @@
             background: linear-gradient(90deg, #1e293b 25%, #2a3a4a 50%, #1e293b 75%);
             background-size: 200% 100%;
         }
+
+        /* ===== POST DELETE BUTTON ===== */
+        .post-delete-btn {
+            opacity: 0.4;
+            transition: opacity 0.2s;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        .post-delete-btn:hover {
+            opacity: 1;
+            background: rgba(220, 38, 38, 0.2);
+        }
     </style>
 </head>
 <body class="light-mode text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -1320,8 +1335,12 @@
 
     <script type="module">
         // ============================================================
-        // STARDUST HUB - MICROPHONE FIXED
-        // Fixed: Microphone permission properly handled
+        // STARDUST HUB - ALL FEATURES FIXED
+        // Fixed: Full screen image view
+        // Fixed: Reels showing after upload
+        // Fixed: Delete comments (owner & author)
+        // Fixed: Delete posts (owner only)
+        // Fixed: Search shows images
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -1452,7 +1471,7 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS - FULL PROFILE APPLICATION
+        // PREMIUM FUNCTIONS
         // ============================================================
         function applyPremiumSettings(user) {
             if (!user) return;
@@ -1677,7 +1696,7 @@
         });
 
         // ============================================================
-        // AUTH
+        // AUTH (Simplified - Same as before)
         // ============================================================
         window.switchAuthView = function(view) {
             const desc = document.getElementById('auth-screen-desc');
@@ -1868,37 +1887,26 @@
         // ============================================================
         // CALL FUNCTIONS - MICROPHONE FIXED
         // ============================================================
-        
-        // Check if microphone permission is already granted
         async function checkMicrophonePermission() {
             try {
-                // Check if permission is already granted
                 const result = await navigator.permissions.query({ name: 'microphone' });
                 return result.state === 'granted';
             } catch (e) {
-                // Permissions API not supported, try getUserMedia directly
                 return false;
             }
         }
 
-        // Request microphone with proper handling
         async function requestMicrophone() {
             try {
-                // First check if permission is already granted
                 const hasPermission = await checkMicrophonePermission();
-                
                 if (hasPermission) {
-                    // Permission already granted, just get the stream
                     return await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
                 }
-                
-                // Try to get permission with a prompt
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
                 return stream;
             } catch (err) {
                 console.error('Microphone error:', err);
                 let errorMsg = 'Microphone access denied. Please allow microphone permissions in your browser settings.';
-                
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     errorMsg = '🔴 Microphone permission denied. Please allow microphone access in your browser settings and try again.';
                 } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
@@ -1908,7 +1916,6 @@
                 } else if (err.name === 'AbortError') {
                     errorMsg = '🔴 Microphone access was cancelled. Please try again.';
                 }
-                
                 showSuccessToast('Microphone Error', errorMsg, '❌');
                 return null;
             }
@@ -1940,10 +1947,8 @@
                 }
             }, { onlyOnce: true });
 
-            // Use the fixed microphone request function
             requestMicrophone().then((stream) => {
                 if (!stream) {
-                    // Error already shown in requestMicrophone
                     document.getElementById('call-interface-overlay').classList.add('hidden');
                     document.getElementById('call-status-lbl').innerText = 'Call Failed';
                     return;
@@ -1965,7 +1970,6 @@
                     showSuccessToast('Call Error', 'Connection lost. Please try again.', '❌');
                     terminateCallSession();
                 });
-                
             });
         }
 
@@ -2261,7 +2265,7 @@
         }
 
         // ============================================================
-        // LOAD POSTS - Only valid posts
+        // LOAD POSTS
         // ============================================================
         function loadInitialPosts() {
             const postsRef = ref(db, 'publications');
@@ -2284,7 +2288,105 @@
         }
 
         // ============================================================
-        // POST RENDER
+        // DELETE POST - FIXED (Owner only)
+        // ============================================================
+        window.deletePost = function(postId) {
+            const myUID = databaseState.currentUser.uid;
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            
+            if (!targetPost) {
+                showSuccessToast('Error', 'Post not found.', '❌');
+                return;
+            }
+            
+            // Only post owner can delete
+            if (targetPost.authorUID !== myUID) {
+                showSuccessToast('Error', 'You can only delete your own posts.', '❌');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this post?')) {
+                // Find the Firebase key
+                const pubRef = ref(db, 'publications');
+                get(pubRef).then((snap) => {
+                    const data = snap.val();
+                    if (data) {
+                        let dbKey = null;
+                        Object.keys(data).forEach(k => {
+                            if (data[k] && data[k].id === postId) {
+                                dbKey = k;
+                            }
+                        });
+                        if (dbKey) {
+                            remove(ref(db, `publications/${dbKey}`)).then(() => {
+                                showSuccessToast('Deleted!', 'Post deleted successfully.', '🗑️');
+                                loadInitialPosts();
+                            }).catch((err) => {
+                                console.error('Delete error:', err);
+                                showSuccessToast('Error', 'Failed to delete post.', '❌');
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // DELETE COMMENT - FIXED (Owner OR Author)
+        // ============================================================
+        window.deleteComment = function(postId, commentKey) {
+            const myUID = databaseState.currentUser.uid;
+            
+            // Find the post
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if (!targetPost) {
+                showSuccessToast('Error', 'Post not found.', '❌');
+                return;
+            }
+            
+            const comment = targetPost.comments ? targetPost.comments[commentKey] : null;
+            if (!comment) {
+                showSuccessToast('Error', 'Comment not found.', '❌');
+                return;
+            }
+            
+            // Check if user is post owner OR comment author
+            const isPostOwner = targetPost.authorUID === myUID;
+            const isCommentAuthor = comment.authorUID === myUID;
+            
+            if (!isPostOwner && !isCommentAuthor) {
+                showSuccessToast('Error', 'You can only delete your own comments.', '❌');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this comment?')) {
+                // Find the Firebase key for the post
+                const pubRef = ref(db, 'publications');
+                get(pubRef).then((snap) => {
+                    const data = snap.val();
+                    if (data) {
+                        let dbKey = null;
+                        Object.keys(data).forEach(k => {
+                            if (data[k] && data[k].id === postId) {
+                                dbKey = k;
+                            }
+                        });
+                        if (dbKey) {
+                            remove(ref(db, `publications/${dbKey}/comments/${commentKey}`)).then(() => {
+                                showSuccessToast('Deleted!', 'Comment deleted successfully.', '🗑️');
+                                loadInitialPosts();
+                            }).catch((err) => {
+                                console.error('Delete comment error:', err);
+                                showSuccessToast('Error', 'Failed to delete comment.', '❌');
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // POST RENDER - WITH DELETE BUTTONS
         // ============================================================
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
@@ -2307,20 +2409,32 @@
                 const likesCount = post.likes ? Object.keys(post.likes).length : 0;
                 const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
                 const isSaved = databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(post.id);
+                const isOwner = post.authorUID === databaseState.currentUser.uid;
                 
                 const card = document.createElement('div');
-                card.className = `bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md transition-all duration-300`;
+                card.className = `bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md transition-all duration-300 relative`;
+                
+                // Delete button for post owner
+                let deleteBtn = '';
+                if (isOwner) {
+                    deleteBtn = `
+                        <button onclick="deletePost('${post.id}')" class="post-delete-btn absolute top-3 right-3 text-red-400 hover:text-red-500" title="Delete Post">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    `;
+                }
                 
                 let imageLayer = '';
                 if(post.image) {
                     imageLayer = `
-                        <div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 cursor-pointer">
+                        <div class="w-full max-h-52 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 cursor-pointer" onclick="openImageViewer('${post.image}')">
                             <img src="${post.image}" alt="Post image" class="w-full h-full object-cover">
                         </div>
                     `;
                 }
 
                 card.innerHTML = `
+                    ${deleteBtn}
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
                             <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
@@ -2352,6 +2466,109 @@
                 `;
                 feed.appendChild(card);
             });
+        }
+
+        // ============================================================
+        // FULL SCREEN IMAGE VIEW - FIXED
+        // ============================================================
+        window.openImageViewer = function(imageSrc) {
+            if (!imageSrc) return;
+            document.getElementById('viewer-target-image').src = imageSrc;
+            document.getElementById('full-screen-image-viewer').classList.remove('hidden');
+        }
+
+        // ============================================================
+        // PUBLICATION INSPECTION - WITH DELETE COMMENT
+        // ============================================================
+        window.openPublicationInspectionModal = function(postId) {
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if(!targetPost) return;
+
+            const isPostOwner = targetPost.authorUID === databaseState.currentUser.uid;
+
+            const modalPayload = document.getElementById('expanded-post-payload');
+            modalPayload.innerHTML = `
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-400">Context Body</p>
+                    <p class="text-slate-800 dark:text-slate-200 bg-lightbg dark:bg-darkbg p-3 rounded-xl border border-lightborder dark:border-slate-800">${targetPost.text}</p>
+                </div>
+                ${targetPost.image ? `<div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${targetPost.image}')"><img src="${targetPost.image}" class="w-full max-h-40 object-cover"></div>` : ''}
+                <div class="space-y-2">
+                    <p class="font-bold text-slate-400">Comments Stack</p>
+                    <div id="expanded-post-comments-grid" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" id="post-comment-input-field" placeholder="Append transaction comment..." class="flex-1 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 text-slate-800 dark:text-slate-200">
+                    <button onclick="dispatchPublicationComment('${postId}')" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-4 py-2 rounded-xl">Append</button>
+                </div>
+            `;
+
+            const commentGrid = document.getElementById('expanded-post-comments-grid');
+            if(targetPost.comments && Object.keys(targetPost.comments).length > 0) {
+                Object.keys(targetPost.comments).forEach(commentKey => {
+                    const c = targetPost.comments[commentKey];
+                    const isCommentOwner = c.authorUID === databaseState.currentUser.uid;
+                    const canDelete = isPostOwner || isCommentOwner;
+                    
+                    const el = document.createElement('div');
+                    el.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl space-y-0.5 flex justify-between items-start";
+                    el.innerHTML = `
+                        <div>
+                            <p class="font-bold text-slate-600 dark:text-slate-400 text-xs">@${c.authorName}:</p>
+                            <p class="text-slate-700 dark:text-slate-300 text-xs">${c.text}</p>
+                        </div>
+                        ${canDelete ? `
+                            <button onclick="deleteComment('${postId}', '${commentKey}')" 
+                                class="comment-delete-btn text-red-400 hover:text-red-300 p-1 rounded-lg text-xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        ` : ''}
+                    `;
+                    commentGrid.appendChild(el);
+                });
+            } else {
+                commentGrid.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-2">No active comments linked inside framework.</p>`;
+            }
+
+            openModal('expanded-post-modal');
+        }
+
+        window.dispatchPublicationComment = function(postId) {
+            const field = document.getElementById('post-comment-input-field');
+            const txt = field.value.trim();
+            if(!txt) return;
+
+            onValue(ref(db, 'publications'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
+                    if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const postOwner = data[dbKey].authorUID;
+                        const payload = {
+                            authorUID: myUID,
+                            authorName: databaseState.currentUser.name,
+                            text: txt,
+                            timestamp: Date.now()
+                        };
+                        push(ref(db, `publications/${dbKey}/comments`), payload).then(() => {
+                            field.value = '';
+                            closeModal('expanded-post-modal');
+                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
+                            if (postOwner !== myUID) {
+                                addNotification({
+                                    type: 'comment',
+                                    message: `${databaseState.currentUser.name} commented on your post: "${txt}"`,
+                                    targetUserId: postOwner,
+                                    sourceUserId: myUID,
+                                    postId: postId
+                                });
+                            }
+                            loadInitialPosts();
+                        });
+                    }
+                }
+            }, { onlyOnce: true });
         }
 
         // ============================================================
@@ -2428,7 +2645,7 @@
         };
 
         // ============================================================
-        // REELS SYSTEM - OPTIMIZED
+        // REELS SYSTEM - FIXED
         // ============================================================
         let isReelsLoaded = false;
         
@@ -2701,7 +2918,7 @@
         };
 
         // ============================================================
-        // REEL UPLOAD
+        // REEL UPLOAD - FIXED
         // ============================================================
         window.handleReelUpload = async function() {
             const fileInput = document.getElementById('reel-input-file');
@@ -2760,7 +2977,13 @@
                         document.getElementById('reel-input-file').value = '';
                         document.getElementById('reel-input-caption').value = '';
                         showSuccessToast('Reel Uploaded!', 'Your reel has been published successfully.', '🎬');
+                        // Reload reels immediately
+                        isReelsLoaded = false;
                         loadReelsOnDemand();
+                    }).catch((err) => {
+                        console.error('Reel push error:', err);
+                        hideUploadLoading();
+                        showSuccessToast('Error', 'Failed to save reel. Please try again.', '❌');
                     });
                 } else {
                     hideUploadLoading();
@@ -2772,6 +2995,74 @@
                 showSuccessToast('Error', 'Failed to upload reel: ' + error.message, '❌');
             }
         };
+
+        // ============================================================
+        // SEARCH - SHOWS IMAGES
+        // ============================================================
+        window.handleUnifiedSearch = function() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const profileGrid = document.getElementById('search-results-profiles');
+            const articleGrid = document.getElementById('search-results-articles');
+            profileGrid.innerHTML = '';
+            articleGrid.innerHTML = '';
+            if(!query) return;
+            const myUID = databaseState.currentUser.uid;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                if(peer.uid.includes(query) || peer.name.toLowerCase().includes(query)) {
+                    const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                    const hasSentRequest = databaseState.friendships[`req_${myUID}_to_${peer.uid}`] === 'pending';
+                    const hasIncomingRequest = databaseState.friendships[`req_${peer.uid}_to_${myUID}`] === 'pending';
+                    
+                    let buttonMarkup = '';
+                    if(isFriend) {
+                        buttonMarkup = `<span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-bold px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700">Verified Network</span>`;
+                    } else if(hasSentRequest) {
+                        buttonMarkup = `<span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-500 px-3 py-1.5 rounded-xl">Packet Sent</span>`;
+                    } else if(hasIncomingRequest) {
+                        buttonMarkup = `<button onclick="handleIncomingRequestOperation('${peer.uid}', 'accept')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl">Accept</button>`;
+                    } else {
+                        buttonMarkup = `<button onclick="dispatchFriendHandshake('${peer.uid}')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition">Connect Node</button>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 flex justify-between items-center text-xs";
+                    card.innerHTML = `
+                        <div class="flex items-center space-x-3 cursor-pointer" onclick="displayPeerAccountProfile('${peer.uid}')">
+                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
+                            <div>
+                                <p class="font-bold text-slate-800 dark:text-slate-200">${peer.name}</p>
+                                <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
+                            </div>
+                        </div>
+                        <div>${buttonMarkup}</div>
+                    `;
+                    profileGrid.appendChild(card);
+                }
+            });
+
+            databaseState.publications.forEach(post => {
+                if(post && post.text && post.text.toLowerCase().includes(query)) {
+                    const card = document.createElement('div');
+                    card.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 text-xs space-y-2";
+                    let imgHtml = '';
+                    if(post.image) {
+                        imgHtml = `
+                            <div class="rounded-lg overflow-hidden max-h-32 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')">
+                                <img src="${post.image}" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                        `;
+                    }
+                    card.innerHTML = `
+                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
+                        ${imgHtml}
+                        <span class="text-[9px] text-slate-600 font-mono">Node Broadcast ID: @${post.authorUID}</span>
+                    `;
+                    articleGrid.appendChild(card);
+                }
+            });
+        }
 
         // ============================================================
         // NAVIGATION
@@ -2925,7 +3216,7 @@
         }
 
         // ============================================================
-        // CHAT FUNCTIONS
+        // CHAT FUNCTIONS (Simplified - same as before)
         // ============================================================
         function renderEcosystemIncomingRequests() {
             const container = document.getElementById('incoming-requests-list');
@@ -3192,464 +3483,6 @@
                 document.getElementById('message-context-panel').classList.add('hidden');
             });
         }
-
-        // ============================================================
-        // SEARCH
-        // ============================================================
-        window.handleUnifiedSearch = function() {
-            const query = document.getElementById('search-input').value.trim().toLowerCase();
-            const profileGrid = document.getElementById('search-results-profiles');
-            const articleGrid = document.getElementById('search-results-articles');
-            profileGrid.innerHTML = '';
-            articleGrid.innerHTML = '';
-            if(!query) return;
-            const myUID = databaseState.currentUser.uid;
-
-            databaseState.peers.forEach(peer => {
-                if(peer.uid === myUID) return;
-                if(peer.uid.includes(query) || peer.name.toLowerCase().includes(query)) {
-                    const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
-                    const hasSentRequest = databaseState.friendships[`req_${myUID}_to_${peer.uid}`] === 'pending';
-                    const hasIncomingRequest = databaseState.friendships[`req_${peer.uid}_to_${myUID}`] === 'pending';
-                    
-                    let buttonMarkup = '';
-                    if(isFriend) {
-                        buttonMarkup = `<span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-bold px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700">Verified Network</span>`;
-                    } else if(hasSentRequest) {
-                        buttonMarkup = `<span class="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-500 px-3 py-1.5 rounded-xl">Packet Sent</span>`;
-                    } else if(hasIncomingRequest) {
-                        buttonMarkup = `<button onclick="handleIncomingRequestOperation('${peer.uid}', 'accept')" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl">Accept</button>`;
-                    } else {
-                        buttonMarkup = `<button onclick="dispatchFriendHandshake('${peer.uid}')" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl transition">Connect Node</button>`;
-                    }
-
-                    const card = document.createElement('div');
-                    card.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 flex justify-between items-center text-xs";
-                    card.innerHTML = `
-                        <div class="flex items-center space-x-3 cursor-pointer" onclick="displayPeerAccountProfile('${peer.uid}')">
-                            <img src="${peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" class="w-8 h-8 rounded-full object-cover">
-                            <div>
-                                <p class="font-bold text-slate-800 dark:text-slate-200">${peer.name}</p>
-                                <p class="text-[9px] text-slate-500 font-mono">@${peer.uid}</p>
-                            </div>
-                        </div>
-                        <div>${buttonMarkup}</div>
-                    `;
-                    profileGrid.appendChild(card);
-                }
-            });
-
-            databaseState.publications.forEach(post => {
-                if(post && post.text && post.text.toLowerCase().includes(query)) {
-                    const card = document.createElement('div');
-                    card.className = "bg-lightcard dark:bg-darkcard p-3 rounded-xl border border-lightborder dark:border-slate-800 text-xs space-y-2";
-                    card.innerHTML = `
-                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
-                        <span class="text-[9px] text-slate-600 font-mono">Node Broadcast ID: @${post.authorUID}</span>
-                    `;
-                    articleGrid.appendChild(card);
-                }
-            });
-        }
-
-        window.dispatchFriendHandshake = function(targetUID) {
-            const myUID = databaseState.currentUser.uid;
-            const reqKey = `req_${myUID}_to_${targetUID}`;
-            set(ref(db, `friendships/${reqKey}`), 'pending').then(() => {
-                showSuccessToast('Request Sent!', 'Friend request sent successfully.', '📨');
-                handleUnifiedSearch();
-                addNotification({
-                    type: 'friend_request',
-                    message: `${databaseState.currentUser.name} sent you a friend request! 🤝`,
-                    targetUserId: targetUID,
-                    sourceUserId: myUID
-                });
-            });
-        }
-
-        // ============================================================
-        // PEER PROFILE
-        // ============================================================
-        window.displayPeerAccountProfile = function(uid) {
-            const peer = databaseState.peers.find(p => p.uid === uid);
-            if(!peer) return;
-
-            document.getElementById('peer-screen-name').innerText = peer.name;
-            document.getElementById('peer-screen-uid').innerText = '@' + peer.uid;
-            document.getElementById('peer-screen-bio').innerText = peer.bio || 'No profile description broadcasted.';
-            document.getElementById('peer-screen-avatar').src = peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
-            
-            const prof = document.getElementById('peer-screen-profession');
-            if(peer.profession) {
-                prof.innerText = peer.profession;
-                prof.classList.remove('hidden');
-            } else {
-                prof.classList.add('hidden');
-            }
-
-            const peerCard = document.getElementById('peer-profile-card');
-            const peerFrame = document.getElementById('peer-avatar-frame');
-            
-            peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
-            peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
-            
-            if (peer.isPremium) {
-                if (peer.premiumTheme) {
-                    peerCard.classList.add(peer.premiumTheme);
-                }
-                if (peer.premiumFrame) {
-                    peerFrame.classList.add(peer.premiumFrame);
-                }
-                const glowColor = peer.premiumTheme ? 
-                    peer.premiumTheme.replace('premium-theme-', '') : 'purple';
-                const glowMap = {
-                    'galaxy': 'purple',
-                    'sunset': 'orange',
-                    'ocean': 'cyan',
-                    'forest': 'emerald',
-                    'rose': 'pink',
-                    'gold': 'gold',
-                    'ice': 'cyan',
-                    'almond': 'almond',
-                    'royal': 'royal',
-                    'cherry': 'cherry'
-                };
-                peerCard.classList.add('premium-profile-glow', glowMap[glowColor] || 'purple');
-            }
-
-            const myUID = databaseState.currentUser.uid;
-            const actionArea = document.getElementById('peer-screen-action-container');
-            actionArea.innerHTML = '';
-
-            const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
-            if(isFriend) {
-                const btn = document.createElement('button');
-                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition";
-                btn.innerText = "Initialize Encrypted Chat Session";
-                btn.onclick = () => {
-                    closeModal('full-screen-account-modal');
-                    switchTab('chat');
-                    openDirectCommunicationChannel(peer.uid);
-                };
-                actionArea.appendChild(btn);
-            } else {
-                const sendBtn = document.createElement('button');
-                sendBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition";
-                sendBtn.innerText = "Send Friend Request";
-                sendBtn.onclick = () => {
-                    dispatchFriendHandshake(peer.uid);
-                    closeModal('full-screen-account-modal');
-                };
-                actionArea.appendChild(sendBtn);
-            }
-
-            const peerFeed = document.getElementById('peer-screen-posts-feed');
-            peerFeed.innerHTML = '';
-            const specificPosts = databaseState.publications.filter(p => p.authorUID === uid);
-            if(specificPosts.length > 0) {
-                specificPosts.forEach(post => {
-                    const block = document.createElement('div');
-                    block.className = "bg-slate-100 dark:bg-darkcard p-3 rounded-xl border border-slate-300 dark:border-slate-800 text-xs";
-                    block.innerHTML = `
-                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
-                        ${post.image ? `<div class="mt-2 rounded-lg overflow-hidden max-h-24"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
-                    `;
-                    peerFeed.appendChild(block);
-                });
-            } else {
-                peerFeed.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No active database publications discovered.</p>`;
-            }
-
-            openModal('full-screen-account-modal');
-        }
-
-        // ============================================================
-        // PUBLICATION INSPECTION
-        // ============================================================
-        window.openPublicationInspectionModal = function(postId) {
-            const targetPost = databaseState.publications.find(p => p.id === postId);
-            if(!targetPost) return;
-
-            const modalPayload = document.getElementById('expanded-post-payload');
-            modalPayload.innerHTML = `
-                <div class="space-y-2">
-                    <p class="font-bold text-slate-400">Context Body</p>
-                    <p class="text-slate-800 dark:text-slate-200 bg-lightbg dark:bg-darkbg p-3 rounded-xl border border-lightborder dark:border-slate-800">${targetPost.text}</p>
-                </div>
-                ${targetPost.image ? `<div class="rounded-xl overflow-hidden border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${targetPost.image}')"><img src="${targetPost.image}" class="w-full max-h-40 object-cover"></div>` : ''}
-                <div class="space-y-2">
-                    <p class="font-bold text-slate-400">Comments Stack</p>
-                    <div id="expanded-post-comments-grid" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar"></div>
-                </div>
-                <div class="flex gap-2 mt-2">
-                    <input type="text" id="post-comment-input-field" placeholder="Append transaction comment..." class="flex-1 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 text-slate-800 dark:text-slate-200">
-                    <button onclick="dispatchPublicationComment('${postId}')" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-4 py-2 rounded-xl">Append</button>
-                </div>
-            `;
-
-            const commentGrid = document.getElementById('expanded-post-comments-grid');
-            if(targetPost.comments && Object.keys(targetPost.comments).length > 0) {
-                Object.values(targetPost.comments).forEach(c => {
-                    const el = document.createElement('div');
-                    el.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl space-y-0.5";
-                    el.innerHTML = `<p class="font-bold text-slate-600 dark:text-slate-400">@${c.authorName}:</p><p class="text-slate-700 dark:text-slate-300">${c.text}</p>`;
-                    commentGrid.appendChild(el);
-                });
-            } else {
-                commentGrid.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-2">No active comments linked inside framework.</p>`;
-            }
-
-            openModal('expanded-post-modal');
-        }
-
-        window.dispatchPublicationComment = function(postId) {
-            const field = document.getElementById('post-comment-input-field');
-            const txt = field.value.trim();
-            if(!txt) return;
-
-            onValue(ref(db, 'publications'), (snap) => {
-                const data = snap.val();
-                if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === postId);
-                    if(dbKey) {
-                        const myUID = databaseState.currentUser.uid;
-                        const postOwner = data[dbKey].authorUID;
-                        const payload = {
-                            authorUID: myUID,
-                            authorName: databaseState.currentUser.name,
-                            text: txt,
-                            timestamp: Date.now()
-                        };
-                        push(ref(db, `publications/${dbKey}/comments`), payload).then(() => {
-                            field.value = '';
-                            closeModal('expanded-post-modal');
-                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
-                            if (postOwner !== myUID) {
-                                addNotification({
-                                    type: 'comment',
-                                    message: `${databaseState.currentUser.name} commented on your post: "${txt}"`,
-                                    targetUserId: postOwner,
-                                    sourceUserId: myUID,
-                                    postId: postId
-                                });
-                            }
-                        });
-                    }
-                }
-            }, { onlyOnce: true });
-        }
-
-        // ============================================================
-        // FORWARD SHARE
-        // ============================================================
-        window.openForwardShareEcosystemModal = function(postId) {
-            databaseState.activeTargetSharePostID = postId;
-            const container = document.getElementById('share-friends-target-grid');
-            container.innerHTML = '';
-            const myUID = databaseState.currentUser.uid;
-            let count = 0;
-
-            databaseState.peers.forEach(peer => {
-                if(peer.uid === myUID) return;
-                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
-                if(isFriend) {
-                    count++;
-                    const card = document.createElement('div');
-                    card.className = "bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 p-2.5 rounded-xl flex justify-between items-center";
-                    card.innerHTML = `
-                        <span class="font-bold text-slate-700 dark:text-slate-300">${peer.name}</span>
-                        <button onclick="executeShareTransmissionPacket('${peer.uid}')" class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg font-bold text-[11px] text-white">Forward</button>
-                    `;
-                    container.appendChild(card);
-                }
-            });
-
-            if(count === 0) {
-                container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No direct friends linked inside core node network.</p>`;
-            }
-            openModal('forward-share-modal');
-        }
-
-        window.executeShareTransmissionPacket = function(targetUID) {
-            if(!databaseState.activeTargetSharePostID) return;
-            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
-            if(!targetPost) return;
-
-            const myUID = databaseState.currentUser.uid;
-            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
-            const messagePayload = {
-                sender: myUID,
-                text: `📝 Shared a post: "${targetPost.text}"`,
-                timestamp: Date.now(),
-                status: 'transmitted',
-                mediaType: 'post',
-                mediaUrl: targetPost.image || null,
-                postId: targetPost.id
-            };
-
-            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
-                closeModal('forward-share-modal');
-                showSuccessToast('Post Shared!', 'Post sent to your friend successfully.', '📝');
-            });
-        }
-
-        // ============================================================
-        // REEL SHARE
-        // ============================================================
-        window.openReelShareModal = function(reelId) {
-            databaseState.activeTargetSharePostID = reelId;
-            const container = document.getElementById('reel-share-target-grid');
-            container.innerHTML = '';
-            const myUID = databaseState.currentUser.uid;
-            let count = 0;
-
-            databaseState.peers.forEach(peer => {
-                if(peer.uid === myUID) return;
-                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
-                if(isFriend) {
-                    count++;
-                    const card = document.createElement('div');
-                    card.className = "bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 p-2.5 rounded-xl flex justify-between items-center";
-                    card.innerHTML = `
-                        <span class="font-bold text-slate-700 dark:text-slate-300">${peer.name}</span>
-                        <button onclick="executeReelShare('${peer.uid}')" class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg font-bold text-[11px] text-white">Send</button>
-                    `;
-                    container.appendChild(card);
-                }
-            });
-
-            if(count === 0) {
-                container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No friends to share with.</p>`;
-            }
-            openModal('reel-share-modal');
-        };
-
-        window.executeReelShare = function(targetUID) {
-            if(!databaseState.activeTargetSharePostID) return;
-            const targetReel = databaseState.reels.find(r => r.id === databaseState.activeTargetSharePostID);
-            if(!targetReel) return;
-
-            const myUID = databaseState.currentUser.uid;
-            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
-            const messagePayload = {
-                sender: myUID,
-                text: `🎬 Shared a reel: ${targetReel.caption || 'Check this out!'}`,
-                timestamp: Date.now(),
-                status: 'transmitted',
-                mediaType: 'reel',
-                mediaUrl: targetReel.videoUrl,
-                mediaThumbnail: targetReel.thumbnail || targetReel.videoUrl,
-                reelId: targetReel.id
-            };
-
-            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
-                closeModal('reel-share-modal');
-                showSuccessToast('Reel Shared!', 'Reel sent to your friend successfully.', '🎬');
-            });
-        };
-
-        // ============================================================
-        // REEL COMMENTS
-        // ============================================================
-        window.deleteReelComment = function(reelId, commentKey) {
-            if(confirm('Are you sure you want to delete this comment?')) {
-                remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
-                    openReelComments(databaseState.activeReelId);
-                }).catch((error) => {
-                    showSuccessToast('Error', 'Failed to delete comment.', '❌');
-                });
-            }
-        };
-
-        window.openReelComments = function(reelId) {
-            databaseState.activeReelId = reelId;
-            const container = document.getElementById('reel-comments-container');
-            container.innerHTML = '';
-            const targetReel = databaseState.reels.find(r => r.id === reelId);
-            if(!targetReel) return;
-
-            if(targetReel.comments && Object.keys(targetReel.comments).length > 0) {
-                const reelRef = ref(db, 'reels');
-                get(reelRef).then((snap) => {
-                    const data = snap.val();
-                    let reelDbKey = null;
-                    if(data) {
-                        const keys = Object.keys(data);
-                        for(let k of keys) {
-                            if(data[k] && data[k].id === reelId) {
-                                reelDbKey = k;
-                                break;
-                            }
-                        }
-                    }
-                    if(!reelDbKey) {
-                        container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">Error loading comments.</p>`;
-                        return;
-                    }
-
-                    Object.keys(targetReel.comments).forEach(commentKey => {
-                        const c = targetReel.comments[commentKey];
-                        const isOwner = c.authorUID === databaseState.currentUser.uid;
-                        const el = document.createElement('div');
-                        el.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl space-y-0.5 flex justify-between items-start";
-                        el.innerHTML = `
-                            <div>
-                                <p class="font-bold text-slate-600 dark:text-slate-400 text-xs">@${c.authorName}:</p>
-                                <p class="text-slate-700 dark:text-slate-300 text-xs">${c.text}</p>
-                            </div>
-                            ${isOwner ? `
-                                <button onclick="deleteReelComment('${reelDbKey}', '${commentKey}')" 
-                                    class="comment-delete-btn text-red-400 hover:text-red-300 p-1 rounded-lg text-xs">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            ` : ''}
-                        `;
-                        container.appendChild(el);
-                    });
-                });
-            } else {
-                container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">No comments yet.</p>`;
-            }
-
-            openModal('reel-comments-modal');
-        };
-
-        window.addReelComment = function() {
-            const field = document.getElementById('reel-comment-input');
-            const txt = field.value.trim();
-            if(!txt || !databaseState.activeReelId) return;
-
-            onValue(ref(db, 'reels'), (snap) => {
-                const data = snap.val();
-                if(data) {
-                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === databaseState.activeReelId);
-                    if(dbKey) {
-                        const myUID = databaseState.currentUser.uid;
-                        const reelOwner = data[dbKey].userId;
-                        const payload = {
-                            authorUID: myUID,
-                            authorName: databaseState.currentUser.name,
-                            text: txt,
-                            timestamp: Date.now()
-                        };
-                        push(ref(db, `reels/${dbKey}/comments`), payload).then(() => {
-                            field.value = '';
-                            closeModal('reel-comments-modal');
-                            if (reelOwner !== myUID) {
-                                addNotification({
-                                    type: 'reel_comment',
-                                    message: `${databaseState.currentUser.name} commented on your reel: "${txt}"`,
-                                    targetUserId: reelOwner,
-                                    sourceUserId: myUID,
-                                    reelId: databaseState.activeReelId
-                                });
-                            }
-                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
-                        });
-                    }
-                }
-            }, { onlyOnce: true });
-        };
 
         // ============================================================
         // PROFILE FUNCTIONS
@@ -4002,11 +3835,6 @@
         // ============================================================
         // MEDIA VIEWERS
         // ============================================================
-        window.openImageViewer = function(imageSrc) {
-            document.getElementById('viewer-target-image').src = imageSrc;
-            openModal('full-screen-image-viewer');
-        }
-
         window.openFullScreenMedia = function(url, type) {
             if (type === 'image') {
                 document.getElementById('viewer-target-image').src = url;
@@ -4035,6 +3863,332 @@
             el.classList.toggle('hidden');
         }
         window.closeElement = function(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // ============================================================
+        // PEER ACCOUNT PROFILE
+        // ============================================================
+        window.displayPeerAccountProfile = function(uid) {
+            const peer = databaseState.peers.find(p => p.uid === uid);
+            if(!peer) return;
+
+            document.getElementById('peer-screen-name').innerText = peer.name;
+            document.getElementById('peer-screen-uid').innerText = '@' + peer.uid;
+            document.getElementById('peer-screen-bio').innerText = peer.bio || 'No profile description broadcasted.';
+            document.getElementById('peer-screen-avatar').src = peer.pfp || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150';
+            
+            const prof = document.getElementById('peer-screen-profession');
+            if(peer.profession) {
+                prof.innerText = peer.profession;
+                prof.classList.remove('hidden');
+            } else {
+                prof.classList.add('hidden');
+            }
+
+            const peerCard = document.getElementById('peer-profile-card');
+            const peerFrame = document.getElementById('peer-avatar-frame');
+            
+            peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
+            peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
+            
+            if (peer.isPremium) {
+                if (peer.premiumTheme) {
+                    peerCard.classList.add(peer.premiumTheme);
+                }
+                if (peer.premiumFrame) {
+                    peerFrame.classList.add(peer.premiumFrame);
+                }
+                const glowColor = peer.premiumTheme ? 
+                    peer.premiumTheme.replace('premium-theme-', '') : 'purple';
+                const glowMap = {
+                    'galaxy': 'purple',
+                    'sunset': 'orange',
+                    'ocean': 'cyan',
+                    'forest': 'emerald',
+                    'rose': 'pink',
+                    'gold': 'gold',
+                    'ice': 'cyan',
+                    'almond': 'almond',
+                    'royal': 'royal',
+                    'cherry': 'cherry'
+                };
+                peerCard.classList.add('premium-profile-glow', glowMap[glowColor] || 'purple');
+            }
+
+            const myUID = databaseState.currentUser.uid;
+            const actionArea = document.getElementById('peer-screen-action-container');
+            actionArea.innerHTML = '';
+
+            const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+            if(isFriend) {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition";
+                btn.innerText = "Initialize Encrypted Chat Session";
+                btn.onclick = () => {
+                    closeModal('full-screen-account-modal');
+                    switchTab('chat');
+                    openDirectCommunicationChannel(peer.uid);
+                };
+                actionArea.appendChild(btn);
+            } else {
+                const sendBtn = document.createElement('button');
+                sendBtn.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition";
+                sendBtn.innerText = "Send Friend Request";
+                sendBtn.onclick = () => {
+                    dispatchFriendHandshake(peer.uid);
+                    closeModal('full-screen-account-modal');
+                };
+                actionArea.appendChild(sendBtn);
+            }
+
+            const peerFeed = document.getElementById('peer-screen-posts-feed');
+            peerFeed.innerHTML = '';
+            const specificPosts = databaseState.publications.filter(p => p.authorUID === uid);
+            if(specificPosts.length > 0) {
+                specificPosts.forEach(post => {
+                    const block = document.createElement('div');
+                    block.className = "bg-slate-100 dark:bg-darkcard p-3 rounded-xl border border-slate-300 dark:border-slate-800 text-xs";
+                    block.innerHTML = `
+                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${post.text}</p>
+                        ${post.image ? `<div class="mt-2 rounded-lg overflow-hidden max-h-24 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
+                    `;
+                    peerFeed.appendChild(block);
+                });
+            } else {
+                peerFeed.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No active database publications discovered.</p>`;
+            }
+
+            openModal('full-screen-account-modal');
+        }
+
+        // ============================================================
+        // FORWARD SHARE
+        // ============================================================
+        window.openForwardShareEcosystemModal = function(postId) {
+            databaseState.activeTargetSharePostID = postId;
+            const container = document.getElementById('share-friends-target-grid');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let count = 0;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                if(isFriend) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = "bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 p-2.5 rounded-xl flex justify-between items-center";
+                    card.innerHTML = `
+                        <span class="font-bold text-slate-700 dark:text-slate-300">${peer.name}</span>
+                        <button onclick="executeShareTransmissionPacket('${peer.uid}')" class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg font-bold text-[11px] text-white">Forward</button>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            if(count === 0) {
+                container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No direct friends linked inside core node network.</p>`;
+            }
+            openModal('forward-share-modal');
+        }
+
+        window.executeShareTransmissionPacket = function(targetUID) {
+            if(!databaseState.activeTargetSharePostID) return;
+            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
+            if(!targetPost) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            const messagePayload = {
+                sender: myUID,
+                text: `📝 Shared a post: "${targetPost.text}"`,
+                timestamp: Date.now(),
+                status: 'transmitted',
+                mediaType: 'post',
+                mediaUrl: targetPost.image || null,
+                postId: targetPost.id
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                closeModal('forward-share-modal');
+                showSuccessToast('Post Shared!', 'Post sent to your friend successfully.', '📝');
+            });
+        }
+
+        // ============================================================
+        // REEL SHARE
+        // ============================================================
+        window.openReelShareModal = function(reelId) {
+            databaseState.activeTargetSharePostID = reelId;
+            const container = document.getElementById('reel-share-target-grid');
+            container.innerHTML = '';
+            const myUID = databaseState.currentUser.uid;
+            let count = 0;
+
+            databaseState.peers.forEach(peer => {
+                if(peer.uid === myUID) return;
+                const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
+                if(isFriend) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = "bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 p-2.5 rounded-xl flex justify-between items-center";
+                    card.innerHTML = `
+                        <span class="font-bold text-slate-700 dark:text-slate-300">${peer.name}</span>
+                        <button onclick="executeReelShare('${peer.uid}')" class="bg-cyan-600 hover:bg-cyan-700 px-3 py-1 rounded-lg font-bold text-[11px] text-white">Send</button>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            if(count === 0) {
+                container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No friends to share with.</p>`;
+            }
+            openModal('reel-share-modal');
+        };
+
+        window.executeReelShare = function(targetUID) {
+            if(!databaseState.activeTargetSharePostID) return;
+            const targetReel = databaseState.reels.find(r => r.id === databaseState.activeTargetSharePostID);
+            if(!targetReel) return;
+
+            const myUID = databaseState.currentUser.uid;
+            const threadKey = myUID < targetUID ? `${myUID}_text_${targetUID}` : `${targetUID}_text_${myUID}`;
+            const messagePayload = {
+                sender: myUID,
+                text: `🎬 Shared a reel: ${targetReel.caption || 'Check this out!'}`,
+                timestamp: Date.now(),
+                status: 'transmitted',
+                mediaType: 'reel',
+                mediaUrl: targetReel.videoUrl,
+                mediaThumbnail: targetReel.thumbnail || targetReel.videoUrl,
+                reelId: targetReel.id
+            };
+
+            push(ref(db, `chats/${threadKey}`), messagePayload).then(() => {
+                closeModal('reel-share-modal');
+                showSuccessToast('Reel Shared!', 'Reel sent to your friend successfully.', '🎬');
+            });
+        };
+
+        // ============================================================
+        // REEL COMMENTS
+        // ============================================================
+        window.deleteReelComment = function(reelId, commentKey) {
+            if(confirm('Are you sure you want to delete this comment?')) {
+                remove(ref(db, `reels/${reelId}/comments/${commentKey}`)).then(() => {
+                    openReelComments(databaseState.activeReelId);
+                }).catch((error) => {
+                    showSuccessToast('Error', 'Failed to delete comment.', '❌');
+                });
+            }
+        };
+
+        window.openReelComments = function(reelId) {
+            databaseState.activeReelId = reelId;
+            const container = document.getElementById('reel-comments-container');
+            container.innerHTML = '';
+            const targetReel = databaseState.reels.find(r => r.id === reelId);
+            if(!targetReel) return;
+
+            if(targetReel.comments && Object.keys(targetReel.comments).length > 0) {
+                const reelRef = ref(db, 'reels');
+                get(reelRef).then((snap) => {
+                    const data = snap.val();
+                    let reelDbKey = null;
+                    if(data) {
+                        const keys = Object.keys(data);
+                        for(let k of keys) {
+                            if(data[k] && data[k].id === reelId) {
+                                reelDbKey = k;
+                                break;
+                            }
+                        }
+                    }
+                    if(!reelDbKey) {
+                        container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">Error loading comments.</p>`;
+                        return;
+                    }
+
+                    Object.keys(targetReel.comments).forEach(commentKey => {
+                        const c = targetReel.comments[commentKey];
+                        const isOwner = c.authorUID === databaseState.currentUser.uid;
+                        const el = document.createElement('div');
+                        el.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-2.5 rounded-xl space-y-0.5 flex justify-between items-start";
+                        el.innerHTML = `
+                            <div>
+                                <p class="font-bold text-slate-600 dark:text-slate-400 text-xs">@${c.authorName}:</p>
+                                <p class="text-slate-700 dark:text-slate-300 text-xs">${c.text}</p>
+                            </div>
+                            ${isOwner ? `
+                                <button onclick="deleteReelComment('${reelDbKey}', '${commentKey}')" 
+                                    class="comment-delete-btn text-red-400 hover:text-red-300 p-1 rounded-lg text-xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            ` : ''}
+                        `;
+                        container.appendChild(el);
+                    });
+                });
+            } else {
+                container.innerHTML = `<p class="text-[10px] text-slate-600 italic text-center py-4">No comments yet.</p>`;
+            }
+
+            openModal('reel-comments-modal');
+        };
+
+        window.addReelComment = function() {
+            const field = document.getElementById('reel-comment-input');
+            const txt = field.value.trim();
+            if(!txt || !databaseState.activeReelId) return;
+
+            onValue(ref(db, 'reels'), (snap) => {
+                const data = snap.val();
+                if(data) {
+                    const dbKey = Object.keys(data).find(k => data[k] && data[k].id === databaseState.activeReelId);
+                    if(dbKey) {
+                        const myUID = databaseState.currentUser.uid;
+                        const reelOwner = data[dbKey].userId;
+                        const payload = {
+                            authorUID: myUID,
+                            authorName: databaseState.currentUser.name,
+                            text: txt,
+                            timestamp: Date.now()
+                        };
+                        push(ref(db, `reels/${dbKey}/comments`), payload).then(() => {
+                            field.value = '';
+                            closeModal('reel-comments-modal');
+                            if (reelOwner !== myUID) {
+                                addNotification({
+                                    type: 'reel_comment',
+                                    message: `${databaseState.currentUser.name} commented on your reel: "${txt}"`,
+                                    targetUserId: reelOwner,
+                                    sourceUserId: myUID,
+                                    reelId: databaseState.activeReelId
+                                });
+                            }
+                            showSuccessToast('Commented!', 'Your comment has been posted.', '💬');
+                        });
+                    }
+                }
+            }, { onlyOnce: true });
+        };
+
+        // ============================================================
+        // DISPATCH FRIEND HANDSHAKE
+        // ============================================================
+        window.dispatchFriendHandshake = function(targetUID) {
+            const myUID = databaseState.currentUser.uid;
+            const reqKey = `req_${myUID}_to_${targetUID}`;
+            set(ref(db, `friendships/${reqKey}`), 'pending').then(() => {
+                showSuccessToast('Request Sent!', 'Friend request sent successfully.', '📨');
+                handleUnifiedSearch();
+                addNotification({
+                    type: 'friend_request',
+                    message: `${databaseState.currentUser.name} sent you a friend request! 🤝`,
+                    targetUserId: targetUID,
+                    sourceUserId: myUID
+                });
+            });
+        }
 
         // ============================================================
         // INIT
@@ -4072,9 +4226,12 @@
             }
         }
 
-        console.log('🚀 Stardust Hub - MICROPHONE FIXED');
-        console.log('✅ Microphone permission properly handled');
-        console.log('✅ All other features working perfectly');
+        console.log('🚀 Stardust Hub - ALL FEATURES FIXED');
+        console.log('✅ Full screen image view - FIXED');
+        console.log('✅ Reels showing after upload - FIXED');
+        console.log('✅ Delete comments (owner & author) - FIXED');
+        console.log('✅ Delete posts (owner only) - FIXED');
+        console.log('✅ Search shows images - FIXED');
     </script>
 </body>
 </html>
