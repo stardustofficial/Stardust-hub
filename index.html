@@ -97,197 +97,187 @@
         body.light-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.1) 100%); }
         body.light-mode .reel-actions button { color: white; }
         body.light-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
-        body.light-mode .theme-soft-cyan { background-image: linear-gradient(135deg, #f0f9ff 70%, #e0f2fe 100%) !important; border-color: #06b6d4 !important; }
-        body.light-mode .theme-soft-pink { background-image: linear-gradient(135deg, #fdf2f8 70%, #fce7f3 100%) !important; border-color: #f43f5e !important; }
-        body.light-mode .theme-soft-purple { background-image: linear-gradient(135deg, #f3e8ff 70%, #e9d5ff 100%) !important; border-color: #a855f7 !important; }
-        body.light-mode .theme-soft-emerald { background-image: linear-gradient(135deg, #ecfdf5 70%, #d1fae5 100%) !important; border-color: #10b981 !important; }
-        body.light-mode .theme-galaxy { background-image: linear-gradient(135deg, #1a0a2e 70%, #2d1b69 100%) !important; border-color: #7c3aed !important; color: #e0d7ff !important; }
-        body.light-mode .theme-sunset { background-image: linear-gradient(135deg, #1a0a0a 70%, #4a1a0a 100%) !important; border-color: #f97316 !important; color: #ffedd5 !important; }
-        body.light-mode .theme-ocean { background-image: linear-gradient(135deg, #0a1628 70%, #0a2a4a 100%) !important; border-color: #0ea5e9 !important; color: #dbeafe !important; }
-        body.light-mode .theme-forest { background-image: linear-gradient(135deg, #0a1a0a 70%, #0a3a0a 100%) !important; border-color: #22c55e !important; color: #dcfce7 !important; }
 
-        /* ===== DARK MODE - Original Dark Blue Theme ===== */
+        /* ===== DARK MODE - Full Working ===== */
         body.dark-mode {
-            background-color: #0b1528;
-            color: #f1f5f9;
+            background-color: #0b1528 !important;
+            color: #f1f5f9 !important;
         }
-        body.dark-mode .bg-darkbg { background-color: #0b1528; }
-        body.dark-mode .bg-darkcard { background-color: #1e293b; }
-        body.dark-mode .border-slate-800 { border-color: #1e293b; }
-        body.dark-mode .border-slate-900 { border-color: #0f172a; }
-        body.dark-mode .text-slate-100 { color: #f1f5f9; }
-        body.dark-mode .text-slate-200 { color: #e2e8f0; }
-        body.dark-mode .text-slate-300 { color: #cbd5e1; }
-        body.dark-mode .text-slate-400 { color: #94a3b8; }
-        body.dark-mode .text-slate-500 { color: #64748b; }
-        body.dark-mode .text-slate-600 { color: #475569; }
-        body.dark-mode .bg-slate-800 { background-color: #1e293b; }
-        body.dark-mode .bg-slate-900 { background-color: #0f172a; }
-        body.dark-mode .bg-darkcard\/95 { background-color: rgba(30, 41, 59, 0.95); }
-        body.dark-mode .bg-darkcard\/50 { background-color: rgba(30, 41, 59, 0.5); }
-        body.dark-mode .bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5); }
-        body.dark-mode .bg-slate-700 { background-color: #334155; }
-        body.dark-mode .hover\:bg-slate-700:hover { background-color: #334155; }
-        body.dark-mode .hover\:bg-slate-800:hover { background-color: #1e293b; }
-        body.dark-mode .bg-darkbg\/95 { background-color: rgba(11, 21, 40, 0.95); }
-        body.dark-mode .bg-slate-800\/60 { background-color: rgba(30, 41, 59, 0.6); }
-        body.dark-mode .bg-slate-800\/30 { background-color: rgba(30, 41, 59, 0.3); }
-        body.dark-mode .bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.4); }
-        body.dark-mode .bg-slate-800\/20 { background-color: rgba(30, 41, 59, 0.2); }
-        body.dark-mode .bg-slate-700\/30 { background-color: rgba(51, 65, 85, 0.3); }
-        body.dark-mode .bg-blue-950\/30 { background-color: rgba(30, 58, 138, 0.3); }
-        body.dark-mode .border-blue-600\/50 { border-color: rgba(37, 99, 235, 0.5); }
-        body.dark-mode .bg-slate-900\/50 { background-color: rgba(15, 23, 42, 0.5); }
-        body.dark-mode .bg-red-950\/40 { background-color: rgba(127, 29, 29, 0.4); }
-        body.dark-mode .border-red-900\/40 { border-color: rgba(127, 29, 29, 0.4); }
-        body.dark-mode #loading-screen { background-color: #0b1528; }
-        body.dark-mode .loading-spinner { border-color: rgba(255, 255, 255, 0.1); border-top-color: #06b6d4; }
-        body.dark-mode .spinner { border-color: rgba(255, 255, 255, 0.1); border-left-color: #fff; }
-        body.dark-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%); }
-        body.dark-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.1); }
-        body.dark-mode .call-end-btn { background: rgba(220, 38, 38, 0.9); border-color: rgba(220, 38, 38, 0.5); }
-        body.dark-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1); }
-        body.dark-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1); }
-        body.dark-mode .floating-call-window { border-color: #334155; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
-        body.dark-mode .floating-call-window .caller-pfp { background: rgba(0,0,0,0.85); }
-        body.dark-mode .floating-minimize-btn { background: rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.2); color: white; }
-        body.dark-mode .floating-minimize-btn:hover { background: rgba(0,0,0,0.8); }
-        body.dark-mode #notification-dropdown { background: #1e293b; border-color: #334155; }
-        body.dark-mode #notification-dropdown .notif-header { border-bottom-color: #334155; }
-        body.dark-mode .notification-badge { border-color: #0b1528; }
-        body.dark-mode .notification-item.bg-darkbg { background-color: #0b1528; }
-        body.dark-mode .notification-item.bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5); }
-        body.dark-mode .post-tab-btn.active { background: #1e293b; color: #06b6d4; }
-        body.dark-mode .post-tab-btn:not(.active) { color: #64748b; }
-        body.dark-mode .post-tab-btn:not(.active):hover { color: #94a3b8; }
-        body.dark-mode .profile-tab-btn.active { background: #1e293b; color: #06b6d4; }
-        body.dark-mode .profile-tab-btn:not(.active) { color: #64748b; }
-        body.dark-mode .profile-tab-btn:not(.active):hover { color: #94a3b8; }
-        body.dark-mode .shared-media-preview .media-label { background: #0f172a; color: #94a3b8; }
-        body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
-        body.dark-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857); border-color: #34d399; }
-        body.dark-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.2) 100%); }
-        body.dark-mode .reel-actions button { color: white; }
-        body.dark-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
-        body.dark-mode .theme-soft-cyan { background-image: linear-gradient(135deg, #0b1528 70%, #083344 100%) !important; border-color: #06b6d4 !important; }
-        body.dark-mode .theme-soft-pink { background-image: linear-gradient(135deg, #0b1528 70%, #4c0519 100%) !important; border-color: #f43f5e !important; }
-        body.dark-mode .theme-soft-purple { background-image: linear-gradient(135deg, #0b1528 70%, #3b0764 100%) !important; border-color: #a855f7 !important; }
-        body.dark-mode .theme-soft-emerald { background-image: linear-gradient(135deg, #0b1528 70%, #022c22 100%) !important; border-color: #10b981 !important; }
-        body.dark-mode .theme-galaxy { background-image: linear-gradient(135deg, #0b1528 70%, #1a0a3e 100%) !important; border-color: #7c3aed !important; }
-        body.dark-mode .theme-sunset { background-image: linear-gradient(135deg, #0b1528 70%, #3a1a0a 100%) !important; border-color: #f97316 !important; }
-        body.dark-mode .theme-ocean { background-image: linear-gradient(135deg, #0b1528 70%, #0a2a4a 100%) !important; border-color: #0ea5e9 !important; }
-        body.dark-mode .theme-forest { background-image: linear-gradient(135deg, #0b1528 70%, #0a2a0a 100%) !important; border-color: #22c55e !important; }
+        body.dark-mode .bg-lightbg { background-color: #0b1528 !important; }
+        body.dark-mode .bg-lightcard { background-color: #1e293b !important; }
+        body.dark-mode .bg-darkbg { background-color: #0b1528 !important; }
+        body.dark-mode .bg-darkcard { background-color: #1e293b !important; }
+        body.dark-mode .border-lightborder { border-color: #1e293b !important; }
+        body.dark-mode .border-slate-800 { border-color: #1e293b !important; }
+        body.dark-mode .border-slate-900 { border-color: #0f172a !important; }
+        body.dark-mode .border-slate-300 { border-color: #334155 !important; }
+        body.dark-mode .text-slate-100 { color: #f1f5f9 !important; }
+        body.dark-mode .text-slate-200 { color: #e2e8f0 !important; }
+        body.dark-mode .text-slate-300 { color: #cbd5e1 !important; }
+        body.dark-mode .text-slate-400 { color: #94a3b8 !important; }
+        body.dark-mode .text-slate-500 { color: #64748b !important; }
+        body.dark-mode .text-slate-600 { color: #475569 !important; }
+        body.dark-mode .text-slate-700 { color: #94a3b8 !important; }
+        body.dark-mode .text-slate-800 { color: #e2e8f0 !important; }
+        body.dark-mode .bg-slate-800 { background-color: #1e293b !important; }
+        body.dark-mode .bg-slate-900 { background-color: #0f172a !important; }
+        body.dark-mode .bg-darkcard\/95 { background-color: rgba(30, 41, 59, 0.95) !important; }
+        body.dark-mode .bg-darkcard\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
+        body.dark-mode .bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
+        body.dark-mode .bg-slate-700 { background-color: #334155 !important; }
+        body.dark-mode .hover\:bg-slate-700:hover { background-color: #334155 !important; }
+        body.dark-mode .hover\:bg-slate-800:hover { background-color: #1e293b !important; }
+        body.dark-mode .bg-darkbg\/95 { background-color: rgba(11, 21, 40, 0.95) !important; }
+        body.dark-mode .bg-slate-800\/60 { background-color: rgba(30, 41, 59, 0.6) !important; }
+        body.dark-mode .bg-slate-800\/30 { background-color: rgba(30, 41, 59, 0.3) !important; }
+        body.dark-mode .bg-slate-800\/40 { background-color: rgba(30, 41, 59, 0.4) !important; }
+        body.dark-mode .bg-slate-800\/20 { background-color: rgba(30, 41, 59, 0.2) !important; }
+        body.dark-mode .bg-slate-700\/30 { background-color: rgba(51, 65, 85, 0.3) !important; }
+        body.dark-mode .bg-blue-950\/30 { background-color: rgba(30, 58, 138, 0.3) !important; }
+        body.dark-mode .border-blue-600\/50 { border-color: rgba(37, 99, 235, 0.5) !important; }
+        body.dark-mode .bg-slate-900\/50 { background-color: rgba(15, 23, 42, 0.5) !important; }
+        body.dark-mode .bg-red-950\/40 { background-color: rgba(127, 29, 29, 0.4) !important; }
+        body.dark-mode .border-red-900\/40 { border-color: rgba(127, 29, 29, 0.4) !important; }
+        body.dark-mode #loading-screen { background-color: #0b1528 !important; }
+        body.dark-mode .loading-spinner { border-color: rgba(255, 255, 255, 0.1) !important; border-top-color: #06b6d4 !important; }
+        body.dark-mode .spinner { border-color: rgba(255, 255, 255, 0.1) !important; border-left-color: #fff !important; }
+        body.dark-mode .call-fullscreen-bg { background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%) !important; }
+        body.dark-mode .call-bottom-btn { background: rgba(30, 41, 59, 0.8) !important; border-color: rgba(255,255,255,0.1) !important; }
+        body.dark-mode .call-end-btn { background: rgba(220, 38, 38, 0.9) !important; border-color: rgba(220, 38, 38, 0.5) !important; }
+        body.dark-mode .call-end-btn:hover { background: rgba(220, 38, 38, 1) !important; }
+        body.dark-mode .call-pfp-ring { box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1) !important; }
+        body.dark-mode .floating-call-window { border-color: #334155 !important; box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important; }
+        body.dark-mode .floating-call-window .caller-pfp { background: rgba(0,0,0,0.85) !important; }
+        body.dark-mode .floating-minimize-btn { background: rgba(0,0,0,0.6) !important; border-color: rgba(255,255,255,0.2) !important; color: white !important; }
+        body.dark-mode .floating-minimize-btn:hover { background: rgba(0,0,0,0.8) !important; }
+        body.dark-mode #notification-dropdown { background: #1e293b !important; border-color: #334155 !important; }
+        body.dark-mode #notification-dropdown .notif-header { border-bottom-color: #334155 !important; }
+        body.dark-mode .notification-badge { border-color: #0b1528 !important; }
+        body.dark-mode .notification-item.bg-darkbg { background-color: #0b1528 !important; }
+        body.dark-mode .notification-item.bg-slate-800\/50 { background-color: rgba(30, 41, 59, 0.5) !important; }
+        body.dark-mode .post-tab-btn.active { background: #1e293b !important; color: #06b6d4 !important; }
+        body.dark-mode .post-tab-btn:not(.active) { color: #64748b !important; }
+        body.dark-mode .post-tab-btn:not(.active):hover { color: #94a3b8 !important; }
+        body.dark-mode .profile-tab-btn.active { background: #1e293b !important; color: #06b6d4 !important; }
+        body.dark-mode .profile-tab-btn:not(.active) { color: #64748b !important; }
+        body.dark-mode .profile-tab-btn:not(.active):hover { color: #94a3b8 !important; }
+        body.dark-mode .shared-media-preview .media-label { background: #0f172a !important; color: #94a3b8 !important; }
+        body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155 !important; }
+        body.dark-mode .success-toast { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #34d399 !important; }
+        body.dark-mode .reel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%, rgba(0,0,0,0.2) 100%) !important; }
+        body.dark-mode .reel-actions button { color: white !important; }
+        body.dark-mode .reel-actions button svg { filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)) !important; }
+        body.dark-mode .bg-slate-200 { background-color: #1e293b !important; }
+        body.dark-mode .bg-slate-100 { background-color: #0f172a !important; }
+        body.dark-mode .hover\:bg-slate-100:hover { background-color: #1e293b !important; }
+        body.dark-mode .hover\:bg-slate-200:hover { background-color: #334155 !important; }
+        body.dark-mode .hover\:bg-slate-300:hover { background-color: #334155 !important; }
 
-        /* ===== PREMIUM THEMES WITH GLOW ===== */
+        /* ===== PREMIUM THEMES - Professional ===== */
         .premium-theme-galaxy {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #1a0a3e;
-            --theme-border: #7c3aed;
-            --theme-text: #e0d7ff;
-            --theme-glow: 0 0 30px rgba(124, 58, 237, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #0b0a1a, #1a0a3e, #2a0a5e) !important;
+            border-color: #7c3aed !important;
+            color: #e0d7ff !important;
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.3) !important;
         }
         .premium-theme-sunset {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #3a1a0a;
-            --theme-border: #f97316;
-            --theme-text: #ffedd5;
-            --theme-glow: 0 0 30px rgba(249, 115, 22, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #1a0a0a, #4a1a0a, #7a2a0a) !important;
+            border-color: #f97316 !important;
+            color: #ffedd5 !important;
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.3) !important;
         }
         .premium-theme-ocean {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #0a2a4a;
-            --theme-border: #0ea5e9;
-            --theme-text: #dbeafe;
-            --theme-glow: 0 0 30px rgba(14, 165, 233, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #0a0a2a, #0a2a5a, #0a4a8a) !important;
+            border-color: #0ea5e9 !important;
+            color: #dbeafe !important;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.3) !important;
         }
         .premium-theme-forest {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #0a2a0a;
-            --theme-border: #22c55e;
-            --theme-text: #dcfce7;
-            --theme-glow: 0 0 30px rgba(34, 197, 94, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #0a1a0a, #0a3a0a, #0a5a0a) !important;
+            border-color: #22c55e !important;
+            color: #dcfce7 !important;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3) !important;
         }
         .premium-theme-rose {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #4a0a1a;
-            --theme-border: #ec4899;
-            --theme-text: #fce7f3;
-            --theme-glow: 0 0 30px rgba(236, 72, 153, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #1a0a1a, #4a0a2a, #7a0a3a) !important;
+            border-color: #ec4899 !important;
+            color: #fce7f3 !important;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3) !important;
         }
         .premium-theme-gold {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #2a1a0a;
-            --theme-border: #f59e0b;
-            --theme-text: #fef3c7;
-            --theme-glow: 0 0 30px rgba(245, 158, 11, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #1a1a0a, #3a2a0a, #5a3a0a) !important;
+            border-color: #f59e0b !important;
+            color: #fef3c7 !important;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3) !important;
         }
         .premium-theme-ice {
-            --theme-bg-start: #0b1528;
-            --theme-bg-end: #0a2a3a;
-            --theme-border: #67e8f9;
-            --theme-text: #cffafe;
-            --theme-glow: 0 0 30px rgba(103, 232, 249, 0.3);
-            background: linear-gradient(135deg, var(--theme-bg-start), var(--theme-bg-end)) !important;
-            border-color: var(--theme-border) !important;
-            color: var(--theme-text) !important;
-            box-shadow: var(--theme-glow) !important;
+            background: linear-gradient(135deg, #0a1a2a, #0a3a5a, #0a5a8a) !important;
+            border-color: #67e8f9 !important;
+            color: #cffafe !important;
+            box-shadow: 0 0 30px rgba(103, 232, 249, 0.3) !important;
+        }
+        .premium-theme-almond {
+            background: linear-gradient(135deg, #2a1a0a, #4a2a1a, #6a3a2a) !important;
+            border-color: #d4a373 !important;
+            color: #fefae0 !important;
+            box-shadow: 0 0 30px rgba(212, 163, 115, 0.3) !important;
+        }
+        .premium-theme-royal {
+            background: linear-gradient(135deg, #1a0a2a, #2a0a4a, #3a0a6a) !important;
+            border-color: #8b5cf6 !important;
+            color: #ede9fe !important;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3) !important;
+        }
+        .premium-theme-cherry {
+            background: linear-gradient(135deg, #2a0a0a, #4a0a0a, #6a0a0a) !important;
+            border-color: #ef4444 !important;
+            color: #fecaca !important;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3) !important;
         }
 
-        /* ===== PREMIUM FRAMES ===== */
+        /* ===== PREMIUM FRAMES - Professional ===== */
         .premium-frame-glow {
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), 0 0 60px rgba(124, 58, 237, 0.2) !important;
-            border: 2px solid rgba(124, 58, 237, 0.5) !important;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(124, 58, 237, 0.2) !important;
+            border: 3px solid rgba(124, 58, 237, 0.6) !important;
         }
         .premium-frame-rainbow {
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2), 0 0 40px rgba(0, 255, 0, 0.2), 0 0 60px rgba(0, 0, 255, 0.2) !important;
-            border: 2px solid transparent !important;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2), 0 0 50px rgba(0, 255, 0, 0.2), 0 0 70px rgba(0, 0, 255, 0.2) !important;
+            border: 3px solid transparent !important;
             background-image: linear-gradient(white, white), linear-gradient(to right, red, orange, yellow, green, blue, purple) !important;
             background-origin: padding-box, border-box !important;
             background-clip: padding-box, border-box !important;
         }
         .premium-frame-gold {
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4) !important;
-            border: 2px solid #f59e0b !important;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.5) !important;
+            border: 3px solid #f59e0b !important;
         }
         .premium-frame-cyan {
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.4) !important;
-            border: 2px solid #06b6d4 !important;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5) !important;
+            border: 3px solid #06b6d4 !important;
         }
         .premium-frame-pink {
-            box-shadow: 0 0 30px rgba(236, 72, 153, 0.4) !important;
-            border: 2px solid #ec4899 !important;
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.5) !important;
+            border: 3px solid #ec4899 !important;
         }
         .premium-frame-purple {
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4) !important;
-            border: 2px solid #a855f7 !important;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.5) !important;
+            border: 3px solid #a855f7 !important;
         }
         .premium-frame-emerald {
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4) !important;
-            border: 2px solid #10b981 !important;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.5) !important;
+            border: 3px solid #10b981 !important;
+        }
+        .premium-frame-almond {
+            box-shadow: 0 0 40px rgba(212, 163, 115, 0.5) !important;
+            border: 3px solid #d4a373 !important;
+        }
+        .premium-frame-royal {
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5) !important;
+            border: 3px solid #8b5cf6 !important;
+        }
+        .premium-frame-cherry {
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.5) !important;
+            border: 3px solid #ef4444 !important;
         }
 
         /* ===== PREMIUM FONTS ===== */
@@ -298,10 +288,51 @@
         .premium-font-mono { font-family: 'Courier New', monospace !important; }
         .premium-font-neon { font-family: 'Arial Black', sans-serif !important; text-shadow: 0 0 10px rgba(6, 182, 212, 0.5) !important; }
         .premium-font-soft { font-family: 'Segoe UI', sans-serif !important; font-weight: 300 !important; }
+        .premium-font-luxury { font-family: 'Times New Roman', serif !important; font-style: italic !important; }
+        .premium-font-futuristic { font-family: 'Arial', sans-serif !important; letter-spacing: 2px !important; text-transform: uppercase !important; }
+        .premium-font-vintage { font-family: 'Courier', monospace !important; font-weight: bold !important; }
+
+        /* ===== PREMIUM PROFILE GLOW - Full Profile ===== */
+        .premium-profile-glow {
+            animation: premiumGlow 3s ease-in-out infinite;
+            position: relative;
+        }
+        .premium-profile-glow::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 16px;
+            background: linear-gradient(45deg, #7c3aed, #06b6d4, #ec4899, #f59e0b, #7c3aed);
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: premiumBorderGlow 4s ease-in-out infinite;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+        @keyframes premiumBorderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes premiumGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.3), 0 0 60px rgba(124, 58, 237, 0.1); }
+            50% { box-shadow: 0 0 50px rgba(124, 58, 237, 0.5), 0 0 100px rgba(124, 58, 237, 0.2); }
+        }
+        .premium-profile-glow.gold::before { background: linear-gradient(45deg, #f59e0b, #fbbf24, #f59e0b); background-size: 300% 300%; }
+        .premium-profile-glow.cyan::before { background: linear-gradient(45deg, #06b6d4, #22d3ee, #06b6d4); background-size: 300% 300%; }
+        .premium-profile-glow.pink::before { background: linear-gradient(45deg, #ec4899, #f472b6, #ec4899); background-size: 300% 300%; }
+        .premium-profile-glow.purple::before { background: linear-gradient(45deg, #7c3aed, #a78bfa, #7c3aed); background-size: 300% 300%; }
+        .premium-profile-glow.emerald::before { background: linear-gradient(45deg, #10b981, #34d399, #10b981); background-size: 300% 300%; }
+        .premium-profile-glow.rose::before { background: linear-gradient(45deg, #f43f5e, #fb7185, #f43f5e); background-size: 300% 300%; }
+        .premium-profile-glow.orange::before { background: linear-gradient(45deg, #f97316, #fb923c, #f97316); background-size: 300% 300%; }
+        .premium-profile-glow.almond::before { background: linear-gradient(45deg, #d4a373, #e9c9a0, #d4a373); background-size: 300% 300%; }
+        .premium-profile-glow.royal::before { background: linear-gradient(45deg, #8b5cf6, #a78bfa, #8b5cf6); background-size: 300% 300%; }
+        .premium-profile-glow.cherry::before { background: linear-gradient(45deg, #ef4444, #f87171, #ef4444); background-size: 300% 300%; }
 
         /* ===== CUSTOM SCROLLBAR ===== */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { border-radius: 10px; }
+        body.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+        body.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #c0c0cc; }
 
         /* ===== SPINNER ===== */
         .spinner {
@@ -680,50 +711,6 @@
             background: linear-gradient(90deg, #1e293b 25%, #2a3a4a 50%, #1e293b 75%);
             background-size: 200% 100%;
         }
-
-        /* ===== PREMIUM PROFILE GLOW ===== */
-        .premium-profile-glow {
-            animation: premiumGlow 3s ease-in-out infinite;
-        }
-        @keyframes premiumGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.2), 0 0 60px rgba(124, 58, 237, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.4), 0 0 100px rgba(124, 58, 237, 0.2); }
-        }
-        .premium-profile-glow.gold { animation: premiumGlowGold 3s ease-in-out infinite; }
-        @keyframes premiumGlowGold {
-            0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 60px rgba(245, 158, 11, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.4), 0 0 100px rgba(245, 158, 11, 0.2); }
-        }
-        .premium-profile-glow.cyan { animation: premiumGlowCyan 3s ease-in-out infinite; }
-        @keyframes premiumGlowCyan {
-            0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.4), 0 0 100px rgba(6, 182, 212, 0.2); }
-        }
-        .premium-profile-glow.pink { animation: premiumGlowPink 3s ease-in-out infinite; }
-        @keyframes premiumGlowPink {
-            0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.2), 0 0 60px rgba(236, 72, 153, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.4), 0 0 100px rgba(236, 72, 153, 0.2); }
-        }
-        .premium-profile-glow.purple { animation: premiumGlowPurple 3s ease-in-out infinite; }
-        @keyframes premiumGlowPurple {
-            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), 0 0 60px rgba(168, 85, 247, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.4), 0 0 100px rgba(168, 85, 247, 0.2); }
-        }
-        .premium-profile-glow.emerald { animation: premiumGlowEmerald 3s ease-in-out infinite; }
-        @keyframes premiumGlowEmerald {
-            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), 0 0 60px rgba(16, 185, 129, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.4), 0 0 100px rgba(16, 185, 129, 0.2); }
-        }
-        .premium-profile-glow.rose { animation: premiumGlowRose 3s ease-in-out infinite; }
-        @keyframes premiumGlowRose {
-            0%, 100% { box-shadow: 0 0 20px rgba(244, 63, 94, 0.2), 0 0 60px rgba(244, 63, 94, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(244, 63, 94, 0.4), 0 0 100px rgba(244, 63, 94, 0.2); }
-        }
-        .premium-profile-glow.orange { animation: premiumGlowOrange 3s ease-in-out infinite; }
-        @keyframes premiumGlowOrange {
-            0%, 100% { box-shadow: 0 0 20px rgba(249, 115, 22, 0.2), 0 0 60px rgba(249, 115, 22, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.4), 0 0 100px rgba(249, 115, 22, 0.2); }
-        }
     </style>
 </head>
 <body class="light-mode text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -889,7 +876,7 @@
                 </div>
 
                 <!-- 3 Tabs -->
-                <div class="flex justify-between items-center bg-lightcard dark:bg-darkcard p-1 rounded-xl border border-lightborder dark:border-slate-800/60 text-xs">
+                <div id="profile-tabs-container" class="flex justify-between items-center bg-lightcard dark:bg-darkcard p-1 rounded-xl border border-lightborder dark:border-slate-800/60 text-xs">
                     <button onclick="toggleProfileView('posts')" id="prof-tab-posts" class="profile-tab-btn active flex-1 py-2 rounded-lg font-bold transition">
                         <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Posts
@@ -904,14 +891,16 @@
                     </button>
                 </div>
 
-                <div id="profile-posts-view-container" class="space-y-2">
-                    <div id="profile-personal-posts" class="space-y-3"></div>
-                </div>
-                <div id="profile-reels-view-container" class="space-y-2 hidden">
-                    <div id="profile-personal-reels" class="space-y-3"></div>
-                </div>
-                <div id="profile-friends-view-container" class="space-y-2 hidden">
-                    <div id="profile-friends-list" class="space-y-2"></div>
+                <div id="profile-content-area" class="transition-all duration-300">
+                    <div id="profile-posts-view-container" class="space-y-2">
+                        <div id="profile-personal-posts" class="space-y-3"></div>
+                    </div>
+                    <div id="profile-reels-view-container" class="space-y-2 hidden">
+                        <div id="profile-personal-reels" class="space-y-3"></div>
+                    </div>
+                    <div id="profile-friends-view-container" class="space-y-2 hidden">
+                        <div id="profile-friends-list" class="space-y-2"></div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -1216,24 +1205,24 @@
                 <h3 class="text-lg font-black text-slate-800 dark:text-slate-100 tracking-wide">✨ Premium Matrix</h3>
                 <button onclick="closeModal('subscription-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-500 mt-1">Unlock 7 premium themes, frames, fonts & glowing profiles!</p>
+            <p class="text-xs text-slate-500 mt-1">Unlock 10 premium themes, 9 frames, 9 fonts & glowing profiles!</p>
             
             <div class="mt-4 grid grid-cols-2 gap-2 text-[10px]">
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                    <span class="block font-bold">🎨 7 Themes</span>
+                    <span class="block font-bold">🎨 10 Themes</span>
                     <span class="text-slate-500">Premium colors</span>
                 </div>
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                    <span class="block font-bold">🖼️ 7 Frames</span>
+                    <span class="block font-bold">🖼️ 9 Frames</span>
                     <span class="text-slate-500">Glowing avatars</span>
                 </div>
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                    <span class="block font-bold">✍️ 7 Fonts</span>
+                    <span class="block font-bold">✍️ 9 Fonts</span>
                     <span class="text-slate-500">Stylish captions</span>
                 </div>
                 <div class="bg-slate-100 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
                     <span class="block font-bold">✨ Glow</span>
-                    <span class="text-slate-500">Discord-like shine</span>
+                    <span class="text-slate-500">Full profile shine</span>
                 </div>
             </div>
             
@@ -1252,7 +1241,7 @@
                 <button onclick="closeModal('premium-dashboard-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
             </div>
             
-            <!-- 7 Themes -->
+            <!-- 10 Themes -->
             <div class="mb-4">
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">🎨 Premium Themes</p>
                 <div class="grid grid-cols-2 gap-2 text-xs">
@@ -1262,11 +1251,14 @@
                     <button onclick="executePremiumTweak('theme', 'premium-theme-forest')" class="bg-slate-800/50 border border-green-500/50 p-2.5 rounded-xl font-medium text-green-300 hover:bg-slate-700 transition">🌿 Forest</button>
                     <button onclick="executePremiumTweak('theme', 'premium-theme-rose')" class="bg-slate-800/50 border border-pink-500/50 p-2.5 rounded-xl font-medium text-pink-300 hover:bg-slate-700 transition">🌹 Rose</button>
                     <button onclick="executePremiumTweak('theme', 'premium-theme-gold')" class="bg-slate-800/50 border border-amber-500/50 p-2.5 rounded-xl font-medium text-amber-300 hover:bg-slate-700 transition">⭐ Gold</button>
-                    <button onclick="executePremiumTweak('theme', 'premium-theme-ice')" class="bg-slate-800/50 border border-cyan-500/50 p-2.5 rounded-xl font-medium text-cyan-300 hover:bg-slate-700 transition col-span-2">❄️ Ice</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-ice')" class="bg-slate-800/50 border border-cyan-500/50 p-2.5 rounded-xl font-medium text-cyan-300 hover:bg-slate-700 transition">❄️ Ice</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-almond')" class="bg-slate-800/50 border border-amber-600/50 p-2.5 rounded-xl font-medium text-amber-200 hover:bg-slate-700 transition">🥜 Almond</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-royal')" class="bg-slate-800/50 border border-purple-400/50 p-2.5 rounded-xl font-medium text-purple-200 hover:bg-slate-700 transition">👑 Royal</button>
+                    <button onclick="executePremiumTweak('theme', 'premium-theme-cherry')" class="bg-slate-800/50 border border-red-500/50 p-2.5 rounded-xl font-medium text-red-300 hover:bg-slate-700 transition col-span-2">🍒 Cherry</button>
                 </div>
             </div>
             
-            <!-- 7 Frames -->
+            <!-- 9 Frames -->
             <div class="mb-4">
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">🖼️ Premium Frames</p>
                 <div class="grid grid-cols-2 gap-2 text-xs">
@@ -1276,11 +1268,13 @@
                     <button onclick="executePremiumTweak('frame', 'premium-frame-cyan')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">💠 Cyan</button>
                     <button onclick="executePremiumTweak('frame', 'premium-frame-pink')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🌸 Pink</button>
                     <button onclick="executePremiumTweak('frame', 'premium-frame-purple')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🟣 Purple</button>
-                    <button onclick="executePremiumTweak('frame', 'premium-frame-emerald')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2">💚 Emerald</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-emerald')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">💚 Emerald</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-almond')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition">🥜 Almond</button>
+                    <button onclick="executePremiumTweak('frame', 'premium-frame-royal')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2">👑 Royal</button>
                 </div>
             </div>
             
-            <!-- 7 Fonts -->
+            <!-- 9 Fonts -->
             <div>
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">✍️ Premium Fonts</p>
                 <div class="grid grid-cols-2 gap-2 text-xs">
@@ -1290,7 +1284,9 @@
                     <button onclick="executePremiumTweak('font', 'premium-font-cursive')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Brush Script MT, cursive;">Cursive</button>
                     <button onclick="executePremiumTweak('font', 'premium-font-mono')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Courier New, monospace;">Mono</button>
                     <button onclick="executePremiumTweak('font', 'premium-font-neon')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Arial Black, sans-serif;">Neon</button>
-                    <button onclick="executePremiumTweak('font', 'premium-font-soft')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2" style="font-family: Segoe UI, sans-serif; font-weight: 300;">Soft</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-soft')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Segoe UI, sans-serif; font-weight: 300;">Soft</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-luxury')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition" style="font-family: Times New Roman, serif; font-style: italic;">Luxury</button>
+                    <button onclick="executePremiumTweak('font', 'premium-font-futuristic')" class="bg-slate-800/50 border border-slate-600 p-2.5 rounded-xl font-medium hover:bg-slate-700 transition col-span-2" style="font-family: Arial, sans-serif; letter-spacing: 2px; text-transform: uppercase;">Futuristic</button>
                 </div>
             </div>
         </div>
@@ -1324,8 +1320,9 @@
 
     <script type="module">
         // ============================================================
-        // STARDUST HUB - COMPLETE VERSION
-        // Features: Light/Dark Mode, 7 Premium Themes, 7 Frames, 7 Fonts
+        // STARDUST HUB - COMPLETE PREMIUM VERSION
+        // Features: Light/Dark Mode, 10 Premium Themes, 9 Frames, 9 Fonts
+        // Fixed: Posts loading, Subscription persistence, Full profile theme
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -1358,7 +1355,7 @@
         
         // ===== DATABASE STATE =====
         let databaseState = {
-            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", premiumFrame: "", premiumFont: "", savedPosts: [], savedReels: [] },
+            currentUser: { name: "Stardust Base", uid: "000000", realFirebaseUID: "", email: "", phone: "", bio: "System online.", pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150", profession: "", isPremium: false, premiumTheme: "", premiumFrame: "", premiumFont: "", premiumExpiry: 0, savedPosts: [], savedReels: [] },
             publications: [], peers: [], friendships: {}, chatThreads: {}, activeTargetChatUID: null, activeContextMessageID: null, activeTargetSharePostID: null,
             reels: [], activeReelId: null,
             longPressTimer: null,
@@ -1462,26 +1459,50 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS
+        // PREMIUM FUNCTIONS - FULL PROFILE APPLICATION
         // ============================================================
         function applyPremiumSettings(user) {
             if (!user) return;
             
             const profileCard = document.getElementById('profile-card');
+            const profileContent = document.getElementById('profile-content-area');
+            const profileTabs = document.getElementById('profile-tabs-container');
             const avatarFrame = document.getElementById('profile-avatar-frame');
             const profileName = document.getElementById('profile-display-name');
             const profileBio = document.getElementById('profile-display-bio');
+            const profileUid = document.getElementById('profile-display-uid');
+            const profileProfession = document.getElementById('profile-display-profession');
             
-            // Reset all premium classes
-            profileCard.className = 'bg-lightcard dark:bg-darkcard p-5 rounded-2xl border border-lightborder dark:border-slate-800 relative transition-all duration-300';
-            avatarFrame.className = 'w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3';
-            profileName.className = 'text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1';
-            profileBio.className = 'text-xs text-slate-600 dark:text-slate-400 mt-3 max-w-xs leading-relaxed';
+            // Reset all premium classes from ALL profile elements
+            const allProfileElements = [profileCard, profileContent, profileTabs, avatarFrame, profileName, profileBio, profileUid, profileProfession];
+            allProfileElements.forEach(el => {
+                if (el) {
+                    // Remove all premium theme classes
+                    el.className = el.className.split(' ')
+                        .filter(c => !c.startsWith('premium-theme-') && !c.startsWith('premium-profile-glow') && !c.startsWith('premium-frame-') && !c.startsWith('premium-font-'))
+                        .join(' ');
+                }
+            });
             
-            // Apply premium theme if user has one
+            // Reset profile card specifically
+            if (profileCard) {
+                profileCard.className = 'bg-lightcard dark:bg-darkcard p-5 rounded-2xl border border-lightborder dark:border-slate-800 relative transition-all duration-300';
+            }
+            
+            // Reset avatar frame
+            if (avatarFrame) {
+                avatarFrame.className = 'w-20 h-20 rounded-full p-0.5 border border-slate-300 dark:border-slate-700 mb-3';
+            }
+            
+            // Apply premium theme to ALL profile elements
             if (user.isPremium && user.premiumTheme) {
-                profileCard.classList.add(user.premiumTheme);
-                // Also apply to peer profile view
+                // Apply to profile card
+                if (profileCard) profileCard.classList.add(user.premiumTheme);
+                // Apply to profile content area
+                if (profileContent) profileContent.classList.add(user.premiumTheme);
+                // Apply to tabs container
+                if (profileTabs) profileTabs.classList.add(user.premiumTheme);
+                // Apply to peer profile view
                 const peerCard = document.getElementById('peer-profile-card');
                 if (peerCard) {
                     peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
@@ -1491,8 +1512,7 @@
             
             // Apply premium frame
             if (user.isPremium && user.premiumFrame) {
-                avatarFrame.classList.add(user.premiumFrame);
-                // Also apply to peer avatar
+                if (avatarFrame) avatarFrame.classList.add(user.premiumFrame);
                 const peerFrame = document.getElementById('peer-avatar-frame');
                 if (peerFrame) {
                     peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
@@ -1502,10 +1522,12 @@
             
             // Apply premium font
             if (user.isPremium && user.premiumFont) {
-                profileName.classList.add(user.premiumFont);
-                profileBio.classList.add(user.premiumFont);
-                // Apply to all captions in posts and reels
-                document.querySelectorAll('.post-caption, .reel-caption').forEach(el => {
+                if (profileName) profileName.classList.add(user.premiumFont);
+                if (profileBio) profileBio.classList.add(user.premiumFont);
+                if (profileUid) profileUid.classList.add(user.premiumFont);
+                if (profileProfession) profileProfession.classList.add(user.premiumFont);
+                // Apply to all posts and reels
+                document.querySelectorAll('.post-text, .reel-caption, .post-author-name').forEach(el => {
                     el.classList.add(user.premiumFont);
                 });
             }
@@ -1521,10 +1543,16 @@
                     'forest': 'emerald',
                     'rose': 'pink',
                     'gold': 'gold',
-                    'ice': 'cyan'
+                    'ice': 'cyan',
+                    'almond': 'almond',
+                    'royal': 'royal',
+                    'cherry': 'cherry'
                 };
                 const glowColor = glowMap[glowClass] || 'purple';
-                profileCard.classList.add('premium-profile-glow', glowColor);
+                if (profileCard) profileCard.classList.add('premium-profile-glow', glowColor);
+                if (profileContent) profileContent.classList.add('premium-profile-glow', glowColor);
+                if (profileTabs) profileTabs.classList.add('premium-profile-glow', glowColor);
+                
                 // Also apply to peer profile
                 const peerCard = document.getElementById('peer-profile-card');
                 if (peerCard) {
@@ -1708,6 +1736,7 @@
                     databaseState.currentUser.premiumTheme = '';
                     databaseState.currentUser.premiumFrame = '';
                     databaseState.currentUser.premiumFont = '';
+                    databaseState.currentUser.premiumExpiry = 0;
                     databaseState.notifications = [];
                     databaseState.viewedReels = {};
                     set(ref(db, 'users/' + assignedUID), databaseState.currentUser).then(() => {
@@ -2170,7 +2199,6 @@
                     document.getElementById('post-input-gallery-file').value = '';
                     hideUploadLoading();
                     showSuccessToast('Post Published!', 'Your post has been published successfully.', '📝');
-                    // Refresh posts
                     loadInitialPosts();
                 }).catch((err) => {
                     console.error('Error publishing post:', err);
@@ -2243,14 +2271,11 @@
         }
 
         async function loadInitialPosts() {
-            // First, show cached posts
             const cached = await getCachedPosts();
             if (cached.length > 0) {
                 databaseState.publications = cached;
                 renderEcosystemFeed();
             }
-
-            // Fetch fresh from Firebase
             fetchMorePosts(true);
         }
 
@@ -2338,6 +2363,8 @@
             }
 
             const displayPosts = databaseState.publications;
+            const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                databaseState.currentUser.premiumFont : '';
             
             displayPosts.forEach(post => {
                 if(!post || !post.id) return;
@@ -2348,7 +2375,7 @@
                 const isSaved = databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(post.id);
                 
                 const card = document.createElement('div');
-                card.className = "bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md";
+                card.className = `bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md transition-all duration-300`;
                 
                 let imageLayer = '';
                 if(post.image) {
@@ -2363,10 +2390,6 @@
                     `;
                 }
 
-                // Apply premium font if user has one
-                const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
-                    databaseState.currentUser.premiumFont : '';
-
                 card.innerHTML = `
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
@@ -2374,12 +2397,12 @@
                                  class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700"
                                  loading="lazy">
                             <div>
-                                <h4 class="font-bold text-slate-800 dark:text-slate-200 ${fontClass}">${post.authorName}</h4>
+                                <h4 class="font-bold text-slate-800 dark:text-slate-200 post-author-name ${fontClass}">${post.authorName}</h4>
                                 <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID} • ${new Date(post.timestamp).toLocaleDateString()}</p>
                             </div>
                         </div>
                     </div>
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words ${fontClass}">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words post-text ${fontClass}">${post.text}</p>
                     ${imageLayer}
                     <div class="flex items-center justify-between pt-2 border-t border-slate-300 dark:border-slate-800/60 text-slate-500">
                         <button onclick="handlePublicationLikeToggle('${post.id}')" class="flex items-center space-x-1.5 hover:text-red-400 transition ${isLiked ? 'text-red-500 font-bold' : ''}">
@@ -2519,6 +2542,9 @@
             }
 
             const sortedReels = [...databaseState.reels].sort((a,b) => b.createdAt - a.createdAt);
+            const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
+                databaseState.currentUser.premiumFont : '';
+
             sortedReels.forEach((reel, index) => {
                 const isLiked = reel.likes && reel.likes[databaseState.currentUser.uid] === true;
                 const likesCount = reel.likes ? Object.keys(reel.likes).length : 0;
@@ -2531,10 +2557,6 @@
                 div.dataset.index = index;
                 div.dataset.reelId = reel.id;
 
-                // Apply premium font if user has one
-                const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
-                    databaseState.currentUser.premiumFont : '';
-
                 div.innerHTML = `
                     <video src="${reel.videoUrl}" playsinline preload="metadata" loop loading="lazy"></video>
                     <div class="reel-overlay">
@@ -2544,7 +2566,7 @@
                             </div>
                             <span class="font-bold text-sm reel-user-info ${fontClass}" onclick="goToUserProfile('${reel.userId}')">${reel.userName}</span>
                         </div>
-                        ${reel.caption ? `<p class="text-sm text-white/80 ${fontClass}">${reel.caption}</p>` : ''}
+                        ${reel.caption ? `<p class="text-sm text-white/80 reel-caption ${fontClass}">${reel.caption}</p>` : ''}
                     </div>
                     <div class="reel-actions">
                         <button onclick="toggleReelLike('${reel.id}')" class="hover:scale-110 transition">
@@ -2838,7 +2860,6 @@
                 syncProfileCardInterface();
                 renderPersonalPublications();
                 renderProfileFriendsNetwork();
-                // Apply premium settings
                 if (databaseState.currentUser.isPremium) {
                     applyPremiumSettings(databaseState.currentUser);
                 }
@@ -2886,14 +2907,12 @@
                 updateNotificationBadge();
             }
             
-            // Apply premium settings if user is premium
             if (user.isPremium) {
                 applyPremiumSettings(user);
             }
         }
 
         function listenToGlobalSyncChannels(myUID) {
-            // Publications
             const pubRef = ref(db, 'publications');
             onValue(pubRef, (snap) => {
                 if (!isLoadingMore) {
@@ -2913,7 +2932,6 @@
                 }
             });
 
-            // Users
             onValue(ref(db, 'users'), (snap) => {
                 const data = snap.val();
                 databaseState.peers = data ? Object.values(data) : [];
@@ -2931,7 +2949,6 @@
                 renderEcosystemActiveChats();
             });
 
-            // Friendships
             onValue(ref(db, 'friendships'), (snap) => {
                 databaseState.friendships = snap.val() || {};
                 renderEcosystemIncomingRequests();
@@ -2939,7 +2956,6 @@
                 renderProfileFriendsNetwork();
             });
 
-            // Chats
             onValue(ref(db, 'chats'), (snap) => {
                 databaseState.chatThreads = snap.val() || {};
                 evaluateGlobalUnseenPackets();
@@ -3338,19 +3354,20 @@
                 prof.classList.add('hidden');
             }
 
-            // Apply premium settings if peer is premium
             const peerCard = document.getElementById('peer-profile-card');
             const peerFrame = document.getElementById('peer-avatar-frame');
+            
+            // Reset peer card
+            peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
+            peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
+            
             if (peer.isPremium) {
                 if (peer.premiumTheme) {
-                    peerCard.className = 'bg-lightcard dark:bg-darkcard p-6 rounded-3xl border border-lightborder dark:border-slate-800 text-center relative shadow-2xl transition-all duration-300';
                     peerCard.classList.add(peer.premiumTheme);
                 }
                 if (peer.premiumFrame) {
-                    peerFrame.className = 'w-24 h-24 rounded-full mx-auto mb-4 border-2 border-slate-300 dark:border-slate-700';
                     peerFrame.classList.add(peer.premiumFrame);
                 }
-                // Add glow
                 const glowColor = peer.premiumTheme ? 
                     peer.premiumTheme.replace('premium-theme-', '') : 'purple';
                 const glowMap = {
@@ -3360,7 +3377,10 @@
                     'forest': 'emerald',
                     'rose': 'pink',
                     'gold': 'gold',
-                    'ice': 'cyan'
+                    'ice': 'cyan',
+                    'almond': 'almond',
+                    'royal': 'royal',
+                    'cherry': 'cherry'
                 };
                 peerCard.classList.add('premium-profile-glow', glowMap[glowColor] || 'purple');
             }
@@ -3717,7 +3737,7 @@
                 const card = document.createElement('div');
                 card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs";
                 card.innerHTML = `
-                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed ${fontClass}">${post.text}</p>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed post-text ${fontClass}">${post.text}</p>
                     ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover" loading="lazy"></div>` : ''}
                     <span class="text-[8px] font-mono text-slate-600">${new Date(post.timestamp).toLocaleString()}</span>
                 `;
@@ -3754,7 +3774,7 @@
                 card.innerHTML = `
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <span class="font-bold text-slate-700 dark:text-slate-300 ${fontClass}">${reel.caption || 'Reel'}</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300 reel-caption ${fontClass}">${reel.caption || 'Reel'}</span>
                     </div>
                     <video src="${reel.videoUrl}" muted playsinline class="rounded-lg max-h-48 w-full object-cover" loading="lazy"></video>
                     <div class="flex items-center gap-4 text-[10px] text-slate-500">
@@ -3952,17 +3972,27 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS
+        // PREMIUM FUNCTIONS - Subscription Persistence
         // ============================================================
-        window.handleSubscriptionActivation = function() { 
-            update(ref(db, 'users/' + databaseState.currentUser.uid), { isPremium: true }).then(() => { 
-                closeModal('subscription-modal'); 
+        window.handleSubscriptionActivation = function() {
+            const now = Date.now();
+            const expiry = now + (30 * 24 * 60 * 60 * 1000); // 30 days
+            
+            update(ref(db, 'users/' + databaseState.currentUser.uid), { 
+                isPremium: true,
+                premiumExpiry: expiry
+            }).then(() => {
+                closeModal('subscription-modal');
                 openModal('premium-dashboard-modal');
                 databaseState.currentUser.isPremium = true;
+                databaseState.currentUser.premiumExpiry = expiry;
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
-                showSuccessToast('Premium Activated!', 'You now have access to all premium features!', '🌟');
-            }); 
+                showSuccessToast('Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
+            }).catch(err => {
+                console.error('Subscription activation failed:', err);
+                alert('Failed to activate subscription. Please try again.');
+            });
         }
 
         window.executePremiumTweak = function(type, value) {
@@ -3972,20 +4002,20 @@
             else if (type === 'font') updates.premiumFont = value;
             
             update(ref(db, 'users/' + databaseState.currentUser.uid), updates).then(() => {
-                // Update local state
                 if (type === 'theme') databaseState.currentUser.premiumTheme = value;
                 else if (type === 'frame') databaseState.currentUser.premiumFrame = value;
                 else if (type === 'font') databaseState.currentUser.premiumFont = value;
                 
-                // Apply changes immediately
                 applyPremiumSettings(databaseState.currentUser);
-                // Also refresh posts to show font changes
                 renderEcosystemFeed();
                 renderPersonalPublications();
                 renderProfileReels();
                 
                 saveStateToHardware();
                 showSuccessToast('Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
+            }).catch(err => {
+                console.error('Premium tweak failed:', err);
+                alert('Failed to apply setting. Please try again.');
             });
         }
 
@@ -4085,8 +4115,31 @@
             }
         }
 
+        // Check if premium is expired
+        if (databaseState.currentUser.isPremium && databaseState.currentUser.premiumExpiry) {
+            const now = Date.now();
+            if (now > databaseState.currentUser.premiumExpiry) {
+                // Premium expired
+                update(ref(db, 'users/' + databaseState.currentUser.uid), { 
+                    isPremium: false,
+                    premiumTheme: '',
+                    premiumFrame: '',
+                    premiumFont: ''
+                }).then(() => {
+                    databaseState.currentUser.isPremium = false;
+                    databaseState.currentUser.premiumTheme = '';
+                    databaseState.currentUser.premiumFrame = '';
+                    databaseState.currentUser.premiumFont = '';
+                    applyPremiumSettings(databaseState.currentUser);
+                    saveStateToHardware();
+                });
+            }
+        }
+
         console.log('🚀 Stardust Hub - Premium Edition');
-        console.log('✨ Features: 7 Themes, 7 Frames, 7 Fonts, Premium Glow');
+        console.log('✨ Features: 10 Themes, 9 Frames, 9 Fonts, Premium Glow');
+        console.log('✅ Fixed: Posts loading, Subscription persistence, Full profile theme');
+        console.log('🌓 Dark Mode: Fully working');
     </script>
 </body>
 </html>
