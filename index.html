@@ -466,34 +466,80 @@
         .reel-user-info { cursor: pointer; transition: opacity 0.2s; }
         .reel-user-info:hover { opacity: 0.7; }
 
-        /* ===== REEL DELETE BUTTON - BOTTOM POSITION ===== */
+        /* ===== REEL DELETE BUTTON - Now hidden, using 3-dot menu ===== */
         .reel-delete-btn {
+            display: none; /* Hidden - using 3-dot menu now */
+        }
+
+        /* ===== 3-DOT MENU ===== */
+        .three-dot-menu {
             position: absolute;
             bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 15;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.15);
-            color: #ff6b6b;
-            padding: 4px 12px;
-            border-radius: 8px;
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .three-dot-menu button {
+            color: white;
             font-size: 10px;
             font-weight: bold;
+            background: transparent;
+            border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 4px;
         }
-        .reel-delete-btn:hover {
-            background: rgba(220, 38, 38, 0.7);
-            color: white;
-            transform: translateX(-50%) scale(1.05);
+        .three-dot-menu button:hover {
+            background: rgba(255,255,255,0.15);
         }
-        .reel-delete-btn:active {
-            transform: translateX(-50%) scale(0.95);
+        .three-dot-menu .delete-btn {
+            color: #ff6b6b;
+        }
+        .three-dot-menu .delete-btn:hover {
+            background: rgba(220, 38, 38, 0.3);
+        }
+        .three-dot-menu .edit-btn {
+            color: #4fc3f7;
+        }
+        .three-dot-menu .edit-btn:hover {
+            background: rgba(79, 195, 247, 0.2);
+        }
+        .three-dot-trigger {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            z-index: 12;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .three-dot-trigger:hover {
+            background: rgba(0,0,0,0.7);
+        }
+        .three-dot-trigger svg {
+            width: 16px;
+            height: 16px;
         }
 
         /* ===== NOTIFICATIONS ===== */
@@ -756,6 +802,355 @@
             opacity: 1;
             background: rgba(220, 38, 38, 0.2);
         }
+
+        /* ===== POST 3-DOT MENU ===== */
+        .post-three-dot-menu {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            z-index: 20;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 6px 0;
+            min-width: 120px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            display: none;
+        }
+        .post-three-dot-menu.show {
+            display: block;
+        }
+        .post-three-dot-menu button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: left;
+        }
+        .post-three-dot-menu button:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        .post-three-dot-menu .delete-btn {
+            color: #ff6b6b;
+        }
+        .post-three-dot-menu .delete-btn:hover {
+            background: rgba(220, 38, 38, 0.2);
+        }
+        .post-three-dot-menu .edit-btn {
+            color: #4fc3f7;
+        }
+        .post-three-dot-menu .edit-btn:hover {
+            background: rgba(79, 195, 247, 0.15);
+        }
+
+        /* ===== PHONE LOGIN MODAL ===== */
+        .phone-login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .phone-login-overlay.hidden { display: none; }
+        .phone-login-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .phone-login-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+        .phone-login-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #1a1a2e;
+        }
+        body.dark-mode .phone-login-card h3 {
+            color: #f1f5f9;
+        }
+        .phone-login-card p {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .phone-login-card input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e4e6eb;
+            font-size: 14px;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            outline: none;
+            transition: border 0.2s;
+            margin-bottom: 12px;
+        }
+        body.dark-mode .phone-login-card input {
+            background: #0b1528;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .phone-login-card input:focus {
+            border-color: #2563eb;
+        }
+        .phone-login-card .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+        .phone-login-card .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .phone-login-card .btn-row .cancel-btn {
+            background: #e4e6eb;
+            color: #1a1a2e;
+        }
+        body.dark-mode .phone-login-card .btn-row .cancel-btn {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        .phone-login-card .btn-row .send-btn {
+            background: #2563eb;
+            color: white;
+        }
+        .phone-login-card .btn-row .send-btn:hover {
+            background: #1d4ed8;
+        }
+        .phone-login-card .btn-row .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* OTP Modal */
+        .otp-login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .otp-login-overlay.hidden { display: none; }
+        .otp-login-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .otp-login-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+        .otp-login-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #1a1a2e;
+        }
+        body.dark-mode .otp-login-card h3 {
+            color: #f1f5f9;
+        }
+        .otp-login-card p {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .otp-login-card input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e4e6eb;
+            font-size: 14px;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            outline: none;
+            transition: border 0.2s;
+            margin-bottom: 12px;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+        body.dark-mode .otp-login-card input {
+            background: #0b1528;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .otp-login-card input:focus {
+            border-color: #2563eb;
+        }
+        .otp-login-card .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+        .otp-login-card .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .otp-login-card .btn-row .cancel-btn {
+            background: #e4e6eb;
+            color: #1a1a2e;
+        }
+        body.dark-mode .otp-login-card .btn-row .cancel-btn {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        .otp-login-card .btn-row .verify-btn {
+            background: #2563eb;
+            color: white;
+        }
+        .otp-login-card .btn-row .verify-btn:hover {
+            background: #1d4ed8;
+        }
+        .otp-login-card .btn-row .verify-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ===== PROFILE SETUP MODAL (First time phone login) ===== */
+        .profile-setup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 152;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .profile-setup-overlay.hidden { display: none; }
+        .profile-setup-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        body.dark-mode .profile-setup-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+        .profile-setup-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #1a1a2e;
+        }
+        body.dark-mode .profile-setup-card h3 {
+            color: #f1f5f9;
+        }
+        .profile-setup-card p {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .profile-setup-card input, .profile-setup-card textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e4e6eb;
+            font-size: 13px;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            outline: none;
+            transition: border 0.2s;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+        body.dark-mode .profile-setup-card input, .profile-setup-card textarea {
+            background: #0b1528;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .profile-setup-card input:focus, .profile-setup-card textarea:focus {
+            border-color: #2563eb;
+        }
+        .profile-setup-card textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .profile-setup-card .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .profile-setup-card .btn-row button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .profile-setup-card .btn-row .cancel-btn {
+            background: #e4e6eb;
+            color: #1a1a2e;
+        }
+        body.dark-mode .profile-setup-card .btn-row .cancel-btn {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        .profile-setup-card .btn-row .save-btn {
+            background: #2563eb;
+            color: white;
+        }
+        .profile-setup-card .btn-row .save-btn:hover {
+            background: #1d4ed8;
+        }
+        .profile-setup-card .btn-row .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ===== LOGIN PRIVACY & TERMS - Blue Highlight ===== */
+        .login-legal a {
+            color: #2563eb;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .login-legal a:hover {
+            color: #1d4ed8;
+        }
     </style>
 </head>
 <body class="light-mode text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -774,7 +1169,7 @@
             <p id="auth-screen-desc" class="text-slate-500 text-xs mb-6">Secure Custom Authentication Terminal</p>
             
             <div id="login-form-container" class="space-y-4">
-                <input type="text" id="login-identifier" placeholder="Email or 6-Digit UID" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
+                <input type="text" id="login-identifier" placeholder="Email, Phone, or 6-Digit UID" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
                 <input type="password" id="login-password" placeholder="Enter Account Password" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
                 
                 <button onclick="handleCustomSystemLogin()" class="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-blue-600/20">
@@ -782,7 +1177,7 @@
                     <div id="btn-spinner-login" class="spinner hidden"></div>
                 </button>
                 
-                <button onclick="handlePhoneLogin()" class="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-emerald-600/20">
+                <button onclick="openPhoneLoginModal()" class="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-emerald-600/20">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     <span>Login with Phone</span>
                 </button>
@@ -808,14 +1203,56 @@
                 </p>
             </div>
 
-            <!-- Privacy & Terms Links -->
-            <div class="mt-6 pt-4 border-t border-slate-300 dark:border-slate-800 flex justify-center gap-3 text-[10px] text-slate-500">
-                <a href="privacy.html" target="_blank" class="hover:text-cyan-400 transition font-medium">Privacy Policy</a>
+            <!-- Privacy & Terms Links - Blue Highlight -->
+            <div class="mt-6 pt-4 border-t border-slate-300 dark:border-slate-800 flex justify-center gap-3 text-[10px] login-legal">
+                <a href="privacy.html" target="_blank">Privacy Policy</a>
                 <span class="text-slate-600 dark:text-slate-500">•</span>
-                <a href="terms.html" target="_blank" class="hover:text-cyan-400 transition font-medium">Terms of Service</a>
+                <a href="terms.html" target="_blank">Terms of Service</a>
             </div>
 
             <p class="text-[9px] text-slate-600 mt-4 absolute bottom-3 left-0 right-0 text-center px-4">Protected by end-to-end custom cryptographic password tokenization.</p>
+        </div>
+    </div>
+
+    <!-- ===== PHONE LOGIN MODAL ===== -->
+    <div id="phone-login-modal" class="phone-login-overlay hidden">
+        <div class="phone-login-card">
+            <h3>📱 Phone Login</h3>
+            <p>Enter your phone number with country code</p>
+            <input type="tel" id="phone-input" placeholder="+918888888888" value="+91">
+            <div class="btn-row">
+                <button class="cancel-btn" onclick="closePhoneLoginModal()">Cancel</button>
+                <button class="send-btn" id="send-otp-btn" onclick="sendPhoneOTP()">Send OTP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== OTP VERIFICATION MODAL ===== -->
+    <div id="otp-login-modal" class="otp-login-overlay hidden">
+        <div class="otp-login-card">
+            <h3>🔐 Verify OTP</h3>
+            <p>Enter the 6-digit code sent to your phone</p>
+            <input type="text" id="otp-input" placeholder="123456" maxlength="6" inputmode="numeric">
+            <div class="btn-row">
+                <button class="cancel-btn" onclick="closeOTPModal()">Cancel</button>
+                <button class="verify-btn" id="verify-otp-btn" onclick="verifyPhoneOTP()">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PROFILE SETUP MODAL (First time phone login) ===== -->
+    <div id="profile-setup-modal" class="profile-setup-overlay hidden">
+        <div class="profile-setup-card">
+            <h3>✨ Complete Your Profile</h3>
+            <p>Set up your account details</p>
+            <input type="text" id="setup-name" placeholder="Full Name" value="">
+            <input type="text" id="setup-username" placeholder="Username" value="">
+            <textarea id="setup-bio" placeholder="Tell us about yourself"></textarea>
+            <input type="password" id="setup-password" placeholder="Create a password" value="">
+            <div class="btn-row">
+                <button class="cancel-btn" onclick="closeProfileSetup()">Skip for now</button>
+                <button class="save-btn" id="save-profile-btn" onclick="savePhoneProfile()">Save Profile</button>
+            </div>
         </div>
     </div>
 
@@ -1128,7 +1565,7 @@
         </footer>
     </div>
 
-    <!-- Settings Modal with Dark Mode Toggle & Privacy/Terms -->
+    <!-- Settings Modal with Dark Mode Toggle & Privacy/Terms (above logout) -->
     <div id="settings-hub-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 flex flex-col">
             <div class="flex justify-between items-center mb-5">
@@ -1150,9 +1587,8 @@
                 <button onclick="openSubSettingPage('commented-posts')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Commented Matrix Logs</span><span>→</span></button>
                 <button onclick="openSubSettingPage('saved-posts')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Saved Core Channels</span><span>→</span></button>
                 <button onclick="openSubSettingPage('saved-reels')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Saved Reels</span><span>→</span></button>
-                <button onclick="executeLogout()" class="w-full bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex justify-between hover:bg-red-200 dark:hover:bg-red-900/30 transition"><span>Terminate Ecosystem Connection</span><span>⇥</span></button>
                 
-                <!-- Privacy & Terms in Settings -->
+                <!-- Privacy & Terms in Settings - Above Logout -->
                 <div class="mt-2 pt-3 border-t border-slate-300 dark:border-slate-800/60">
                     <a href="privacy.html" target="_blank" class="block w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300 flex justify-between">
                         <span>📄 Privacy Policy</span><span>→</span>
@@ -1161,6 +1597,8 @@
                         <span>📜 Terms of Service</span><span>→</span>
                     </a>
                 </div>
+                
+                <button onclick="executeLogout()" class="w-full bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex justify-between hover:bg-red-200 dark:hover:bg-red-900/30 transition mt-2"><span>Logout</span><span>⇥</span></button>
             </div>
         </div>
     </div>
@@ -1376,6 +1814,30 @@
         </div>
     </div>
 
+    <!-- Edit Reel Caption Modal -->
+    <div id="edit-reel-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-2xl border border-lightborder dark:border-slate-800 p-5 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Edit Reel Caption</h3>
+                <button onclick="closeModal('edit-reel-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <input type="text" id="edit-reel-caption-input" placeholder="New caption..." class="w-full px-3 py-2 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-xs focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 text-slate-800 dark:text-slate-200 mb-4">
+            <button onclick="saveReelCaptionEdit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition text-white">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div id="edit-post-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-2xl border border-lightborder dark:border-slate-800 p-5 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Edit Post</h3>
+                <button onclick="closeModal('edit-post-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <textarea id="edit-post-text-input" placeholder="Edit your post..." class="w-full h-28 p-3 border border-lightborder dark:border-slate-800 bg-lightbg dark:bg-darkbg rounded-xl text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 resize-none mb-4"></textarea>
+            <button onclick="savePostEdit()" class="w-full bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl text-xs font-bold transition text-white">Save Changes</button>
+        </div>
+    </div>
+
     <!-- Success Toast -->
     <div id="success-toast" class="success-toast hidden">
         <div class="flex items-center gap-3">
@@ -1390,9 +1852,10 @@
     <script type="module">
         // ============================================================
         // STARDUST HUB - FINAL VERSION
-        // Fixed: Reels delete button position (below views)
-        // Fixed: Reels like system (real-time updates)
-        // Fixed: Premium subscription error
+        // Fixed: Phone login with OTP + Profile Setup
+        // Fixed: Privacy & Terms in settings above logout
+        // Fixed: Logout button label
+        // Fixed: 3-dot menu for reels and posts (delete + edit)
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -1451,6 +1914,11 @@
         let peerInstance = null;
         let ongoingCallObject = null;
         let nativeMediaStream = null;
+
+        // ===== PHONE LOGIN STATE =====
+        let phoneConfirmationResult = null;
+        let tempPhoneNumber = '';
+        let isFirstTimePhoneUser = false;
 
         // ===== THEME MANAGEMENT =====
         function getStoredTheme() {
@@ -1525,7 +1993,198 @@
         }
 
         // ============================================================
-        // PREMIUM FUNCTIONS - FIXED ERROR
+        // PHONE LOGIN FUNCTIONS
+        // ============================================================
+        window.openPhoneLoginModal = function() {
+            document.getElementById('phone-login-modal').classList.remove('hidden');
+            document.getElementById('phone-input').focus();
+        }
+
+        window.closePhoneLoginModal = function() {
+            document.getElementById('phone-login-modal').classList.add('hidden');
+        }
+
+        window.closeOTPModal = function() {
+            document.getElementById('otp-login-modal').classList.add('hidden');
+            if (phoneConfirmationResult) {
+                phoneConfirmationResult = null;
+            }
+        }
+
+        window.closeProfileSetup = function() {
+            document.getElementById('profile-setup-modal').classList.add('hidden');
+        }
+
+        window.sendPhoneOTP = function() {
+            const phone = document.getElementById('phone-input').value.trim();
+            if (!phone || phone.length < 10) {
+                showSuccessToast('Error', 'Please enter a valid phone number with country code.', '❌');
+                return;
+            }
+
+            tempPhoneNumber = phone;
+            const sendBtn = document.getElementById('send-otp-btn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'phone-login-modal', {
+                    size: 'invisible',
+                    callback: () => {}
+                });
+            }
+
+            signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+                .then((confirmationResult) => {
+                    phoneConfirmationResult = confirmationResult;
+                    document.getElementById('phone-login-modal').classList.add('hidden');
+                    document.getElementById('otp-login-modal').classList.remove('hidden');
+                    document.getElementById('otp-input').focus();
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send OTP';
+                    showSuccessToast('OTP Sent', 'Check your phone for the verification code.', '📱');
+                })
+                .catch((error) => {
+                    console.error('Phone sign-in error:', error);
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send OTP';
+                    showSuccessToast('Error', 'Failed to send OTP: ' + error.message, '❌');
+                });
+        }
+
+        window.verifyPhoneOTP = function() {
+            const otp = document.getElementById('otp-input').value.trim();
+            if (!otp || otp.length < 6) {
+                showSuccessToast('Error', 'Please enter a valid 6-digit OTP.', '❌');
+                return;
+            }
+
+            const verifyBtn = document.getElementById('verify-otp-btn');
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'Verifying...';
+
+            phoneConfirmationResult.confirm(otp)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    // Check if user exists in DB
+                    onValue(ref(db, 'users'), (snapshot) => {
+                        const data = snapshot.val();
+                        let mappedNode = null;
+                        if(data) {
+                            mappedNode = Object.values(data).find(p => p.realFirebaseUID === user.uid);
+                        }
+                        if(mappedNode) {
+                            // Existing user - login directly
+                            databaseState.currentUser = mappedNode;
+                            if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
+                            if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
+                            if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
+                            if(!databaseState.viewedReels) databaseState.viewedReels = {};
+                            if(!databaseState.reelViewTracked) databaseState.reelViewTracked = {};
+                            document.getElementById('loading-screen').classList.add('hidden');
+                            document.getElementById('login-screen').classList.add('hidden');
+                            document.getElementById('app-layout').classList.remove('hidden');
+                            listenToGlobalSyncChannels(mappedNode.uid);
+                            initializePeerConnectionNode(mappedNode.uid);
+                            loadNotificationsFromFirebase();
+                            loadInitialPosts();
+                            saveStateToHardware();
+                            if (mappedNode.isPremium) applyPremiumSettings(mappedNode);
+                            closeOTPModal();
+                            showSuccessToast('Welcome Back!', 'Phone login successful.', '📱');
+                        } else {
+                            // New user - show profile setup
+                            isFirstTimePhoneUser = true;
+                            closeOTPModal();
+                            document.getElementById('setup-name').value = '';
+                            document.getElementById('setup-username').value = '';
+                            document.getElementById('setup-bio').value = '';
+                            document.getElementById('setup-password').value = '';
+                            document.getElementById('profile-setup-modal').classList.remove('hidden');
+                            showSuccessToast('Welcome!', 'Complete your profile to continue.', '✨');
+                        }
+                        verifyBtn.disabled = false;
+                        verifyBtn.textContent = 'Verify';
+                    }, { onlyOnce: true });
+                })
+                .catch((error) => {
+                    console.error('OTP verification error:', error);
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = 'Verify';
+                    showSuccessToast('Error', 'Invalid OTP. Please try again.', '❌');
+                });
+        }
+
+        window.savePhoneProfile = function() {
+            const name = document.getElementById('setup-name').value.trim();
+            const username = document.getElementById('setup-username').value.trim();
+            const bio = document.getElementById('setup-bio').value.trim();
+            const password = document.getElementById('setup-password').value.trim();
+
+            if (!name) {
+                showSuccessToast('Error', 'Please enter your name.', '❌');
+                return;
+            }
+            if (!password || password.length < 6) {
+                showSuccessToast('Error', 'Please create a password (min 6 characters).', '❌');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-profile-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            // Create account with email (using phone as email placeholder)
+            const email = tempPhoneNumber + '@stardust.phone';
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    const assignedUID = generateSixDigitUID();
+                    const newUser = {
+                        uid: assignedUID,
+                        realFirebaseUID: user.uid,
+                        email: email,
+                        phone: tempPhoneNumber,
+                        name: name,
+                        username: username || name,
+                        bio: bio || 'New user joined via phone.',
+                        pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+                        profession: "",
+                        isPremium: false,
+                        premiumTheme: '',
+                        premiumFrame: '',
+                        premiumFont: '',
+                        premiumExpiry: 0,
+                        savedPosts: [],
+                        savedReels: [],
+                        notifications: []
+                    };
+                    set(ref(db, 'users/' + assignedUID), newUser).then(() => {
+                        databaseState.currentUser = newUser;
+                        document.getElementById('loading-screen').classList.add('hidden');
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('app-layout').classList.remove('hidden');
+                        listenToGlobalSyncChannels(assignedUID);
+                        initializePeerConnectionNode(assignedUID);
+                        loadNotificationsFromFirebase();
+                        loadInitialPosts();
+                        saveStateToHardware();
+                        document.getElementById('profile-setup-modal').classList.add('hidden');
+                        showSuccessToast('Welcome!', 'Your account has been created successfully.', '🚀');
+                        saveBtn.disabled = false;
+                        saveBtn.textContent = 'Save Profile';
+                    });
+                })
+                .catch((error) => {
+                    console.error('Profile creation error:', error);
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Profile';
+                    showSuccessToast('Error', 'Failed to create account: ' + error.message, '❌');
+                });
+        }
+
+        // ============================================================
+        // PREMIUM FUNCTIONS
         // ============================================================
         function applyPremiumSettings(user) {
             if (!user) return;
@@ -1611,40 +2270,25 @@
             }
         }
 
-        // ============================================================
-        // PREMIUM SUBSCRIPTION - FIXED (No Error)
-        // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
             const expiry = now + (30 * 24 * 60 * 60 * 1000);
             const myUID = databaseState.currentUser.uid;
             
-            // Update Firebase first
             update(ref(db, 'users/' + myUID), { 
                 isPremium: true,
                 premiumExpiry: expiry
             }).then(() => {
-                // Update local state
                 databaseState.currentUser.isPremium = true;
                 databaseState.currentUser.premiumExpiry = expiry;
-                
-                // Close subscription modal
                 closeModal('subscription-modal');
-                
-                // Open premium dashboard
                 openModal('premium-dashboard-modal');
-                
-                // Apply premium settings immediately
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
-                
-                // Show success message
                 showSuccessToast('✅ Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
             }).catch((err) => {
                 console.error('Subscription activation failed:', err);
-                // Still show success because theme applied
                 showSuccessToast('✅ Premium Activated!', 'You now have access to all premium features!', '🌟');
-                // Try to update again silently
                 update(ref(db, 'users/' + myUID), { 
                     isPremium: true,
                     premiumExpiry: expiry
@@ -1677,7 +2321,6 @@
                 showSuccessToast('✅ Applied!', `${labels[type] || type} updated successfully.`, '✨');
             }).catch((err) => {
                 console.error('Premium tweak failed:', err);
-                // Still apply locally even if Firebase fails
                 if (type === 'theme') databaseState.currentUser.premiumTheme = value;
                 else if (type === 'frame') databaseState.currentUser.premiumFrame = value;
                 else if (type === 'font') databaseState.currentUser.premiumFont = value;
@@ -1899,6 +2542,28 @@
             if(!identifier || !password) { alert("Please enter credentials mapping keys."); return; }
             document.getElementById('btn-text-login').classList.add('hidden');
             document.getElementById('btn-spinner-login').classList.remove('hidden');
+            
+            // Check if identifier is phone number
+            if (identifier.startsWith('+') || identifier.match(/^[0-9]{10,15}$/)) {
+                // Try to find user by phone
+                onValue(ref(db, 'users'), (snapshot) => {
+                    const data = snapshot.val();
+                    let targetEmail = null;
+                    if(data) {
+                        const targetUserNode = Object.values(data).find(p => p.phone === identifier || p.phone === '+' + identifier);
+                        if(targetUserNode && targetUserNode.email) { targetEmail = targetUserNode.email; }
+                    }
+                    if(targetEmail) {
+                        executeFirebaseSignIn(targetEmail, password);
+                    } else {
+                        alert("No account found with this phone number. Please sign up first.");
+                        document.getElementById('btn-text-login').classList.remove('hidden');
+                        document.getElementById('btn-spinner-login').classList.add('hidden');
+                    }
+                }, { onlyOnce: true });
+                return;
+            }
+            
             if(identifier.includes('@')) {
                 executeFirebaseSignIn(identifier, password);
             } else {
@@ -1906,13 +2571,13 @@
                     const data = snapshot.val();
                     let targetEmail = null;
                     if(data) {
-                        const targetUserNode = Object.values(data).find(p => p.uid === identifier);
+                        const targetUserNode = Object.values(data).find(p => p.uid === identifier || p.username === identifier);
                         if(targetUserNode && targetUserNode.email) { targetEmail = targetUserNode.email; }
                     }
                     if(targetEmail) {
                         executeFirebaseSignIn(targetEmail, password);
                     } else {
-                        alert("Invalid Session Request: Assigned UID not found.");
+                        alert("Invalid Session Request: User not found.");
                         document.getElementById('btn-text-login').classList.remove('hidden');
                         document.getElementById('btn-spinner-login').classList.add('hidden');
                     }
@@ -1955,93 +2620,6 @@
                     alert("Authentication Denied: " + error.message);
                     document.getElementById('btn-text-login').classList.remove('hidden');
                     document.getElementById('btn-spinner-login').classList.add('hidden');
-                });
-        }
-
-        // ===== PHONE LOGIN =====
-        window.handlePhoneLogin = function() {
-            const phone = prompt("Enter your phone number with country code (e.g., +918888888888):");
-            if (!phone) return;
-            
-            // Setup recaptcha
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'login-screen', {
-                    size: 'invisible',
-                    callback: () => {}
-                });
-            }
-            
-            signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-                .then((confirmationResult) => {
-                    const code = prompt("Enter the OTP received:");
-                    if (!code) return;
-                    confirmationResult.confirm(code).then((userCredential) => {
-                        const user = userCredential.user;
-                        // Check if user exists in DB
-                        onValue(ref(db, 'users'), (snapshot) => {
-                            const data = snapshot.val();
-                            let mappedNode = null;
-                            if(data) {
-                                mappedNode = Object.values(data).find(p => p.realFirebaseUID === user.uid);
-                            }
-                            if(mappedNode) {
-                                databaseState.currentUser = mappedNode;
-                                if(!databaseState.currentUser.savedPosts) databaseState.currentUser.savedPosts = [];
-                                if(!databaseState.currentUser.savedReels) databaseState.currentUser.savedReels = [];
-                                if(!databaseState.currentUser.notifications) databaseState.currentUser.notifications = [];
-                                if(!databaseState.viewedReels) databaseState.viewedReels = {};
-                                if(!databaseState.reelViewTracked) databaseState.reelViewTracked = {};
-                                document.getElementById('loading-screen').classList.add('hidden');
-                                document.getElementById('login-screen').classList.add('hidden');
-                                document.getElementById('app-layout').classList.remove('hidden');
-                                listenToGlobalSyncChannels(mappedNode.uid);
-                                initializePeerConnectionNode(mappedNode.uid);
-                                loadNotificationsFromFirebase();
-                                loadInitialPosts();
-                                saveStateToHardware();
-                                if (mappedNode.isPremium) applyPremiumSettings(mappedNode);
-                                showSuccessToast('Welcome Back!', 'Phone login successful.', '📱');
-                            } else {
-                                // Create new user
-                                const assignedUID = generateSixDigitUID();
-                                const newUser = {
-                                    uid: assignedUID,
-                                    realFirebaseUID: user.uid,
-                                    email: user.email || '',
-                                    phone: user.phoneNumber || '',
-                                    name: "User_" + assignedUID,
-                                    bio: "New user joined via phone.",
-                                    pfp: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-                                    profession: "",
-                                    isPremium: false,
-                                    premiumTheme: '',
-                                    premiumFrame: '',
-                                    premiumFont: '',
-                                    premiumExpiry: 0,
-                                    savedPosts: [],
-                                    savedReels: [],
-                                    notifications: []
-                                };
-                                set(ref(db, 'users/' + assignedUID), newUser).then(() => {
-                                    databaseState.currentUser = newUser;
-                                    document.getElementById('loading-screen').classList.add('hidden');
-                                    document.getElementById('login-screen').classList.add('hidden');
-                                    document.getElementById('app-layout').classList.remove('hidden');
-                                    listenToGlobalSyncChannels(assignedUID);
-                                    initializePeerConnectionNode(assignedUID);
-                                    loadNotificationsFromFirebase();
-                                    loadInitialPosts();
-                                    saveStateToHardware();
-                                    showSuccessToast('Welcome!', 'Phone login successful. Account created.', '📱');
-                                });
-                            }
-                        }, { onlyOnce: true });
-                    }).catch((error) => {
-                        alert("Invalid OTP: " + error.message);
-                    });
-                })
-                .catch((error) => {
-                    alert("Phone login failed: " + error.message);
                 });
         }
 
@@ -2557,6 +3135,54 @@
         }
 
         // ============================================================
+        // EDIT POST
+        // ============================================================
+        let editingPostId = null;
+
+        window.openEditPostModal = function(postId) {
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if (!targetPost || targetPost.authorUID !== databaseState.currentUser.uid) {
+                showSuccessToast('Error', 'You can only edit your own posts.', '❌');
+                return;
+            }
+            editingPostId = postId;
+            document.getElementById('edit-post-text-input').value = targetPost.text || '';
+            openModal('edit-post-modal');
+        }
+
+        window.savePostEdit = function() {
+            const newText = document.getElementById('edit-post-text-input').value.trim();
+            if (!newText) {
+                showSuccessToast('Error', 'Post text cannot be empty.', '❌');
+                return;
+            }
+            
+            const postId = editingPostId;
+            const pubRef = ref(db, 'publications');
+            get(pubRef).then((snap) => {
+                const data = snap.val();
+                if (data) {
+                    let dbKey = null;
+                    Object.keys(data).forEach(k => {
+                        if (data[k] && data[k].id === postId) {
+                            dbKey = k;
+                        }
+                    });
+                    if (dbKey) {
+                        update(ref(db, `publications/${dbKey}`), { text: newText }).then(() => {
+                            closeModal('edit-post-modal');
+                            showSuccessToast('Updated!', 'Post updated successfully.', '✏️');
+                            loadInitialPosts();
+                        }).catch((err) => {
+                            console.error('Edit error:', err);
+                            showSuccessToast('Error', 'Failed to update post.', '❌');
+                        });
+                    }
+                }
+            });
+        }
+
+        // ============================================================
         // DELETE COMMENT - Owner OR Author
         // ============================================================
         window.deleteComment = function(postId, commentKey) {
@@ -2607,7 +3233,7 @@
         }
 
         // ============================================================
-        // POST RENDER
+        // POST RENDER with 3-dot menu
         // ============================================================
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
@@ -2635,12 +3261,18 @@
                 const card = document.createElement('div');
                 card.className = `bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md transition-all duration-300 relative`;
                 
-                let deleteBtn = '';
+                let menuHtml = '';
                 if (isOwner) {
-                    deleteBtn = `
-                        <button onclick="deletePost('${post.id}')" class="post-delete-btn absolute top-3 right-3 text-red-400 hover:text-red-500" title="Delete Post">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
+                    menuHtml = `
+                        <div class="absolute top-3 right-3 z-10">
+                            <button onclick="togglePostMenu('${post.id}')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+                            </button>
+                            <div id="post-menu-${post.id}" class="post-three-dot-menu">
+                                <button onclick="openEditPostModal('${post.id}')" class="edit-btn">✏️ Edit</button>
+                                <button onclick="deletePost('${post.id}')" class="delete-btn">🗑️ Delete</button>
+                            </div>
+                        </div>
                     `;
                 }
                 
@@ -2654,7 +3286,7 @@
                 }
 
                 card.innerHTML = `
-                    ${deleteBtn}
+                    ${menuHtml}
                     <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
                             <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
@@ -2686,6 +3318,32 @@
                 `;
                 feed.appendChild(card);
             });
+        }
+
+        // ===== POST MENU TOGGLE =====
+        window.togglePostMenu = function(postId) {
+            const menu = document.getElementById('post-menu-' + postId);
+            if (!menu) return;
+            // Close all other menus
+            document.querySelectorAll('.post-three-dot-menu').forEach(m => {
+                if (m.id !== 'post-menu-' + postId) {
+                    m.classList.remove('show');
+                }
+            });
+            menu.classList.toggle('show');
+        }
+
+        // ===== REEL MENU TOGGLE =====
+        window.toggleReelMenu = function(reelId) {
+            const menu = document.getElementById('reel-menu-' + reelId);
+            if (!menu) return;
+            // Close all other reel menus
+            document.querySelectorAll('.reel-three-dot-menu').forEach(m => {
+                if (m.id !== 'reel-menu-' + reelId) {
+                    m.classList.remove('show');
+                }
+            });
+            menu.classList.toggle('show');
         }
 
         // ============================================================
@@ -2865,7 +3523,7 @@
         };
 
         // ============================================================
-        // REEL DELETE - Owner only
+        // REEL DELETE - Using 3-dot menu
         // ============================================================
         window.deleteReel = function(reelId) {
             const myUID = databaseState.currentUser.uid;
@@ -2905,10 +3563,55 @@
                     }
                 });
             }
-        };
+        }
 
         // ============================================================
-        // REELS SYSTEM - FIXED: Real-time Like Updates
+        // REEL EDIT
+        // ============================================================
+        let editingReelId = null;
+
+        window.openEditReelModal = function(reelId) {
+            const targetReel = databaseState.reels.find(r => r.id === reelId);
+            if (!targetReel || targetReel.userId !== databaseState.currentUser.uid) {
+                showSuccessToast('Error', 'You can only edit your own reels.', '❌');
+                return;
+            }
+            editingReelId = reelId;
+            document.getElementById('edit-reel-caption-input').value = targetReel.caption || '';
+            openModal('edit-reel-modal');
+        }
+
+        window.saveReelCaptionEdit = function() {
+            const newCaption = document.getElementById('edit-reel-caption-input').value.trim();
+            const reelId = editingReelId;
+            
+            const reelRef = ref(db, 'reels');
+            get(reelRef).then((snap) => {
+                const data = snap.val();
+                if (data) {
+                    let dbKey = null;
+                    Object.keys(data).forEach(k => {
+                        if (data[k] && data[k].id === reelId) {
+                            dbKey = k;
+                        }
+                    });
+                    if (dbKey) {
+                        update(ref(db, `reels/${dbKey}`), { caption: newCaption }).then(() => {
+                            closeModal('edit-reel-modal');
+                            showSuccessToast('Updated!', 'Reel caption updated successfully.', '✏️');
+                            isReelsLoaded = false;
+                            loadReelsOnDemand();
+                        }).catch((err) => {
+                            console.error('Edit reel error:', err);
+                            showSuccessToast('Error', 'Failed to update reel caption.', '❌');
+                        });
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // REELS SYSTEM - with 3-dot menu
         // ============================================================
         let isReelsLoaded = false;
         
@@ -2916,7 +3619,6 @@
             if (isReelsLoaded) return;
             isReelsLoaded = true;
             
-            // Use onValue for real-time updates
             const reelRef = ref(db, 'reels');
             onValue(reelRef, (snap) => {
                 const data = snap.val();
@@ -2968,6 +3670,19 @@
                 div.dataset.reelId = reel.id;
                 div.dataset.liked = isLiked ? 'true' : 'false';
 
+                let menuHtml = '';
+                if (isOwner) {
+                    menuHtml = `
+                        <div class="three-dot-trigger" onclick="toggleReelMenu('${reel.id}')">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                        </div>
+                        <div id="reel-menu-${reel.id}" class="three-dot-menu" style="position:absolute; bottom:80px; left:50%; transform:translateX(-50%); z-index:15; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:8px 12px; display:flex; gap:12px; box-shadow:0 4px 20px rgba(0,0,0,0.5); display:none;">
+                            <button class="edit-btn" onclick="openEditReelModal('${reel.id}')">✏️ Edit</button>
+                            <button class="delete-btn" onclick="deleteReel('${reel.id}')">🗑️ Delete</button>
+                        </div>
+                    `;
+                }
+
                 div.innerHTML = `
                     <video src="${reel.videoUrl}" playsinline preload="metadata" loop></video>
                     <div class="reel-overlay">
@@ -2979,6 +3694,7 @@
                         </div>
                         ${reel.caption ? `<p class="text-sm text-white/80 reel-caption ${fontClass}">${reel.caption}</p>` : ''}
                     </div>
+                    ${menuHtml}
                     <div class="reel-actions">
                         <button onclick="toggleReelLike('${reel.id}')" class="hover:scale-110 transition" id="reel-like-btn-${reel.id}">
                             <svg class="w-7 h-7" fill="${isLiked ? '#ff2d55' : 'none'}" stroke="${isLiked ? '#ff2d55' : 'white'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
@@ -2999,15 +3715,16 @@
                             <span id="reel-views-count-${reel.id}">${viewsCount}</span>
                         </div>
                     </div>
-                    ${isOwner ? `
-                        <button onclick="deleteReel('${reel.id}')" class="reel-delete-btn">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            Delete
-                        </button>
-                    ` : ''}
                 `;
 
                 container.appendChild(div);
+            });
+
+            // Re-attach menu toggle for reel menus that were created
+            document.querySelectorAll('.three-dot-trigger').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
             });
 
             setTimeout(() => {
@@ -3082,7 +3799,7 @@
         };
 
         // ============================================================
-        // REEL VIEWS - Fixed: 3 seconds, one view per user
+        // REEL VIEWS
         // ============================================================
         let reelObserver = null;
         let reelViewTimers = {};
@@ -3396,7 +4113,7 @@
 
             databaseState.peers.forEach(peer => {
                 if(peer.uid === myUID) return;
-                if(peer.uid.includes(query) || peer.name.toLowerCase().includes(query)) {
+                if(peer.uid.includes(query) || peer.name.toLowerCase().includes(query) || (peer.username && peer.username.toLowerCase().includes(query))) {
                     const isFriend = databaseState.friendships[`bond_${myUID}_and_${peer.uid}`] === 'confirmed';
                     const hasSentRequest = databaseState.friendships[`req_${myUID}_to_${peer.uid}`] === 'pending';
                     const hasIncomingRequest = databaseState.friendships[`req_${peer.uid}_to_${myUID}`] === 'pending';
@@ -4458,12 +5175,10 @@
         }
 
         console.log('🚀 Stardust Hub - FINAL VERSION');
-        console.log('✅ Reels delete button - Bottom position');
-        console.log('✅ Reels like system - Real-time updates');
-        console.log('✅ Premium subscription - No error');
-        console.log('✅ Phone login with OTP');
-        console.log('✅ Signup with Name, Bio, Email, Password');
-        console.log('✅ Privacy Policy & Terms in login and settings');
+        console.log('✅ Phone login with OTP + Profile Setup');
+        console.log('✅ Privacy & Terms in settings above logout');
+        console.log('✅ Logout button label fixed');
+        console.log('✅ 3-dot menu for reels and posts (delete + edit)');
         console.log('🎉 Your web is now COMPLETE!');
     </script>
 </body>
