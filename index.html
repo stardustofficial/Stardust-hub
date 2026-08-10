@@ -466,264 +466,72 @@
         .reel-user-info { cursor: pointer; transition: opacity 0.2s; }
         .reel-user-info:hover { opacity: 0.7; }
 
-        /* ===== REEL 3-DOT MENU ===== */
-        .reel-three-dot {
+        /* ===== REEL DELETE BUTTON - HIDDEN (replaced with 3-dot menu) ===== */
+        .reel-delete-btn {
+            display: none !important;
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notification-item { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        .notification-badge {
             position: absolute;
-            top: 16px;
-            right: 16px;
-            z-index: 20;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            transition: all 0.2s;
-        }
-        .reel-three-dot:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .reel-dropdown-menu {
-            position: absolute;
-            top: 56px;
-            right: 12px;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 6px 0;
-            min-width: 140px;
-            z-index: 30;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            display: none;
-        }
-        .reel-dropdown-menu.show {
-            display: block;
-        }
-        .reel-dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            font-size: 12px;
-            text-align: left;
-            color: #e2e8f0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .reel-dropdown-menu button:hover {
-            background: #334155;
-        }
-        .reel-dropdown-menu .danger {
-            color: #ef4444;
-        }
-        .reel-dropdown-menu .danger:hover {
-            background: #450a0a;
-        }
-
-        /* ===== POST 3-DOT MENU ===== */
-        .post-three-dot {
-            background: rgba(0,0,0,0.05);
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #64748b;
-            transition: all 0.2s;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .post-three-dot:hover {
-            background: rgba(0,0,0,0.1);
-        }
-        body.dark-mode .post-three-dot {
-            color: #94a3b8;
-        }
-        body.dark-mode .post-three-dot:hover {
-            background: rgba(255,255,255,0.1);
-        }
-        .post-dropdown-menu {
-            position: absolute;
-            top: 32px;
-            right: 0;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 6px 0;
-            min-width: 140px;
-            z-index: 30;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            display: none;
-        }
-        .post-dropdown-menu.show {
-            display: block;
-        }
-        .post-dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 16px;
-            font-size: 12px;
-            text-align: left;
-            color: #e2e8f0;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .post-dropdown-menu button:hover {
-            background: #334155;
-        }
-        .post-dropdown-menu .danger {
-            color: #ef4444;
-        }
-        .post-dropdown-menu .danger:hover {
-            background: #450a0a;
-        }
-
-        /* ===== COPY LINK TOAST ===== */
-        .copy-link-toast {
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            z-index: 200;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            display: none;
-        }
-        .copy-link-toast.show {
-            display: block;
-            animation: toastIn 0.3s ease-out;
-        }
-
-        /* ===== LOGIN PAGE LINKS ===== */
-        .auth-footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .auth-footer-links a {
-            color: #3b82f6;
-            text-decoration: underline;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        .auth-footer-links a:hover {
-            color: #60a5fa;
-        }
-
-        /* ===== DELETE ACCOUNT WARNING ===== */
-        .delete-warning-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
-        }
-        .delete-warning-box {
-            background: #1e293b;
-            border: 1px solid #ef4444;
-            border-radius: 20px;
-            max-width: 380px;
-            width: 100%;
-            padding: 24px;
-            color: #f1f5f9;
-        }
-        .delete-warning-box h3 {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ef4444;
-            margin-bottom: 8px;
-        }
-        .delete-warning-box p {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 16px;
-            line-height: 1.5;
-        }
-        .delete-warning-box input {
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-            font-size: 13px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-        .delete-warning-box input:focus {
-            border-color: #3b82f6;
-        }
-        .delete-warning-box .actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .delete-warning-box .actions button {
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 13px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .delete-warning-box .actions .cancel {
-            background: #334155;
-            color: #e2e8f0;
-        }
-        .delete-warning-box .actions .cancel:hover {
-            background: #475569;
-        }
-        .delete-warning-box .actions .confirm {
+            top: -4px;
+            right: -4px;
             background: #ef4444;
             color: white;
-        }
-        .delete-warning-box .actions .confirm:hover {
-            background: #dc2626;
-        }
-        .delete-warning-box .error-msg {
-            color: #ef4444;
-            font-size: 12px;
-            margin-top: -6px;
-            margin-bottom: 10px;
-            display: none;
-        }
-        .delete-warning-box .error-msg.show {
-            display: block;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        .post-actions-wrap {
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
         }
-        .post-actions-wrap .post-three-dot {
-            margin-left: auto;
+        .notification-badge.hidden { display: none; }
+        #notification-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            width: 330px;
+            max-width: calc(100vw - 24px);
+            border-radius: 16px;
+            z-index: 60;
+            overflow: hidden;
+            max-height: 600px;
+            display: none;
+            left: auto;
         }
+        #notification-dropdown:not(.hidden) { display: block; }
+        #notification-dropdown .notif-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        #notification-dropdown .notif-list {
+            overflow-y: auto;
+            max-height: 520px;
+            padding: 8px;
+        }
+        #notification-dropdown .notif-list::-webkit-scrollbar { width: 3px; }
+        .notif-unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .notif-unread-dot.hidden { display: none; }
 
-        /* ===== TOAST ===== */
+        /* ===== SUCCESS TOAST ===== */
         .success-toast {
             position: fixed;
             bottom: 100px;
@@ -744,23 +552,262 @@
             100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
         }
 
-        body.dark-mode .delete-warning-box { background: #1e293b; border-color: #ef4444; }
-        body.light-mode .delete-warning-box { background: #ffffff; border-color: #ef4444; color: #1a1a2e; }
-        body.light-mode .delete-warning-box p { color: #475569; }
-        body.light-mode .delete-warning-box input { background: #f1f5f9; border-color: #e2e8f0; color: #1a1a2e; }
-        body.light-mode .delete-warning-box .actions .cancel { background: #e2e8f0; color: #1a1a2e; }
-        body.light-mode .delete-warning-box .actions .cancel:hover { background: #cbd5e1; }
-        body.light-mode .post-dropdown-menu { background: #ffffff; border-color: #e2e8f0; }
-        body.light-mode .post-dropdown-menu button { color: #1a1a2e; }
-        body.light-mode .post-dropdown-menu button:hover { background: #f1f5f9; }
-        body.light-mode .post-dropdown-menu .danger { color: #dc2626; }
-        body.light-mode .post-dropdown-menu .danger:hover { background: #fee2e2; }
-        body.light-mode .reel-dropdown-menu { background: #ffffff; border-color: #e2e8f0; }
-        body.light-mode .reel-dropdown-menu button { color: #1a1a2e; }
-        body.light-mode .reel-dropdown-menu button:hover { background: #f1f5f9; }
-        body.light-mode .reel-dropdown-menu .danger { color: #dc2626; }
-        body.light-mode .reel-dropdown-menu .danger:hover { background: #fee2e2; }
-        body.light-mode .copy-link-toast { background: #1a1a2e; color: white; }
+        /* ===== SHARED MEDIA ===== */
+        .shared-media-preview {
+            max-width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .shared-media-preview:hover { transform: scale(1.02); }
+        .shared-media-preview img, .shared-media-preview video {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: cover;
+        }
+        .shared-media-preview .media-label {
+            padding: 4px 8px;
+            font-size: 9px;
+            text-align: center;
+        }
+
+        /* ===== PROFILE TABS ===== */
+        .profile-tab-btn { transition: all 0.3s ease; }
+        .profile-tab-btn.active { background: #1e293b; color: #06b6d4; }
+        .profile-tab-btn:not(.active) { color: #64748b; }
+        .profile-tab-btn:not(.active):hover { color: #94a3b8; }
+
+        /* ===== POST TABS ===== */
+        .post-tab-btn { transition: all 0.3s ease; }
+        .post-tab-btn.active { background: #1e293b; color: #06b6d4; }
+        .post-tab-btn:not(.active) { color: #64748b; }
+        .post-tab-btn:not(.active):hover { color: #94a3b8; }
+
+        /* ===== FULL SCREEN VIDEO ===== */
+        #full-screen-video-player {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #full-screen-video-player video {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 12px;
+        }
+        #full-screen-video-player .close-video {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        #loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        /* ===== CALL INTERFACE ===== */
+        .call-fullscreen-bg {
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+        }
+        .call-pfp-ring {
+            box-shadow: 0 0 60px rgba(6, 182, 212, 0.3), 0 0 120px rgba(6, 182, 212, 0.1);
+        }
+        .call-status-pulse { animation: pulseGlow 2s ease-in-out infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .call-bottom-btn {
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+        .call-bottom-btn:hover { transform: scale(1.05); }
+        .call-bottom-btn:active { transform: scale(0.95); }
+        .call-end-btn {
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+        }
+        .call-end-btn:hover { transform: scale(1.05); }
+        .call-end-btn:active { transform: scale(0.95); }
+
+        /* ===== UPLOAD LOADING ===== */
+        .upload-loading {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #06b6d4;
+            border-right-color: #06b6d4;
+            animation: spin 0.8s linear infinite;
+        }
+        .upload-loading.hidden { display: none; }
+        .plus-btn-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+        .plus-btn-wrapper .upload-loading {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: #06b6d4;
+            border-right-color: #06b6d4;
+            animation: spin 0.8s linear infinite;
+        }
+        .plus-btn-wrapper .upload-loading.hidden { display: none; }
+
+        /* ===== COMMENT DELETE ===== */
+        .comment-delete-btn { opacity: 0.5; transition: opacity 0.2s; }
+        .comment-delete-btn:hover { opacity: 1; }
+
+        /* ===== MISC ===== */
+        .call-reaction-float {
+            position: fixed;
+            font-size: 48px;
+            pointer-events: none;
+            z-index: 200;
+            animation: floatUp 1.2s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-150px) scale(1.3); }
+        }
+
+        /* ===== SHIMMER ===== */
+        .shimmer {
+            background: linear-gradient(90deg, #e8e8ee 25%, #f0f0f5 50%, #e8e8ee 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        body.dark-mode .shimmer {
+            background: linear-gradient(90deg, #1e293b 25%, #2a3a4a 50%, #1e293b 75%);
+            background-size: 200% 100%;
+        }
+
+        /* ===== POST DELETE BUTTON - HIDDEN (replaced with 3-dot menu) ===== */
+        .post-delete-btn {
+            display: none !important;
+        }
+        
+        /* ===== 3-DOT MENU BUTTON ===== */
+        .post-menu-btn {
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            padding: 4px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: inherit;
+        }
+        .post-menu-btn:hover {
+            opacity: 1;
+            background: rgba(128, 128, 128, 0.2);
+        }
+
+        /* ===== POST MENU DROPDOWN ===== */
+        .post-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 6px;
+            min-width: 150px;
+            z-index: 50;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .post-menu-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .post-menu-dropdown button:hover {
+            background: #334155;
+        }
+        .post-menu-dropdown .delete-btn {
+            color: #ef4444;
+        }
+        .post-menu-dropdown .delete-btn:hover {
+            background: #450a0a;
+        }
+
+        body.light-mode .post-menu-dropdown {
+            background: #ffffff;
+            border-color: #e4e6eb;
+        }
+        body.light-mode .post-menu-dropdown button {
+            color: #1a1a2e;
+        }
+        body.light-mode .post-menu-dropdown button:hover {
+            background: #f0f2f5;
+        }
+        body.light-mode .post-menu-dropdown .delete-btn {
+            color: #dc2626;
+        }
+        body.light-mode .post-menu-dropdown .delete-btn:hover {
+            background: #fee2e2;
+        }
+
+        /* ===== EDIT POST MODAL ===== */
+        #edit-post-modal textarea {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            width: 100%;
+            resize: vertical;
+            min-height: 100px;
+        }
+        body.light-mode #edit-post-modal textarea {
+            background: #f0f2f5;
+            border-color: #e4e6eb;
+            color: #1a1a2e;
+        }
     </style>
 </head>
 <body class="light-mode text-slate-100 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
@@ -787,46 +834,77 @@
                     <div id="btn-spinner-login" class="spinner hidden"></div>
                 </button>
                 
-                <div class="flex flex-wrap justify-between gap-1 text-xs text-slate-400 mt-1">
-                    <span onclick="switchAuthView('signup')" class="text-cyan-400 font-bold cursor-pointer hover:underline">Create New Account</span>
-                    <span onclick="openForgotPassword()" class="text-blue-400 font-bold cursor-pointer hover:underline">Forgot Password?</span>
-                </div>
-
-                <div class="auth-footer-links">
-                    <a href="privacy.html" target="_blank">Privacy Policy</a>
-                    <a href="terms.html" target="_blank">Terms of Service</a>
+                <div class="flex flex-wrap items-center justify-between gap-1 text-xs">
+                    <p class="text-slate-400">
+                        Don't have an account? <span onclick="switchAuthView('signup')" class="text-cyan-400 font-bold cursor-pointer hover:underline">Create New Account</span>
+                    </p>
+                    <span onclick="showForgotPassword()" class="text-blue-400 font-bold cursor-pointer hover:underline">Forgot Password?</span>
                 </div>
             </div>
 
             <div id="signup-form-container" class="space-y-4 hidden">
+                <input type="file" id="signup-pfp" accept="image/*" class="w-full text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-200 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-300 dark:hover:file:bg-slate-700">
+                <input type="text" id="signup-name" placeholder="Full Name" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
                 <input type="email" id="signup-email" placeholder="Enter Valid Email Address" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
                 <input type="password" id="signup-password" placeholder="Create Secure Password" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
+                <textarea id="signup-bio" placeholder="Tell us about yourself..." class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200 resize-none h-20"></textarea>
                 
-                <input type="text" id="signup-name" placeholder="Your Full Name" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
-                <input type="text" id="signup-username" placeholder="Choose a Username" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200">
-                <textarea id="signup-bio" placeholder="Short Bio (optional)" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center tracking-wide text-slate-800 dark:text-slate-200 resize-none h-16"></textarea>
-                
-                <div class="mb-1">
-                    <label class="block text-xs font-semibold text-slate-400 text-left">Profile Picture</label>
-                    <input type="file" id="signup-pfp" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-200 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-300 dark:hover:file:bg-slate-700">
-                </div>
-
                 <button onclick="handleCustomSystemSignup()" class="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl transition duration-200 font-semibold text-sm shadow-lg shadow-emerald-600/20">
                     <span id="btn-text-signup">Register & Generate UID</span>
                     <div id="btn-spinner-signup" class="spinner hidden"></div>
                 </button>
                 
-                <p class="text-xs text-slate-400 mt-2">
+                <p class="text-xs text-slate-400 mt-4">
                     Already registered? <span onclick="switchAuthView('login')" class="text-blue-400 font-bold cursor-pointer hover:underline">Login Securely</span>
                 </p>
-                
-                <div class="auth-footer-links">
-                    <a href="privacy.html" target="_blank">Privacy Policy</a>
-                    <a href="terms.html" target="_blank">Terms of Service</a>
-                </div>
+            </div>
+
+            <!-- Privacy & Terms -->
+            <div class="mt-6 pt-4 border-t border-lightborder dark:border-slate-800 flex justify-center gap-3 text-[10px]">
+                <a href="privacy.html" class="text-blue-500 dark:text-blue-400 hover:underline font-medium">Privacy Policy</a>
+                <span class="text-slate-500">|</span>
+                <a href="terms.html" class="text-blue-500 dark:text-blue-400 hover:underline font-medium">Terms of Service</a>
             </div>
 
             <p class="text-[9px] text-slate-600 mt-6 absolute bottom-3 left-0 right-0 text-center px-4">Protected by end-to-end custom cryptographic password tokenization.</p>
+        </div>
+    </div>
+
+    <!-- ===== FORGOT PASSWORD MODAL ===== -->
+    <div id="forgot-password-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Reset Password</h3>
+                <button onclick="closeModal('forgot-password-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">Enter your email address and we'll send you a password reset link.</p>
+            <input type="email" id="reset-email-input" placeholder="Enter your email" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-center text-slate-800 dark:text-slate-200">
+            <button onclick="sendPasswordReset()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition">Send Reset Link</button>
+        </div>
+    </div>
+
+    <!-- ===== EDIT POST MODAL ===== -->
+    <div id="edit-post-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Edit Post</h3>
+                <button onclick="closeModal('edit-post-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <textarea id="edit-post-text" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-slate-800 dark:text-slate-200 resize-none h-28"></textarea>
+            <input type="file" id="edit-post-image" accept="image/*" class="w-full mt-3 text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-200 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-300 dark:hover:file:bg-slate-700">
+            <button onclick="saveEditedPost()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- ===== EDIT REEL MODAL ===== -->
+    <div id="edit-reel-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Edit Reel Caption</h3>
+                <button onclick="closeModal('edit-reel-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+            </div>
+            <input type="text" id="edit-reel-caption" placeholder="New caption..." class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-slate-800 dark:text-slate-200">
+            <button onclick="saveEditedReel()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-sm transition">Save Changes</button>
         </div>
     </div>
 
@@ -988,7 +1066,7 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </button>
             <button onclick="switchTab('search')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-1 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 014 0z"></path></svg>
             </button>
             <button onclick="switchTab('profile')" class="text-slate-500 hover:text-cyan-400 flex flex-col items-center flex-1 py-1 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -1148,7 +1226,7 @@
             </div>
             <div class="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar pr-1">
                 <div class="bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Dark Mode</span>
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">🌓 Dark Mode</span>
                     <div class="relative inline-flex items-center cursor-pointer" onclick="toggleTheme()">
                         <input type="checkbox" id="theme-toggle-checkbox" class="sr-only">
                         <div class="w-10 h-6 bg-slate-300 dark:bg-slate-600 rounded-full shadow-inner transition duration-200 ease-in-out">
@@ -1161,10 +1239,15 @@
                 <button onclick="openSubSettingPage('commented-posts')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Commented Matrix Logs</span><span>→</span></button>
                 <button onclick="openSubSettingPage('saved-posts')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Saved Core Channels</span><span>→</span></button>
                 <button onclick="openSubSettingPage('saved-reels')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Saved Reels</span><span>→</span></button>
-                <button onclick="openSubSettingPage('privacy-policy')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Privacy Policy</span><span>→</span></button>
-                <button onclick="openSubSettingPage('terms-of-service')" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300"><span>Terms of Service</span><span>→</span></button>
+                
+                <!-- NEW: Privacy Policy & Terms of Service buttons (no emoji) -->
+                <a href="privacy.html" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300 no-underline"><span>Privacy Policy</span><span>→</span></a>
+                <a href="terms.html" class="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-300 dark:border-slate-800 text-left p-3 rounded-xl text-xs font-semibold flex justify-between hover:bg-slate-200 dark:hover:bg-slate-800 transition text-slate-700 dark:text-slate-300 no-underline"><span>Terms of Service</span><span>→</span></a>
+                
                 <button onclick="executeLogout()" class="w-full bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex justify-between hover:bg-red-200 dark:hover:bg-red-900/30 transition"><span>Terminate Ecosystem Connection</span><span>⇥</span></button>
-                <button onclick="openDeleteAccountWarning()" class="w-full bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex justify-between hover:bg-red-200 dark:hover:bg-red-900/30 transition"><span>Delete Account</span><span>✕</span></button>
+                
+                <!-- NEW: Delete Account button -->
+                <button onclick="handleDeleteAccount()" class="w-full bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-900/40 text-left p-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex justify-between hover:bg-red-200 dark:hover:bg-red-900/30 transition"><span>Delete Account</span><span>🗑</span></button>
             </div>
         </div>
     </div>
@@ -1230,9 +1313,6 @@
                 <button onclick="closeModal('forward-share-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold">Close</button>
             </div>
             <div id="share-friends-target-grid" class="mt-4 overflow-y-auto flex-1 custom-scrollbar space-y-2"></div>
-            <div class="mt-3 pt-2 border-t border-slate-300 dark:border-slate-800">
-                <button onclick="copyPostLink()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition">Copy Link</button>
-            </div>
         </div>
     </div>
 
@@ -1244,9 +1324,6 @@
                 <button onclick="closeModal('reel-share-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold">Close</button>
             </div>
             <div id="reel-share-target-grid" class="mt-4 overflow-y-auto flex-1 custom-scrollbar space-y-2"></div>
-            <div class="mt-3 pt-2 border-t border-slate-300 dark:border-slate-800">
-                <button onclick="copyReelLink()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition">Copy Link</button>
-            </div>
         </div>
     </div>
 
@@ -1386,36 +1463,30 @@
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
-    <div id="forgot-password-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-lightcard dark:bg-darkcard w-full max-w-sm rounded-3xl border border-lightborder dark:border-slate-800 p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Reset Password</h3>
-                <button onclick="closeModal('forgot-password-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">✕</button>
+    <!-- Success Toast -->
+    <div id="success-toast" class="success-toast hidden">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl" id="toast-icon">✨</span>
+            <div>
+                <p id="toast-title" class="font-bold text-sm">Success!</p>
+                <p id="toast-message" class="text-xs text-emerald-200">Your content has been uploaded successfully.</p>
             </div>
-            <p class="text-xs text-slate-500 mb-4">Enter your registered email address and we'll send you a password reset link.</p>
-            <input type="email" id="forgot-email" placeholder="Your email address" class="w-full px-4 py-3 bg-lightbg dark:bg-darkbg border border-lightborder dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:border-slate-400 dark:focus:border-slate-700 transition text-slate-800 dark:text-slate-200 mb-4">
-            <button onclick="sendPasswordReset()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-sm font-bold transition">Send Reset Email</button>
         </div>
     </div>
-
-    <!-- Copy Link Toast -->
-    <div id="copy-link-toast" class="copy-link-toast">Link copied to clipboard</div>
 
     <script type="module">
         // ============================================================
         // STARDUST HUB - FINAL VERSION
-        // Fixed: Reels 3-dot menu (Delete + Edit Caption)
-        // Fixed: Post 3-dot menu (Delete + Edit Caption)
-        // Fixed: Copy Link for Posts & Reels
-        // Fixed: Delete Account with password verification
-        // Fixed: Forgot Password
-        // Fixed: Privacy Policy & Terms of Service in settings and login
-        // Fixed: Signup with more fields (pfp, name, username, bio)
+        // Fixed: Reels delete button position (replaced with 3-dot menu)
+        // Fixed: Post delete button (replaced with 3-dot menu)
+        // Fixed: Signup with full profile (pfp, name, bio, email, password)
+        // Fixed: Privacy Policy & Terms links on login/signup
+        // Fixed: Forgot Password with Firebase
+        // Fixed: Delete Account
         // ============================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getDatabase, ref, set, onValue, push, update, get, remove, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
         // ===== FIREBASE CONFIG =====
@@ -1531,12 +1602,6 @@
             window.toastTimeout = setTimeout(() => toast.classList.add('hidden'), 4000);
         }
 
-        function showCopyLinkToast() {
-            const toast = document.getElementById('copy-link-toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
         // ===== LOADING SPINNER =====
         function showUploadLoading() {
             document.getElementById('upload-loading-spinner').classList.remove('hidden');
@@ -1547,6 +1612,69 @@
             document.getElementById('upload-loading-spinner').classList.add('hidden');
             document.getElementById('main-plus-btn').classList.remove('opacity-50');
             databaseState.isUploading = false;
+        }
+
+        // ============================================================
+        // FORGOT PASSWORD
+        // ============================================================
+        window.showForgotPassword = function() {
+            openModal('forgot-password-modal');
+            document.getElementById('reset-email-input').value = '';
+        }
+
+        window.sendPasswordReset = function() {
+            const email = document.getElementById('reset-email-input').value.trim();
+            if (!email) {
+                showSuccessToast('Error', 'Please enter your email address.', '❌');
+                return;
+            }
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    closeModal('forgot-password-modal');
+                    showSuccessToast('Reset Link Sent', 'Check your email for password reset instructions.', '📧');
+                })
+                .catch((error) => {
+                    showSuccessToast('Error', error.message, '❌');
+                });
+        }
+
+        // ============================================================
+        // DELETE ACCOUNT
+        // ============================================================
+        window.handleDeleteAccount = function() {
+            if (!confirm('Are you sure you want to permanently delete your account? This action cannot be undone!')) {
+                return;
+            }
+            if (!confirm('All your posts, reels, and data will be lost. Are you absolutely sure?')) {
+                return;
+            }
+            
+            const user = auth.currentUser;
+            if (!user) {
+                showSuccessToast('Error', 'You must be logged in to delete your account.', '❌');
+                return;
+            }
+
+            const myUID = databaseState.currentUser.uid;
+            
+            // Delete user data from Realtime Database
+            const userRef = ref(db, 'users/' + myUID);
+            remove(userRef).then(() => {
+                // Delete user from Firebase Auth
+                return deleteUser(user);
+            }).then(() => {
+                localStorage.removeItem("STARDUST_CORE_DB_PROD");
+                if (peerInstance) peerInstance.destroy();
+                showSuccessToast('Account Deleted', 'Your account has been permanently deleted.', '🗑');
+                setTimeout(() => location.reload(), 1500);
+            }).catch((error) => {
+                console.error('Delete account error:', error);
+                if (error.code === 'auth/requires-recent-login') {
+                    showSuccessToast('Error', 'Please re-authenticate and try again.', '❌');
+                } else {
+                    showSuccessToast('Error', 'Failed to delete account: ' + error.message, '❌');
+                }
+            });
         }
 
         // ============================================================
@@ -1636,6 +1764,9 @@
             }
         }
 
+        // ============================================================
+        // PREMIUM SUBSCRIPTION
+        // ============================================================
         window.handleSubscriptionActivation = function() {
             const now = Date.now();
             const expiry = now + (30 * 24 * 60 * 60 * 1000);
@@ -1651,10 +1782,10 @@
                 openModal('premium-dashboard-modal');
                 applyPremiumSettings(databaseState.currentUser);
                 saveStateToHardware();
-                showSuccessToast('Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
+                showSuccessToast('✅ Premium Activated!', 'You now have access to all premium features for 30 days!', '🌟');
             }).catch((err) => {
                 console.error('Subscription activation failed:', err);
-                showSuccessToast('Premium Activated!', 'You now have access to all premium features!', '🌟');
+                showSuccessToast('✅ Premium Activated!', 'You now have access to all premium features!', '🌟');
                 update(ref(db, 'users/' + myUID), { 
                     isPremium: true,
                     premiumExpiry: expiry
@@ -1684,7 +1815,7 @@
                     'frame': 'Frame',
                     'font': 'Font'
                 };
-                showSuccessToast('Applied!', `${labels[type] || type} updated successfully.`, '✨');
+                showSuccessToast('✅ Applied!', `${labels[type] || type} updated successfully.`, '✨');
             }).catch((err) => {
                 console.error('Premium tweak failed:', err);
                 if (type === 'theme') databaseState.currentUser.premiumTheme = value;
@@ -1696,7 +1827,7 @@
                 renderPersonalPublications();
                 renderProfileReels();
                 saveStateToHardware();
-                showSuccessToast('Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
+                showSuccessToast('✅ Applied!', `${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully.`, '✨');
             });
         }
 
@@ -1854,45 +1985,46 @@
             }
         }
 
+        // ===== SIGNUP WITH FULL PROFILE (PFP, NAME, BIO) =====
         window.handleCustomSystemSignup = function() {
+            const name = document.getElementById('signup-name').value.trim();
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value.trim();
-            const name = document.getElementById('signup-name').value.trim();
-            const username = document.getElementById('signup-username').value.trim();
             const bio = document.getElementById('signup-bio').value.trim();
             const pfpFile = document.getElementById('signup-pfp').files[0];
             
-            if(!email || !password || !name || !username) { 
-                alert("Please fill all required fields: Email, Password, Name, Username."); 
+            if(!name || !email || !password) { 
+                showSuccessToast('Error', 'Please fill in all required fields (Name, Email, Password).', '❌');
                 return; 
             }
             
             document.getElementById('btn-text-signup').classList.add('hidden');
             document.getElementById('btn-spinner-signup').classList.remove('hidden');
             
+            // First, upload PFP if provided
             const processSignup = (pfpBase64) => {
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         const user = userCredential.user;
                         const assignedUID = generateSixDigitUID();
                         const userData = {
-                            email: user.email,
-                            realFirebaseUID: user.uid,
-                            uid: assignedUID,
                             name: name,
-                            username: username,
-                            bio: bio || "System online.",
+                            email: email,
+                            uid: assignedUID,
+                            realFirebaseUID: user.uid,
+                            bio: bio || "Hello, I'm new here!",
                             pfp: pfpBase64 || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
                             profession: "",
                             isPremium: false,
-                            premiumTheme: "",
-                            premiumFrame: "",
-                            premiumFont: "",
+                            premiumTheme: '',
+                            premiumFrame: '',
+                            premiumFont: '',
                             premiumExpiry: 0,
                             savedPosts: [],
                             savedReels: [],
                             notifications: []
                         };
+                        
                         databaseState.currentUser = userData;
                         databaseState.viewedReels = {};
                         databaseState.reelViewTracked = {};
@@ -1912,17 +2044,17 @@
                         });
                     })
                     .catch((error) => {
-                        alert("Registration Failure: " + error.message);
+                        showSuccessToast('Registration Failure', error.message, '❌');
                         document.getElementById('btn-text-signup').classList.remove('hidden');
                         document.getElementById('btn-spinner-signup').classList.add('hidden');
                     });
             };
-            
+
             if (pfpFile) {
                 const reader = new FileReader();
                 reader.onload = (e) => processSignup(e.target.result);
                 reader.onerror = () => {
-                    alert("Failed to read profile picture. Please try again.");
+                    showSuccessToast('Error', 'Failed to read profile image.', '❌');
                     document.getElementById('btn-text-signup').classList.remove('hidden');
                     document.getElementById('btn-spinner-signup').classList.add('hidden');
                 };
@@ -2037,170 +2169,6 @@
                 if(peerInstance) peerInstance.destroy();
                 location.reload();
             });
-        }
-
-        // ============================================================
-        // FORGOT PASSWORD
-        // ============================================================
-        window.openForgotPassword = function() {
-            openModal('forgot-password-modal');
-        }
-
-        window.sendPasswordReset = function() {
-            const email = document.getElementById('forgot-email').value.trim();
-            if (!email) {
-                alert("Please enter your email address.");
-                return;
-            }
-            sendPasswordResetEmail(auth, email)
-                .then(() => {
-                    closeModal('forgot-password-modal');
-                    showSuccessToast('Password Reset', 'A reset link has been sent to your email.', '📧');
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                });
-        }
-
-        // ============================================================
-        // DELETE ACCOUNT
-        // ============================================================
-        let deleteAccountStep = 'warning'; // 'warning' or 'verify'
-
-        window.openDeleteAccountWarning = function() {
-            closeModal('settings-hub-modal');
-            // Create overlay if not exists
-            let overlay = document.getElementById('delete-account-overlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.id = 'delete-account-overlay';
-                overlay.className = 'delete-warning-overlay';
-                overlay.innerHTML = `
-                    <div class="delete-warning-box">
-                        <h3>⚠️ Delete Account</h3>
-                        <p>This action is <strong>permanent</strong> and cannot be undone. All your data, posts, reels, and friends will be lost forever.</p>
-                        <div id="delete-error-msg" class="error-msg">Incorrect password. Please try again.</div>
-                        <input type="password" id="delete-password-input" placeholder="Enter your password to confirm" style="display:none;">
-                        <div class="actions">
-                            <button class="cancel" onclick="closeDeleteAccountWarning()">Cancel</button>
-                            <button class="confirm" id="delete-confirm-btn" onclick="proceedDeleteAccount()">Delete Account</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-            } else {
-                overlay.style.display = 'flex';
-            }
-            // Reset state
-            deleteAccountStep = 'warning';
-            document.getElementById('delete-password-input').style.display = 'none';
-            document.getElementById('delete-confirm-btn').textContent = 'Delete Account';
-            document.getElementById('delete-error-msg').classList.remove('show');
-        }
-
-        window.closeDeleteAccountWarning = function() {
-            const overlay = document.getElementById('delete-account-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-
-        window.proceedDeleteAccount = function() {
-            if (deleteAccountStep === 'warning') {
-                // Show password input
-                deleteAccountStep = 'verify';
-                document.getElementById('delete-password-input').style.display = 'block';
-                document.getElementById('delete-confirm-btn').textContent = 'Confirm Delete';
-                document.getElementById('delete-password-input').value = '';
-                document.getElementById('delete-password-input').focus();
-                document.getElementById('delete-error-msg').classList.remove('show');
-                return;
-            }
-
-            // Verify password
-            const password = document.getElementById('delete-password-input').value.trim();
-            if (!password) {
-                document.getElementById('delete-error-msg').textContent = 'Please enter your password.';
-                document.getElementById('delete-error-msg').classList.add('show');
-                return;
-            }
-
-            const user = auth.currentUser;
-            if (!user) {
-                alert('You must be logged in to delete your account.');
-                return;
-            }
-
-            // Reauthenticate
-            const credential = EmailAuthProvider.credential(user.email, password);
-            reauthenticateWithCredential(user, credential)
-                .then(() => {
-                    // Delete user from Firebase Auth
-                    return deleteUser(user);
-                })
-                .then(() => {
-                    // Remove user data from Realtime Database
-                    const uid = databaseState.currentUser.uid;
-                    return remove(ref(db, 'users/' + uid));
-                })
-                .then(() => {
-                    // Also remove from publications, reels, friendships, chats
-                    // For simplicity, we'll clean up where possible
-                    const updates = {};
-                    // Remove user's posts
-                    const pubRef = ref(db, 'publications');
-                    return get(pubRef).then((snap) => {
-                        const data = snap.val();
-                        if (data) {
-                            Object.keys(data).forEach(k => {
-                                if (data[k].authorUID === databaseState.currentUser.uid) {
-                                    updates[`publications/${k}`] = null;
-                                }
-                            });
-                        }
-                        // Remove user's reels
-                        const reelRef = ref(db, 'reels');
-                        return get(reelRef).then((rSnap) => {
-                            const rData = rSnap.val();
-                            if (rData) {
-                                Object.keys(rData).forEach(k => {
-                                    if (rData[k].userId === databaseState.currentUser.uid) {
-                                        updates[`reels/${k}`] = null;
-                                    }
-                                });
-                            }
-                            // Remove friendships
-                            const friendRef = ref(db, 'friendships');
-                            return get(friendRef).then((fSnap) => {
-                                const fData = fSnap.val();
-                                if (fData) {
-                                    Object.keys(fData).forEach(k => {
-                                        if (k.includes(databaseState.currentUser.uid)) {
-                                            updates[`friendships/${k}`] = null;
-                                        }
-                                    });
-                                }
-                                // Apply all updates
-                                return update(ref(db), updates);
-                            });
-                        });
-                    });
-                })
-                .then(() => {
-                    // Clear local state and logout
-                    localStorage.removeItem("STARDUST_CORE_DB_PROD");
-                    if (peerInstance) peerInstance.destroy();
-                    closeDeleteAccountWarning();
-                    showSuccessToast('Account Deleted', 'Your account has been permanently deleted.', '🗑️');
-                    setTimeout(() => location.reload(), 1500);
-                })
-                .catch((error) => {
-                    console.error('Delete account error:', error);
-                    if (error.code === 'auth/wrong-password') {
-                        document.getElementById('delete-error-msg').textContent = 'Incorrect password. Please try again.';
-                        document.getElementById('delete-error-msg').classList.add('show');
-                    } else {
-                        alert('Failed to delete account: ' + error.message);
-                    }
-                });
         }
 
         // ============================================================
@@ -2631,8 +2599,126 @@
         }
 
         // ============================================================
-        // DELETE POST - Owner only
+        // POST MENU (3-Dot) - Edit & Delete
         // ============================================================
+        let activePostMenuId = null;
+
+        window.togglePostMenu = function(postId) {
+            const menuId = 'post-menu-' + postId;
+            let menu = document.getElementById(menuId);
+            if (menu) {
+                menu.remove();
+                activePostMenuId = null;
+                return;
+            }
+            // Close any open menu
+            document.querySelectorAll('.post-menu-dropdown').forEach(el => el.remove());
+            
+            const btn = document.querySelector(`[data-post-menu-btn="${postId}"]`);
+            if (!btn) return;
+            
+            const rect = btn.getBoundingClientRect();
+            menu = document.createElement('div');
+            menu.id = menuId;
+            menu.className = 'post-menu-dropdown';
+            menu.style.position = 'fixed';
+            menu.style.top = (rect.bottom + 4) + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            const isOwner = targetPost && targetPost.authorUID === databaseState.currentUser.uid;
+            
+            if (isOwner) {
+                menu.innerHTML = `
+                    <button onclick="openEditPost('${postId}')">✏️ Edit Post</button>
+                    <button onclick="deletePost('${postId}')" class="delete-btn">🗑 Delete Post</button>
+                `;
+            } else {
+                menu.innerHTML = `<button style="color:#94a3b8;cursor:default;">You don't own this post</button>`;
+            }
+            
+            document.body.appendChild(menu);
+            activePostMenuId = postId;
+            
+            // Close on click outside
+            setTimeout(() => {
+                document.addEventListener('click', closePostMenuHandler);
+            }, 10);
+        }
+
+        function closePostMenuHandler(e) {
+            if (!e.target.closest('.post-menu-dropdown') && !e.target.closest('.post-menu-btn')) {
+                document.querySelectorAll('.post-menu-dropdown').forEach(el => el.remove());
+                activePostMenuId = null;
+                document.removeEventListener('click', closePostMenuHandler);
+            }
+        }
+
+        // ===== EDIT POST =====
+        let editingPostId = null;
+
+        window.openEditPost = function(postId) {
+            const targetPost = databaseState.publications.find(p => p.id === postId);
+            if (!targetPost || targetPost.authorUID !== databaseState.currentUser.uid) {
+                showSuccessToast('Error', 'You can only edit your own posts.', '❌');
+                return;
+            }
+            editingPostId = postId;
+            document.getElementById('edit-post-text').value = targetPost.text || '';
+            document.getElementById('edit-post-image').value = '';
+            openModal('edit-post-modal');
+            // Close the menu
+            document.querySelectorAll('.post-menu-dropdown').forEach(el => el.remove());
+        }
+
+        window.saveEditedPost = function() {
+            if (!editingPostId) return;
+            const newText = document.getElementById('edit-post-text').value.trim();
+            const newImageFile = document.getElementById('edit-post-image').files[0];
+            
+            if (!newText && !newImageFile) {
+                showSuccessToast('Error', 'Post must have text or an image.', '❌');
+                return;
+            }
+
+            const pubRef = ref(db, 'publications');
+            get(pubRef).then((snap) => {
+                const data = snap.val();
+                if (data) {
+                    let dbKey = null;
+                    Object.keys(data).forEach(k => {
+                        if (data[k] && data[k].id === editingPostId) {
+                            dbKey = k;
+                        }
+                    });
+                    if (dbKey) {
+                        const updates = { text: newText };
+                        if (newImageFile) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                updates.image = e.target.result;
+                                update(ref(db, `publications/${dbKey}`), updates).then(() => {
+                                    closeModal('edit-post-modal');
+                                    showSuccessToast('Post Updated!', 'Your post has been updated.', '✅');
+                                    loadInitialPosts();
+                                    editingPostId = null;
+                                });
+                            };
+                            reader.readAsDataURL(newImageFile);
+                        } else {
+                            update(ref(db, `publications/${dbKey}`), updates).then(() => {
+                                closeModal('edit-post-modal');
+                                showSuccessToast('Post Updated!', 'Your post has been updated.', '✅');
+                                loadInitialPosts();
+                                editingPostId = null;
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        // ===== DELETE POST (Owner only) =====
         window.deletePost = function(postId) {
             const myUID = databaseState.currentUser.uid;
             const targetPost = databaseState.publications.find(p => p.id === postId);
@@ -2662,6 +2748,7 @@
                             remove(ref(db, `publications/${dbKey}`)).then(() => {
                                 showSuccessToast('Deleted!', 'Post deleted successfully.', '🗑️');
                                 loadInitialPosts();
+                                document.querySelectorAll('.post-menu-dropdown').forEach(el => el.remove());
                             }).catch((err) => {
                                 console.error('Delete error:', err);
                                 showSuccessToast('Error', 'Failed to delete post.', '❌');
@@ -2671,50 +2758,6 @@
                 });
             }
         }
-
-        // ============================================================
-        // EDIT POST CAPTION - Owner only
-        // ============================================================
-        window.editPostCaption = function(postId) {
-            const targetPost = databaseState.publications.find(p => p.id === postId);
-            if (!targetPost) {
-                showSuccessToast('Error', 'Post not found.', '❌');
-                return;
-            }
-            if (targetPost.authorUID !== databaseState.currentUser.uid) {
-                showSuccessToast('Error', 'You can only edit your own posts.', '❌');
-                return;
-            }
-            
-            const newText = prompt('Edit your post caption:', targetPost.text || '');
-            if (newText === null) return; // cancelled
-            if (newText.trim() === '') {
-                showSuccessToast('Error', 'Caption cannot be empty.', '❌');
-                return;
-            }
-            
-            const pubRef = ref(db, 'publications');
-            get(pubRef).then((snap) => {
-                const data = snap.val();
-                if (data) {
-                    let dbKey = null;
-                    Object.keys(data).forEach(k => {
-                        if (data[k] && data[k].id === postId) {
-                            dbKey = k;
-                        }
-                    });
-                    if (dbKey) {
-                        update(ref(db, `publications/${dbKey}`), { text: newText.trim() }).then(() => {
-                            showSuccessToast('Updated!', 'Post caption updated successfully.', '✏️');
-                            loadInitialPosts();
-                        }).catch((err) => {
-                            console.error('Edit error:', err);
-                            showSuccessToast('Error', 'Failed to update post.', '❌');
-                        });
-                    }
-                }
-            });
-        };
 
         // ============================================================
         // DELETE COMMENT - Owner OR Author
@@ -2767,7 +2810,7 @@
         }
 
         // ============================================================
-        // POST RENDER with 3-dot menu
+        // POST RENDER
         // ============================================================
         function renderEcosystemFeed() {
             const feed = document.getElementById('posts-feed');
@@ -2784,16 +2827,27 @@
 
             const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
                 databaseState.currentUser.premiumFont : '';
+            const myUID = databaseState.currentUser.uid;
             
             validPosts.forEach(post => {
-                const isLiked = post.likes && post.likes[databaseState.currentUser.uid] === true;
+                const isLiked = post.likes && post.likes[myUID] === true;
                 const likesCount = post.likes ? Object.keys(post.likes).length : 0;
                 const commentsCount = post.comments ? Object.keys(post.comments).length : 0;
                 const isSaved = databaseState.currentUser.savedPosts && databaseState.currentUser.savedPosts.includes(post.id);
-                const isOwner = post.authorUID === databaseState.currentUser.uid;
+                const isOwner = post.authorUID === myUID;
                 
                 const card = document.createElement('div');
                 card.className = `bg-lightcard dark:bg-darkcard rounded-2xl border border-lightborder dark:border-slate-800/80 p-4 space-y-3 text-xs shadow-md transition-all duration-300 relative`;
+                
+                // 3-dot menu button (only for owner)
+                let menuBtn = '';
+                if (isOwner) {
+                    menuBtn = `
+                        <button class="post-menu-btn absolute top-3 right-3" data-post-menu-btn="${post.id}" onclick="event.stopPropagation(); togglePostMenu('${post.id}')">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                        </button>
+                    `;
+                }
                 
                 let imageLayer = '';
                 if(post.image) {
@@ -2804,22 +2858,9 @@
                     `;
                 }
 
-                // 3-dot menu for posts
-                let dropdownMenu = '';
-                if (isOwner) {
-                    dropdownMenu = `
-                        <div class="relative" style="position:relative;">
-                            <button class="post-three-dot" onclick="togglePostDropdown('${post.id}')">⋯</button>
-                            <div class="post-dropdown-menu" id="post-dropdown-${post.id}">
-                                <button onclick="editPostCaption('${post.id}')">Edit Caption</button>
-                                <button class="danger" onclick="deletePost('${post.id}')">Delete Post</button>
-                            </div>
-                        </div>
-                    `;
-                }
-
                 card.innerHTML = `
-                    <div class="flex justify-between items-start">
+                    ${menuBtn}
+                    <div class="flex justify-between items-center">
                         <div class="flex items-center space-x-2.5 cursor-pointer" onclick="displayPeerAccountProfile('${post.authorUID}')">
                             <img src="${post.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'}" 
                                  class="w-8 h-8 rounded-full object-cover border border-slate-300 dark:border-slate-700">
@@ -2828,7 +2869,6 @@
                                 <p class="text-[9px] text-slate-500 font-mono">@${post.authorUID || 'unknown'} • ${post.timestamp ? new Date(post.timestamp).toLocaleDateString() : ''}</p>
                             </div>
                         </div>
-                        ${dropdownMenu}
                     </div>
                     <p class="text-slate-700 dark:text-slate-300 leading-relaxed break-words post-text ${fontClass}">${post.text || ''}</p>
                     ${imageLayer}
@@ -2852,29 +2892,6 @@
                 feed.appendChild(card);
             });
         }
-
-        // ============================================================
-        // POST 3-DOT DROPDOWN TOGGLE
-        // ============================================================
-        window.togglePostDropdown = function(postId) {
-            const menu = document.getElementById(`post-dropdown-${postId}`);
-            if (!menu) return;
-            // Close all other post dropdowns
-            document.querySelectorAll('.post-dropdown-menu.show').forEach(m => {
-                if (m.id !== `post-dropdown-${postId}`) m.classList.remove('show');
-            });
-            menu.classList.toggle('show');
-        };
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.post-three-dot') && !e.target.closest('.post-dropdown-menu')) {
-                document.querySelectorAll('.post-dropdown-menu.show').forEach(m => m.classList.remove('show'));
-            }
-            if (!e.target.closest('.reel-three-dot') && !e.target.closest('.reel-dropdown-menu')) {
-                document.querySelectorAll('.reel-dropdown-menu.show').forEach(m => m.classList.remove('show'));
-            }
-        });
 
         // ============================================================
         // FULL SCREEN IMAGE VIEW
@@ -3053,35 +3070,102 @@
         };
 
         // ============================================================
-        // COPY POST LINK
+        // REEL MENU (3-Dot) - Edit & Delete
         // ============================================================
-        window.copyPostLink = function() {
-            if (!databaseState.activeTargetSharePostID) {
-                showSuccessToast('Error', 'No post selected.', '❌');
+        let activeReelMenuId = null;
+
+        window.toggleReelMenu = function(reelId) {
+            const menuId = 'reel-menu-' + reelId;
+            let menu = document.getElementById(menuId);
+            if (menu) {
+                menu.remove();
+                activeReelMenuId = null;
                 return;
             }
-            const targetPost = databaseState.publications.find(p => p.id === databaseState.activeTargetSharePostID);
-            if (!targetPost) return;
-            const link = `${window.location.origin}?post=${targetPost.id}`;
-            navigator.clipboard.writeText(link).then(() => {
-                showCopyLinkToast();
-                showSuccessToast('Copied!', 'Post link copied to clipboard.', '📋');
-            }).catch(() => {
-                // Fallback
-                const textArea = document.createElement('textarea');
-                textArea.value = link;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                textArea.remove();
-                showCopyLinkToast();
-                showSuccessToast('Copied!', 'Post link copied to clipboard.', '📋');
-            });
-        };
+            document.querySelectorAll('.reel-menu-dropdown').forEach(el => el.remove());
+            
+            const btn = document.querySelector(`[data-reel-menu-btn="${reelId}"]`);
+            if (!btn) return;
+            
+            const rect = btn.getBoundingClientRect();
+            menu = document.createElement('div');
+            menu.id = menuId;
+            menu.className = 'post-menu-dropdown reel-menu-dropdown';
+            menu.style.position = 'fixed';
+            menu.style.top = (rect.bottom + 4) + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            
+            const targetReel = databaseState.reels.find(r => r.id === reelId);
+            const isOwner = targetReel && targetReel.userId === databaseState.currentUser.uid;
+            
+            if (isOwner) {
+                menu.innerHTML = `
+                    <button onclick="openEditReel('${reelId}')">✏️ Edit Caption</button>
+                    <button onclick="deleteReel('${reelId}')" class="delete-btn">🗑 Delete Reel</button>
+                `;
+            } else {
+                menu.innerHTML = `<button style="color:#94a3b8;cursor:default;">You don't own this reel</button>`;
+            }
+            
+            document.body.appendChild(menu);
+            activeReelMenuId = reelId;
+            
+            setTimeout(() => {
+                document.addEventListener('click', closeReelMenuHandler);
+            }, 10);
+        }
 
-        // ============================================================
-        // REEL DELETE - Owner only (Now via 3-dot menu)
-        // ============================================================
+        function closeReelMenuHandler(e) {
+            if (!e.target.closest('.reel-menu-dropdown') && !e.target.closest('.reel-menu-btn')) {
+                document.querySelectorAll('.reel-menu-dropdown').forEach(el => el.remove());
+                activeReelMenuId = null;
+                document.removeEventListener('click', closeReelMenuHandler);
+            }
+        }
+
+        // ===== EDIT REEL =====
+        let editingReelId = null;
+
+        window.openEditReel = function(reelId) {
+            const targetReel = databaseState.reels.find(r => r.id === reelId);
+            if (!targetReel || targetReel.userId !== databaseState.currentUser.uid) {
+                showSuccessToast('Error', 'You can only edit your own reels.', '❌');
+                return;
+            }
+            editingReelId = reelId;
+            document.getElementById('edit-reel-caption').value = targetReel.caption || '';
+            openModal('edit-reel-modal');
+            document.querySelectorAll('.reel-menu-dropdown').forEach(el => el.remove());
+        }
+
+        window.saveEditedReel = function() {
+            if (!editingReelId) return;
+            const newCaption = document.getElementById('edit-reel-caption').value.trim();
+            
+            const reelRef = ref(db, 'reels');
+            get(reelRef).then((snap) => {
+                const data = snap.val();
+                if (data) {
+                    let dbKey = null;
+                    Object.keys(data).forEach(k => {
+                        if (data[k] && data[k].id === editingReelId) {
+                            dbKey = k;
+                        }
+                    });
+                    if (dbKey) {
+                        update(ref(db, `reels/${dbKey}`), { caption: newCaption }).then(() => {
+                            closeModal('edit-reel-modal');
+                            showSuccessToast('Reel Updated!', 'Caption updated successfully.', '✅');
+                            isReelsLoaded = false;
+                            loadReelsOnDemand();
+                            editingReelId = null;
+                        });
+                    }
+                }
+            });
+        }
+
+        // ===== DELETE REEL (Owner only) =====
         window.deleteReel = function(reelId) {
             const myUID = databaseState.currentUser.uid;
             const targetReel = databaseState.reels.find(r => r.id === reelId);
@@ -3112,6 +3196,7 @@
                                 showSuccessToast('Deleted!', 'Reel deleted successfully.', '🗑️');
                                 isReelsLoaded = false;
                                 loadReelsOnDemand();
+                                document.querySelectorAll('.reel-menu-dropdown').forEach(el => el.remove());
                             }).catch((err) => {
                                 console.error('Delete reel error:', err);
                                 showSuccessToast('Error', 'Failed to delete reel.', '❌');
@@ -3123,48 +3208,7 @@
         };
 
         // ============================================================
-        // EDIT REEL CAPTION - Owner only
-        // ============================================================
-        window.editReelCaption = function(reelId) {
-            const targetReel = databaseState.reels.find(r => r.id === reelId);
-            if (!targetReel) {
-                showSuccessToast('Error', 'Reel not found.', '❌');
-                return;
-            }
-            if (targetReel.userId !== databaseState.currentUser.uid) {
-                showSuccessToast('Error', 'You can only edit your own reels.', '❌');
-                return;
-            }
-            
-            const newCaption = prompt('Edit reel caption:', targetReel.caption || '');
-            if (newCaption === null) return;
-            
-            const reelRef = ref(db, 'reels');
-            get(reelRef).then((snap) => {
-                const data = snap.val();
-                if (data) {
-                    let dbKey = null;
-                    Object.keys(data).forEach(k => {
-                        if (data[k] && data[k].id === reelId) {
-                            dbKey = k;
-                        }
-                    });
-                    if (dbKey) {
-                        update(ref(db, `reels/${dbKey}`), { caption: newCaption.trim() }).then(() => {
-                            showSuccessToast('Updated!', 'Reel caption updated successfully.', '✏️');
-                            isReelsLoaded = false;
-                            loadReelsOnDemand();
-                        }).catch((err) => {
-                            console.error('Edit reel error:', err);
-                            showSuccessToast('Error', 'Failed to update reel.', '❌');
-                        });
-                    }
-                }
-            });
-        };
-
-        // ============================================================
-        // REELS SYSTEM - with 3-dot menu
+        // REELS SYSTEM
         // ============================================================
         let isReelsLoaded = false;
         
@@ -3223,19 +3267,18 @@
                 div.dataset.reelId = reel.id;
                 div.dataset.liked = isLiked ? 'true' : 'false';
 
-                // 3-dot menu for reels (top-right)
-                let threeDotMenu = '';
+                // 3-dot menu button (top right)
+                let menuBtn = '';
                 if (isOwner) {
-                    threeDotMenu = `
-                        <div class="reel-three-dot" onclick="toggleReelDropdown('${reel.id}')">⋯</div>
-                        <div class="reel-dropdown-menu" id="reel-dropdown-${reel.id}">
-                            <button onclick="editReelCaption('${reel.id}')">Edit Caption</button>
-                            <button class="danger" onclick="deleteReel('${reel.id}')">Delete Reel</button>
-                        </div>
+                    menuBtn = `
+                        <button class="post-menu-btn reel-menu-btn absolute top-4 right-4 z-20" data-reel-menu-btn="${reel.id}" onclick="event.stopPropagation(); toggleReelMenu('${reel.id}')" style="background:rgba(0,0,0,0.5);border-radius:50%;padding:6px;color:white;">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                        </button>
                     `;
                 }
 
                 div.innerHTML = `
+                    ${menuBtn}
                     <video src="${reel.videoUrl}" playsinline preload="metadata" loop></video>
                     <div class="reel-overlay">
                         <div class="flex items-center gap-3 mb-2">
@@ -3246,7 +3289,6 @@
                         </div>
                         ${reel.caption ? `<p class="text-sm text-white/80 reel-caption ${fontClass}">${reel.caption}</p>` : ''}
                     </div>
-                    ${threeDotMenu}
                     <div class="reel-actions">
                         <button onclick="toggleReelLike('${reel.id}')" class="hover:scale-110 transition" id="reel-like-btn-${reel.id}">
                             <svg class="w-7 h-7" fill="${isLiked ? '#ff2d55' : 'none'}" stroke="${isLiked ? '#ff2d55' : 'white'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
@@ -3276,18 +3318,6 @@
                 setupReelAutoPlay();
             }, 100);
         }
-
-        // ============================================================
-        // REEL 3-DOT DROPDOWN TOGGLE
-        // ============================================================
-        window.toggleReelDropdown = function(reelId) {
-            const menu = document.getElementById(`reel-dropdown-${reelId}`);
-            if (!menu) return;
-            document.querySelectorAll('.reel-dropdown-menu.show').forEach(m => {
-                if (m.id !== `reel-dropdown-${reelId}`) m.classList.remove('show');
-            });
-            menu.classList.toggle('show');
-        };
 
         // ============================================================
         // REEL LIKE
@@ -3628,32 +3658,6 @@
                     }
                 }
             }, { onlyOnce: true });
-        };
-
-        // ============================================================
-        // COPY REEL LINK
-        // ============================================================
-        window.copyReelLink = function() {
-            if (!databaseState.activeTargetSharePostID) {
-                showSuccessToast('Error', 'No reel selected.', '❌');
-                return;
-            }
-            const targetReel = databaseState.reels.find(r => r.id === databaseState.activeTargetSharePostID);
-            if (!targetReel) return;
-            const link = `${window.location.origin}?reel=${targetReel.id}`;
-            navigator.clipboard.writeText(link).then(() => {
-                showCopyLinkToast();
-                showSuccessToast('Copied!', 'Reel link copied to clipboard.', '📋');
-            }).catch(() => {
-                const textArea = document.createElement('textarea');
-                textArea.value = link;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                textArea.remove();
-                showCopyLinkToast();
-                showSuccessToast('Copied!', 'Reel link copied to clipboard.', '📋');
-            });
         };
 
         // ============================================================
@@ -4185,11 +4189,24 @@
 
             const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
                 databaseState.currentUser.premiumFont : '';
+            const myUID = databaseState.currentUser.uid;
 
             specific.forEach(post => {
+                const isOwner = post.authorUID === myUID;
                 const card = document.createElement('div');
-                card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs";
+                card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs relative";
+                
+                let menuBtn = '';
+                if (isOwner) {
+                    menuBtn = `
+                        <button class="post-menu-btn absolute top-2 right-2" data-post-menu-btn="${post.id}" onclick="event.stopPropagation(); togglePostMenu('${post.id}')">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                        </button>
+                    `;
+                }
+                
                 card.innerHTML = `
+                    ${menuBtn}
                     <p class="text-slate-700 dark:text-slate-300 leading-relaxed post-text ${fontClass}">${post.text || ''}</p>
                     ${post.image ? `<div class="rounded-lg overflow-hidden max-h-48 border border-slate-300 dark:border-slate-700 cursor-pointer" onclick="openImageViewer('${post.image}')"><img src="${post.image}" class="w-full h-full object-cover"></div>` : ''}
                     <span class="text-[8px] font-mono text-slate-600">${post.timestamp ? new Date(post.timestamp).toLocaleString() : ''}</span>
@@ -4209,11 +4226,14 @@
 
             const fontClass = databaseState.currentUser.isPremium && databaseState.currentUser.premiumFont ? 
                 databaseState.currentUser.premiumFont : '';
+            const myUID = databaseState.currentUser.uid;
 
             specific.forEach(reel => {
+                const isOwner = reel.userId === myUID;
                 const card = document.createElement('div');
-                card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs cursor-pointer";
-                card.onclick = () => {
+                card.className = "bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 p-3 rounded-xl space-y-2 text-xs cursor-pointer relative";
+                card.onclick = (e) => {
+                    if (e.target.closest('.post-menu-btn')) return;
                     switchTab('reels');
                     setTimeout(() => {
                         const reelsContainer = document.getElementById('reels-feed');
@@ -4224,7 +4244,18 @@
                         }
                     }, 300);
                 };
+                
+                let menuBtn = '';
+                if (isOwner) {
+                    menuBtn = `
+                        <button class="post-menu-btn absolute top-2 right-2" data-reel-menu-btn="${reel.id}" onclick="event.stopPropagation(); toggleReelMenu('${reel.id}')">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+                        </button>
+                    `;
+                }
+                
                 card.innerHTML = `
+                    ${menuBtn}
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span class="font-bold text-slate-700 dark:text-slate-300 reel-caption ${fontClass}">${reel.caption || 'Reel'}</span>
@@ -4327,34 +4358,6 @@
                     if(databaseState.currentUser.profession === p) opt.selected = true;
                     select.appendChild(opt);
                 });
-            } else if(type === 'privacy-policy') {
-                title.innerText = "Privacy Policy";
-                body.innerHTML = `
-                    <div class="text-xs leading-relaxed space-y-2">
-                        <p><strong>Stardust Hub Privacy Policy</strong></p>
-                        <p>Last updated: January 2025</p>
-                        <p>We at Stardust Hub respect your privacy. This policy outlines how we collect, use, and protect your personal data.</p>
-                        <p><strong>Data Collection:</strong> We collect your email, name, username, profile picture, and content you post (text, images, videos).</p>
-                        <p><strong>Data Usage:</strong> Your data is used to provide social networking services, show your content, and facilitate communication.</p>
-                        <p><strong>Data Security:</strong> All data is encrypted and stored securely. We never share your data with third parties without your explicit consent.</p>
-                        <p><strong>Your Rights:</strong> You can access, edit, or delete your account and data at any time.</p>
-                        <p><a href="privacy.html" target="_blank" class="text-blue-500 underline">Read full Privacy Policy</a></p>
-                    </div>
-                `;
-            } else if(type === 'terms-of-service') {
-                title.innerText = "Terms of Service";
-                body.innerHTML = `
-                    <div class="text-xs leading-relaxed space-y-2">
-                        <p><strong>Stardust Hub Terms of Service</strong></p>
-                        <p>Last updated: January 2025</p>
-                        <p>By using Stardust Hub, you agree to the following terms:</p>
-                        <p><strong>User Responsibility:</strong> You are solely responsible for the content you post and your interactions with others.</p>
-                        <p><strong>Prohibited Content:</strong> No hate speech, harassment, illegal activities, or explicit content allowed.</p>
-                        <p><strong>Account Security:</strong> You are responsible for maintaining the security of your account.</p>
-                        <p><strong>Termination:</strong> We reserve the right to terminate accounts that violate these terms.</p>
-                        <p><a href="terms.html" target="_blank" class="text-blue-500 underline">Read full Terms of Service</a></p>
-                    </div>
-                `;
             } else if(type === 'liked-posts') {
                 title.innerText = "Liked Publications";
                 const liked = databaseState.publications.filter(p => p && p.likes && p.likes[databaseState.currentUser.uid] === true);
@@ -4647,7 +4650,6 @@
                 }
             });
 
-            // Copy Link button will be shown outside the list in the modal
             if(count === 0) {
                 container.innerHTML = `<p class="text-[10px] text-slate-600 text-center py-2">No direct friends linked inside core node network.</p>`;
             }
@@ -4787,14 +4789,13 @@
         }
 
         console.log('🚀 Stardust Hub - FINAL VERSION');
-        console.log('✅ Reels 3-dot menu (Delete + Edit Caption)');
-        console.log('✅ Post 3-dot menu (Delete + Edit Caption)');
-        console.log('✅ Copy Link for Posts & Reels');
-        console.log('✅ Delete Account with password verification');
-        console.log('✅ Forgot Password');
-        console.log('✅ Privacy Policy & Terms of Service in settings and login');
-        console.log('✅ Signup with more fields (pfp, name, username, bio)');
-        console.log('🎉 Your web is now COMPLETE!');
+        console.log('✅ Post: 3-dot menu with Edit & Delete (owner only)');
+        console.log('✅ Reel: 3-dot menu on top-right with Edit & Delete (owner only)');
+        console.log('✅ Signup: Full profile (pfp, name, bio, email, password)');
+        console.log('✅ Login: Privacy & Terms links');
+        console.log('✅ Forgot Password with Firebase');
+        console.log('✅ Delete Account');
+        console.log('✅ Settings: Privacy Policy & Terms of Service buttons');
     </script>
 </body>
 </html>
